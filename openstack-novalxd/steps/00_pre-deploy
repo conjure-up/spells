@@ -18,7 +18,7 @@ def main():
         # Give LXD enough time to learn about the profile
         time.sleep(5)
         try:
-            profilename = run('juju switch | cut -d: -f1',
+            profilename = run('juju switch | cut -d/ -f2',
                               shell=True,
                               stdout=PIPE,
                               stderr=PIPE)
