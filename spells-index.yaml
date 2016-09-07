@@ -1,6 +1,10 @@
 # spell keyword mapping -- unassigned spells are included in the package but not given a keyword
 _unassigned_spells:
-  spells: []
+  spells:
+    - key: ghost
+      name: HA Ghost with MySQL
+      description: |
+        Ghost is an Open Source application which allows you to write and publish your own blog, giving you the tools to make it easy and even fun to do.
 openstack:
   spells:
     - key: openstack-base
