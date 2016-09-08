@@ -1,6 +1,12 @@
 #!/bin/bash
 
-. common.sh
+# Path to executing script
+SCRIPT=$(realpath $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/common.sh
 
 if [[ $JUJU_PROVIDERTYPE =~ "lxd" ]]; then
     imagetype=root.tar.xz
