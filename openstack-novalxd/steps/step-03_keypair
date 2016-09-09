@@ -52,7 +52,8 @@ if path.isfile(ssh_pubkey):
     if ret.returncode > 0:
         fail("Unable to add public ssh key, maybe "
              "ssh-keygen needs to be run")
-    success("SSH Keypair complete")
+    success("SSH Keypair is now imported and accessible "
+            "when creating compute nodes.")
 
 fail("Could not find any ssh keys to import, please run "
      "ssh-keygen in another terminal before re-executing this step.")
