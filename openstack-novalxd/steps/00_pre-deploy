@@ -3,10 +3,8 @@
 import os
 import time
 from subprocess import run, PIPE, CalledProcessError
-from conjureup.hooklib.writer import success, error
-import logging
+from conjureup.hooklib.writer import success, error, log
 
-log = logging.getLogger('conjureup')
 SCRIPTPATH = os.path.dirname(os.path.abspath(__file__))
 
 
