@@ -1,6 +1,12 @@
 #!/bin/bash
 
-. common.sh
+# Path to executing script
+SCRIPT=$(realpath $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/common.sh
 
 fail_cleanly() {
     exposeResult "$1" 1 "false"

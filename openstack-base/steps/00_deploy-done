@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-from conjureup.hooklib.writer import success, fail, error
+from conjureup.hooklib.writer import success, fail, error, log
 from conjureup.hooklib import juju
-import logging
-
-log = logging.getLogger('conjureup')
 
 log.debug("Running deploy-done for OpenStack installation.")
 agent_states = juju.agent_states()

@@ -4,12 +4,9 @@
 import os
 import os.path as path
 from subprocess import run, DEVNULL, PIPE
-import logging
-# Conjure-up specific
-from conjureup.hooklib.writer import success, fail
+from conjureup.hooklib.writer import success, fail, log
 import utils
 
-log = logging.getLogger('conjureup')
 SCRIPTPATH = path.dirname(path.abspath(__file__))
 NOVARC = path.join(SCRIPTPATH, 'novarc')
 
