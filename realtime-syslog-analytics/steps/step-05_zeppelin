@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from conjureup.hooklib.writer import success, fail, error
 from conjureup.hooklib import juju
+from conjureup.utils import run
 import logging
-from subprocess import run, DEVNULL, PIPE
+from subprocess import DEVNULL, PIPE
 
 log = logging.getLogger('conjureup')
 status = juju.status()
@@ -10,7 +11,7 @@ applications = status['applications']['spark']
 zeppelin_ip = applications['units']['spark/0']['public-address']
 
 if zeppelin_ip:
-    sh = run('juju expose zeppelin', shell=True,
+    sh = run('juju-2.0 expose zeppelin', shell=True,
              stderr=PIPE,
              stdout=DEVNULL)
     if sh.returncode > 0:

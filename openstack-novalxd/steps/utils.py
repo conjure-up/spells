@@ -1,4 +1,5 @@
-from subprocess import run, PIPE
+from subprocess import PIPE
+from conjureup.utils import run
 import logging
 
 log = logging.getLogger('conjureup')

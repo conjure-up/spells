@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from subprocess import run, DEVNULL, PIPE
+from subprocess import DEVNULL, PIPE
+from conjureup.utils import run
 from conjureup.hooklib import juju
 from conjureup.hooklib.writer import success, fail, error  # noqa
 
@@ -8,7 +9,7 @@ status = juju.status()
 applications = status['applications']['kibana']
 ip = applications['units']['kibana/0']['public-address']
 if ip:
-    sh = run('juju expose kibana', shell=True,
+    sh = run('juju-2.0 expose kibana', shell=True,
              stderr=PIPE,
              stdout=DEVNULL)
     if sh.returncode > 0:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from conjureup.hooklib.writer import success, fail, error
-from subprocess import run, CalledProcessError
+from conjureup.utils import run
+from subprocess import CalledProcessError
 import logging
 import os
 
@@ -9,7 +10,7 @@ BLOGURL = os.environ.get('BLOGURL', None)
 
 if BLOGURL is not None:
     try:
-        run('juju set-config ghost url={}'.format(BLOGURL),
+        run('juju-2.0 config ghost url={}'.format(BLOGURL),
             shell=True, check=True)
         success("Visit your Ghost application at {}".format(BLOGURL))
     except CalledProcessError as e:

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-from subprocess import run, DEVNULL, PIPE
+from subprocess import DEVNULL, PIPE
 from conjureup.hooklib import juju
 from conjureup.hooklib.writer import success, fail, error
+from conjureup.utils import run
 
 
 status = juju.status()
@@ -9,7 +10,7 @@ applications = status['applications']['ganglia']
 ganglia_ip = applications['units']['ganglia/0']['public-address']
 
 if ganglia_ip:
-    sh = run('juju expose ganglia', shell=True,
+    sh = run('juju-2.0 expose ganglia', shell=True,
              stderr=PIPE,
              stdout=DEVNULL)
     if sh.returncode > 0:

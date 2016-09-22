@@ -2,7 +2,8 @@
 
 import os
 import time
-from subprocess import run, PIPE, CalledProcessError
+from subprocess import PIPE, CalledProcessError
+from conjureup.utils import run
 from conjureup.hooklib.writer import success, error, log
 
 SCRIPTPATH = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +17,7 @@ def main():
         # Give LXD enough time to learn about the profile
         time.sleep(5)
         try:
-            profilename = run('juju switch | cut -d/ -f2',
+            profilename = run('juju-2.0 switch | cut -d/ -f2',
                               shell=True,
                               stdout=PIPE,
                               stderr=PIPE)

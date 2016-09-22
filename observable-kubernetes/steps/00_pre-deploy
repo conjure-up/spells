@@ -3,7 +3,7 @@
 . /usr/share/conjure-up/hooklib/common.sh
 
 if [ $JUJU_PROVIDERTYPE = "lxd" ] || [ $JUJU_PROVIDERTYPE = "localhost" ]; then
-    profilename=$(juju switch | cut -d: -f2)
+    profilename=$(juju-2.0 switch | cut -d: -f2)
     debug "processing $profilename"
     sed "s/##MODEL##/$profilename/" $SCRIPTPATH/lxd-profile.yaml | lxc profile edit "juju-$profilename"
 
