@@ -1,6 +1,12 @@
 #!/bin/bash
 
-. /usr/share/conjure-up/hooklib/common.sh
+# Path to executing script
+SCRIPT=$(realpath $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/common.sh
 
 if [ $JUJU_PROVIDERTYPE = "lxd" ] || [ $JUJU_PROVIDERTYPE = "localhost" ]; then
     profilename=$(juju-2.0 switch | cut -d: -f2)

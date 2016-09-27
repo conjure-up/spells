@@ -1,6 +1,12 @@
 #!/bin/bash
 
-. /usr/share/conjure-up/hooklib/common.sh
+# Path to executing script
+SCRIPT=$(realpath $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/common.sh
 
 KUBECTL_PATH=$HOME/conjure-up/kubernetes
 mkdir -p $KUBECTL_PATH || true
