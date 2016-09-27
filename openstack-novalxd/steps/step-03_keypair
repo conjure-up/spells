@@ -10,7 +10,6 @@ import utils
 
 SCRIPTPATH = path.dirname(path.abspath(__file__))
 NOVARC = path.join(SCRIPTPATH, 'novarc')
-OPENSTACK_BIN = path.expanduser("~/.local/bin/openstack")
 
 
 def ssh_genkey(ssh_privkey):
@@ -34,12 +33,9 @@ if not path.isfile(ssh_privkey):
     log.debug("No ssh private key found, generating our own.")
     ssh_genkey(ssh_privkey)
 
-if not path.isfile(OPENSTACK_BIN):
-    run('pip3 install --user python-openstackclient')
-
 log.debug("Checking for ssh public key: {}".format(ssh_pubkey))
 if path.isfile(ssh_pubkey):
-    cmd = ("{} keypair show ubuntu-keypair".format(OPENSTACK_BIN))
+    cmd = ("openstack keypair show ubuntu-keypair")
     ret = run(cmd, shell=True,
               stdout=DEVNULL,
               stderr=PIPE,
@@ -48,8 +44,8 @@ if path.isfile(ssh_pubkey):
         success("SSH keypair already available to "
                 "you in your OpenStack cloud.")
 
-    cmd = ("{} keypair create --public-key {} "
-           "ubuntu-keypair".format(OPENSTACK_BIN, ssh_pubkey))
+    cmd = ("openstack keypair create --public-key {} "
+           "ubuntu-keypair".format(ssh_pubkey))
     ret = run(cmd, shell=True,
               stdout=DEVNULL,
               stderr=PIPE,
