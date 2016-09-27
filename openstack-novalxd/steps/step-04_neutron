@@ -17,6 +17,9 @@ get_host_ns() {
     perl -lne 's/^nameserver\s+// or next; s/\s.*//; print && exit' /etc/resolv.conf
 }
 
+pip3 install --user python-neutronclient
+export PATH=$HOME/.local/bin
+
 . $SCRIPTPATH/novarc
 if ! neutron net-show ext-net > /dev/null 2>&1; then
     debug "adding ext-net"

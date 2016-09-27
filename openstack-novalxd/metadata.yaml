@@ -12,6 +12,3 @@ options-whitelist:
   - ext-port
   nova-compute:
   - virt-type
-packages:
-  - python3-openstackclient
-  - python3-neutronclient
