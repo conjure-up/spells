@@ -10,6 +10,4 @@ options-whitelist:
   - ext-port
   nova-compute:
   - virt-type
-packages:
-  - python3-openstackclient
-  - python3-neutronclient
+bundle-location: https://api.jujucharms.com/charmstore/v5/openstack-base/archive/bundle.yaml
