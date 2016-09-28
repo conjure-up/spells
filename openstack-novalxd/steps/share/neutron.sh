@@ -1,12 +1,4 @@
-#!/bin/bash
-
-# Path to executing script
-SCRIPT=$(realpath $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
-. $SCRIPTPATH/common.sh
+# -*- mode: shell-script; -*-
 
 fail_cleanly() {
     exposeResult "$1" 1 "false"
@@ -17,7 +9,6 @@ get_host_ns() {
     perl -lne 's/^nameserver\s+// or next; s/\s.*//; print && exit' /etc/resolv.conf
 }
 
-. $SCRIPTPATH/novarc
 if ! neutron net-show ext-net > /dev/null 2>&1; then
     debug "adding ext-net"
     if ! neutron net-create --router:external ext-net > /dev/null 2>&1; then

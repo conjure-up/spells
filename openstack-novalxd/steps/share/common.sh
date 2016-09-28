@@ -1,11 +1,3 @@
-# common.sh - common utility functions for conjure processing tasks
-
-# Path to executing script
-SCRIPT=$(realpath $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
 # loggers
 #
 # Arguments:

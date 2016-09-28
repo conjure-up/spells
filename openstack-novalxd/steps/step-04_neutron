@@ -6,8 +6,11 @@ SCRIPT=$(realpath $0)
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
-juju scp $SCRIPTPATH/novarc nova-cloud-controller/0:.
-juju scp $SCRIPTPATH/common.sh nova-cloud-controller/0:.
-juju ssh neutron-api/0 "bash -s" -- < $SCRIPTPATH/step-04_neutron.ssh
+tmpfile=$(mktemp)
+
+$SCRIPTPATH/share/novarc > $tmpfile
+cat $SCRIPTPATH/share/common.sh >> $tmpfile
+cat $SCRIPTPATH/share/neutron.sh >> $tmpfile
+juju ssh nova-cloud-controller/0 "bash -s" -- < $tmpfile
 
 exit 0

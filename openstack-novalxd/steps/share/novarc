@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "export OS_USERNAME=admin"
 echo "export OS_PASSWORD=openstack"
 echo "export OS_TENANT_NAME=admin"
