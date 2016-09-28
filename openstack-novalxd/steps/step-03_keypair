@@ -18,6 +18,11 @@ $SCRIPTPATH/share/novarc >> $tmpfile
 cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
-juju scp $SSHPUBLICKEY nova-cloud-controller/0:.ssh/.
+if [ ! -f $SSHPUBLICKEY ]; then
+    ssh-keygen -N '' -f ${SSHPUBLICKEY%%.*}
+fi
+juju ssh nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+
+juju scp $SSHPUBLICKEY nova-cloud-controller/0:$SSHPUBLICKEY
 juju scp $tmpfile nova-cloud-controller/0:keypair.sh
 juju ssh nova-cloud-controller/0 "bash keypair.sh"
