@@ -1,15 +1,13 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
-from conjureup.hooklib.writer import success, fail
-from conjureup.hooklib import juju
+# Path to executing script
+SCRIPT=$(realpath $0)
 
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
 
-status = juju.status()
-applications = status['applications']['openstack-dashboard']
-horizon_ip = applications['units']['openstack-dashboard/0']['public-address']
+. $SCRIPTPATH/share/common.sh
 
-if horizon_ip:
-    success(
-        "Login to Horizon: http://{}/horizon l: admin p: openstack".format(
-            horizon_ip))
-fail("Unable to determine Horizon URL")
+horizon_ip=$(unitAddress openstack-dashboard 0)
+
+exposeResult "Login to Horizon: http://$horizon_ip/horizon l: admin p: openstack" 0 "true"
