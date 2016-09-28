@@ -2,8 +2,7 @@
 
 import os
 import time
-from subprocess import PIPE, CalledProcessError
-from conjureup.utils import run
+from subprocess import PIPE, CalledProcessError, run
 from conjureup.hooklib.writer import success, error, log
 
 SCRIPTPATH = os.path.dirname(os.path.abspath(__file__))

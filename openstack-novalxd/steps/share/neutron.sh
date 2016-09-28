@@ -1,5 +1,3 @@
-# -*- mode: shell-script; -*-
-
 fail_cleanly() {
     exposeResult "$1" 1 "false"
 }
