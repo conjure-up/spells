@@ -11,10 +11,6 @@ log.debug("Running deploy-done for Kubernetes installation.")
 agent_states = juju.agent_states()
 agent_states_no_es = []
 
-
-if len(agent_states) < 12:
-    fail('Waiting for some applications to deploy')
-
 for row in agent_states:
     if 'elasticsearch' not in row[0]:
         agent_states_no_es.append(row)
