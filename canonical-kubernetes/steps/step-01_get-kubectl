@@ -10,11 +10,11 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 KUBECTL_PATH=$HOME/conjure-up/kubernetes
 mkdir -p $KUBECTL_PATH || true
+mkdir -p $HOME/.kube
 
-# TODO: Convert to an actionable item
-leaderUnit=$(getLeader kubernetes)
+leaderUnit=$(getLeader kubernetes-master)
 debug "Found leader: $leaderUnit"
-juju-2.0 scp $leaderUnit:kubectl_package.tar.gz $KUBECTL_PATH/.
-cd $KUBECTL_PATH && tar zxf kubectl_package.tar.gz
+juju-2.0 scp $leaderUnit:config $HOME/.kube/config
+juju-2.0 scp $leaderUnit:kubectl $KUBECTL_PATH/
 
-exposeResult "Cluster can now be accessed with $KUBECTL_PATH/kubectl application" 0 "true"
+exposeResult "The Kubernetes client utility is now available at '$KUBECTL_PATH/kubectl'" 0 "true"
