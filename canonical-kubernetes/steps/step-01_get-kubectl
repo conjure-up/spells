@@ -8,9 +8,9 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $SCRIPTPATH/common.sh
 
-KUBECTL_PATH=$HOME/.kube
-mkdir -p $KUBECTL_PATH || true
+mkdir -p $HOME/.kube
+
 juju scp kubernetes-master/0:config ~/.kube/config
 juju scp kubernetes-master/0:kubectl ~/kubectl
 
-exposeResult "Cluster can now be accessed with ~/kubectl application" 0 "true"
+exposeResult "The Kubernetes client utility is now available at '~/kubectl'" 0 "true"
