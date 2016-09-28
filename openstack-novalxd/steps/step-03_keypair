@@ -19,4 +19,5 @@ cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
 juju scp $SSHPUBLICKEY nova-cloud-controller/0:.ssh/.
-juju ssh nova-cloud-controller/0 "bash -s" -- < $tmpfile
+juju scp $tmpfile nova-cloud-controller/0:keypair.sh
+juju ssh nova-cloud-controller/0 "bash keypair.sh"
