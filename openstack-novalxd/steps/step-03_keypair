@@ -8,14 +8,15 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $SCRIPTPATH/share/common.sh
 
-debug "Environment Variables: SSHPUBLICKEY=$SSHPUBLICKEY"
+_ssh_public_key=$(expandPath $SSHPUBLICKEY)
+debug "Environment Variables: $_ssh_public_key"
 
 tmpfile=$(mktemp)
 
 cat <<EOF> $tmpfile
 sudo apt update > /dev/null 2>&1
 sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
-export SSHPUBLICKEY=$SSHPUBLICKEY
+export SSHPUBLICKEY=$_ssh_public_key
 EOF
 
 $SCRIPTPATH/share/novarc >> $tmpfile
@@ -23,17 +24,17 @@ cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
 
-if [ ! -f $SSHPUBLICKEY ]; then
-    debug "Couldnt find $SSHPUBLICKEY, attempting to create one"
-    ssh-keygen -N '' -f ${SSHPUBLICKEY%%.*}
+if [ ! -f $_ssh_public_key ]; then
+    debug "Couldnt find $_ssh_public_key, attempting to create one"
+    ssh-keygen -N '' -f ${_ssh_public_key%%.*}
     debug "ssh-keygen result: $?"
 fi
 
 debug "Creating .ssh directory on controller node"
 juju ssh nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 
-debug "SCPing over $SSHPUBLICKEY to controller node"
-juju scp $SSHPUBLICKEY nova-cloud-controller/0:$SSHPUBLICKEY
+debug "SCPing over $_ssh_public_key to controller node"
+juju scp $HOME/.ssh/id_rsa.pub nova-cloud-controller/0:.ssh/id_rsa.pub
 debug "scp result: $?"
 
 juju scp $tmpfile nova-cloud-controller/0:keypair.sh

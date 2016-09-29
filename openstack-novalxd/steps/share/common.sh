@@ -204,3 +204,27 @@ checkUnitsForActive() {
         fi
     done
 }
+
+# Safely expands tilde paths
+#
+# Arguments:
+# $1: tilde like path ~/test/moo.sh
+expandPath() {
+  case $1 in
+    ~[+-]*)
+      local content content_q
+      printf -v content_q '%q' "${1:2}"
+      eval "content=${1:0:2}${content_q}"
+      printf '%s\n' "$content"
+      ;;
+    ~*)
+      local content content_q
+      printf -v content_q '%q' "${1:1}"
+      eval "content=~${content_q}"
+      printf '%s\n' "$content"
+      ;;
+    *)
+      printf '%s\n' "$1"
+      ;;
+  esac
+}
