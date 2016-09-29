@@ -18,11 +18,20 @@ $SCRIPTPATH/share/novarc >> $tmpfile
 cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
+. $SCRIPTPATH/share/common.sh
+
 if [ ! -f $SSHPUBLICKEY ]; then
+    debug "Couldnt find $SSHPUBLICKEY, attempting to create one"
     ssh-keygen -N '' -f ${SSHPUBLICKEY%%.*}
+    debug "ssh-keygen result: $?"
 fi
+
+debug "Creating .ssh directory on controller node"
 juju ssh nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 
+debug "SCPing over $SSHPUBLICKEY to controller node"
 juju scp $SSHPUBLICKEY nova-cloud-controller/0:$SSHPUBLICKEY
+debug "scp result: $?"
+
 juju scp $tmpfile nova-cloud-controller/0:keypair.sh
 juju ssh nova-cloud-controller/0 "bash keypair.sh"
