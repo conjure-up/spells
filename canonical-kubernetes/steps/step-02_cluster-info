@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Path to executing script
+SCRIPT=$(realpath $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/common.sh
+
+
+NODES="$(~/kubectl get nodes | perl -p -e 's/\n/\\n/')"
+PODS="$(~/kubectl get pods | perl -p -e 's/\n/\\n/')"
+SERVICES="$(~/kubectl get services | perl -p -e 's/\n/\\n/')"
+KIBANA_ADDR=$(unitAddress kibana 0)
+result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES\n\nView Kibana at http://$KIBANA_ADDR/"
+
+exposeResult "$result" 0 "true"
