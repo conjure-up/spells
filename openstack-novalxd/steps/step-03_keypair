@@ -6,6 +6,10 @@ SCRIPT=$(realpath $0)
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
+. $SCRIPTPATH/share/common.sh
+
+debug "Environment Variables: SSHPUBLICKEY=$SSHPUBLICKEY"
+
 tmpfile=$(mktemp)
 
 cat <<EOF> $tmpfile
@@ -18,7 +22,6 @@ $SCRIPTPATH/share/novarc >> $tmpfile
 cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
-. $SCRIPTPATH/share/common.sh
 
 if [ ! -f $SSHPUBLICKEY ]; then
     debug "Couldnt find $SSHPUBLICKEY, attempting to create one"

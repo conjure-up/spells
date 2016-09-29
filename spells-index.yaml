@@ -14,7 +14,8 @@ openstack:
     - key: openstack-novalxd
       name: OpenStack with NovaLXD
       description: |
-        Quickly and reliably build an enterprise-scale cloud run on Ubuntu - the most popular operating system for OpenStack.
+        Deploys a basic OpenStack Cloud (Mitaka release), configured to use LXD (the lightweight container hypervisor), on Ubuntu 16.04, providing Dashboard, Compute, Network, Object Storage, Identity and Image services.
+        This can be deployed on a Single machine for quick Proof-of-Concepts and local development of OpenStack components and services.
 kubernetes:
   spells:
     - key: canonical-kubernetes

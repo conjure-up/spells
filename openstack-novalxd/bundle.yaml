@@ -122,14 +122,9 @@ services:
     options:
       block-devices: None
   openstack-dashboard:
+    expose: true
     charm: cs:xenial/openstack-dashboard
     num_units: 1
   rabbitmq-server:
     charm: cs:xenial/rabbitmq-server
     num_units: 1
-tags:
-  - conjure-up-openstack
-description: |
-  This spell summons an OpenStack Cloud (Mitaka release), configured to use LXD (the lightweight container hypervisor), on Ubuntu 16.04, providing Dashboard, Compute, Network, Object Storage, Identity and Image services.
-
-  This can be deployed on a Single machine for quick Proof-of-Concepts and local development of OpenStack components and services.
