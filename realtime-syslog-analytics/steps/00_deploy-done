@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-from conjureup.hooklib.writer import success, fail, error
+from conjureup.hooklib.writer import success, fail, error, log
 from conjureup.hooklib import juju
-import logging
 
-log = logging.getLogger('conjureup')
 NUM_AGENTS = 8
-
 
 log.debug("Running deploy-done for Realtime "
           "syslog analytics installation.")
