@@ -12,7 +12,7 @@ services:
   haproxy:
     charm: cs:trusty/haproxy
     num_units: 1
-    exposed: True
+    expose: True
 relations:
   - - "mysql:db"
     - "ghost:database"
