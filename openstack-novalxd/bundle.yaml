@@ -122,7 +122,7 @@ services:
     options:
       block-devices: None
   openstack-dashboard:
-    expose: true
+    expose: True
     charm: cs:xenial/openstack-dashboard
     num_units: 1
   rabbitmq-server:
