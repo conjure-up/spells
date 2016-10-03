@@ -10,7 +10,14 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 mkdir -p $HOME/.kube
 
-juju scp kubernetes-master/0:config ~/.kube/config
+cmd_to_run="~/kubectl"
+if [ ! -f ~/.kube/config ]; then
+    juju scp kubernetes-master/0:config ~/.kube/config
+else
+    juju scp kubernetes-master/0:config ~/.kube/config.conjure-up
+    cmd_to_run="$cmd_to_run --kubeconfig=~/.kube/config.conjure-up"
+fi
+
 juju scp kubernetes-master/0:kubectl ~/kubectl
 
-exposeResult "The Kubernetes client utility is now available at '~/kubectl'" 0 "true"
+exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
