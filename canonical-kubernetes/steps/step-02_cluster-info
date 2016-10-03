@@ -10,7 +10,7 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 args=""
 if [ -f ~/.kube/config.conjure-up ]; then
-    args="--kubeconfig=~/.kube/config.conjure-up"
+    args="--kubeconfig=$HOME/.kube/config.conjure-up"
 fi
 
 NODES="$(~/kubectl $args get nodes | perl -p -e 's/\n/\\n/')"
