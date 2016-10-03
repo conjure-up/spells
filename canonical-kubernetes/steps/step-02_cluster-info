@@ -8,7 +8,10 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $SCRIPTPATH/common.sh
 
-
+kubectl_cmd=~/kubectl
+if [ -f ~/.kube/config.conjure-up ]; then
+    kubectl_cmd="$kubectl_cmd --kubeconfig=~/.kube/config.conjure-up"
+fi
 NODES="$(~/kubectl get nodes | perl -p -e 's/\n/\\n/')"
 PODS="$(~/kubectl get pods | perl -p -e 's/\n/\\n/')"
 SERVICES="$(~/kubectl get services | perl -p -e 's/\n/\\n/')"
