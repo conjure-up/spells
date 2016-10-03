@@ -8,18 +8,14 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $SCRIPTPATH/common.sh
 
-kubectl() {
-    _cmd="~/kubectl"
-    if [ -f ~/.kube/config.conjure-up ]; then
-        echo "$_cmd --kubeconfig=~/.kube/config.conjure-up"
-    else
-        echo "$_cmd"
-    fi
-}
+args=""
+if [ -f ~/.kube/config.conjure-up ]; then
+    args="--kubeconfig=~/.kube/config.conjure-up"
+fi
 
-NODES="$(kubectl get nodes | perl -p -e 's/\n/\\n/')"
-PODS="$(kubectl get pods | perl -p -e 's/\n/\\n/')"
-SERVICES="$(kubectl get services | perl -p -e 's/\n/\\n/')"
+NODES="$(kubectl $args get nodes | perl -p -e 's/\n/\\n/')"
+PODS="$(kubectl $args get pods | perl -p -e 's/\n/\\n/')"
+SERVICES="$(kubectl $args get services | perl -p -e 's/\n/\\n/')"
 KIBANA_ADDR=$(unitAddress kibana 0)
 result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES\n\nView Kibana at http://$KIBANA_ADDR/"
 
