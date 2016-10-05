@@ -33,9 +33,3 @@ bigdata:
       name: Realtime Syslog Analytics
       description: |
         An end-to-end Big Data solution that enables ingestion, processing, and visualization of log data.
-analytics:
-  spells:
-    - key: elk-stack
-      name: Elastic Stack
-      description: |
-        The Elastic Stack — that is Elasticsearch, Logstash, Kibana — are open source projects that help you take data from any source, any format and search, analyze, and visualize it in real time.
