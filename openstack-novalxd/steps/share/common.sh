@@ -5,12 +5,12 @@
 # $@: rest of log message
 debug() {
     name=$CONJURE_UP_SPELL
-    logger -t "conjure-up/$name" "[DEBUG] $@"
+    logger -t "conjure-up/$name" "[DEBUG] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
 }
 
 info() {
     name=$CONJURE_UP_SPELL
-    logger -t "conjure-up/$name" "[INFO] $@"
+    logger -t "conjure-up/$name" "[INFO] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
 }
 
 log() {
