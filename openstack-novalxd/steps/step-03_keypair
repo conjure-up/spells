@@ -31,11 +31,11 @@ if [ ! -f $_ssh_public_key ]; then
 fi
 
 debug "Creating .ssh directory on controller node"
-juju ssh nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 
 debug "SCPing over $_ssh_public_key to controller node"
-juju scp $HOME/.ssh/id_rsa.pub nova-cloud-controller/0:.ssh/id_rsa.pub
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $HOME/.ssh/id_rsa.pub nova-cloud-controller/0:.ssh/id_rsa.pub
 debug "scp result: $?"
 
-juju scp $tmpfile nova-cloud-controller/0:keypair.sh
-juju ssh nova-cloud-controller/0 "bash keypair.sh"
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:keypair.sh
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash keypair.sh"
