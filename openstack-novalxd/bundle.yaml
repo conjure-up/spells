@@ -107,6 +107,7 @@ services:
     num_units: 1
     options:
       network-manager: Neutron
+      console-access-protocol: novnc
   nova-compute:
     charm: cs:xenial/nova-compute
     num_units: 1
