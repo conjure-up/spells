@@ -1,59 +1,41 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
-# Global imports
-import os
-import os.path as path
-from subprocess import DEVNULL, PIPE
-from conjureup.hooklib.writer import success, fail, log
-from conjureup.utils import run
-import utils
+# Path to executing script
+SCRIPT=$(realpath $0)
 
-SCRIPTPATH = path.dirname(path.abspath(__file__))
-NOVARC = path.join(SCRIPTPATH, 'novarc')
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/share/common.sh
+
+_ssh_public_key=$(expandPath $SSHPUBLICKEY)
+debug "Environment Variables: $_ssh_public_key"
+
+tmpfile=$(mktemp)
+
+cat <<EOF> $tmpfile
+sudo apt update > /dev/null 2>&1
+sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
+export SSHPUBLICKEY=$_ssh_public_key
+EOF
+
+$SCRIPTPATH/share/novarc >> $tmpfile
+cat $SCRIPTPATH/share/common.sh >> $tmpfile
+cat $SCRIPTPATH/share/keypair.sh >> $tmpfile
 
 
-def ssh_genkey(ssh_privkey):
-    """ Generates sshkey
-    """
-    cmd = "ssh-keygen -N '' -f {0}".format(ssh_privkey)
-    out = run(cmd, shell=True, stdout=DEVNULL, stderr=PIPE)
-    if out.returncode != 0:
-        fail("Unable to generate key: {0}".format(out.stderr.decode()))
+if [ ! -f $_ssh_public_key ]; then
+    debug "Couldnt find $_ssh_public_key, attempting to create one"
+    ssh-keygen -N '' -f ${_ssh_public_key%%.*}
+    debug "ssh-keygen result: $?"
+fi
 
+debug "Creating .ssh directory on controller node"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 
-credentials = utils.parse_openstack_creds(NOVARC)
+debug "SCPing over $_ssh_public_key to controller node"
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $HOME/.ssh/id_rsa.pub nova-cloud-controller/0:.ssh/id_rsa.pub
+debug "scp result: $?"
 
-ssh_pubkey = path.expanduser(os.environ.get(
-    'SSHPUBLICKEY',
-    path.expanduser('~/.ssh/id_rsa.pub')))
-ssh_privkey = path.join(path.expanduser('~/.ssh'),
-                        path.splitext(ssh_pubkey)[0])
-
-if not path.isfile(ssh_privkey):
-    log.debug("No ssh private key found, generating our own.")
-    ssh_genkey(ssh_privkey)
-
-log.debug("Checking for ssh public key: {}".format(ssh_pubkey))
-if path.isfile(ssh_pubkey):
-    cmd = ("openstack keypair show ubuntu-keypair")
-    ret = run(cmd, shell=True,
-              stdout=DEVNULL,
-              stderr=PIPE,
-              env=credentials)
-    if ret.returncode == 0:
-        success("SSH keypair already available to "
-                "you in your OpenStack cloud.")
-
-    cmd = ("openstack keypair create --public-key {} "
-           "ubuntu-keypair".format(ssh_pubkey))
-    ret = run(cmd, shell=True,
-              stdout=DEVNULL,
-              stderr=PIPE,
-              env=credentials)
-    if ret.returncode > 0:
-        fail("Unable to add public ssh key, maybe "
-             "ssh-keygen needs to be run")
-    success("SSH Keypair complete")
-
-fail("Could not find any ssh keys to import, please run "
-     "ssh-keygen in another terminal before re-executing this step.")
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:keypair.sh
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash keypair.sh"
