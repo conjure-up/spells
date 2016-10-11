@@ -7,7 +7,10 @@ options-whitelist:
   mysql:
   - max-connections
   neutron-gateway:
-  - ext-port
+  - bridge-mappings
+  - data-port
+  neutron-api:
+  - flat-network-providers
   nova-compute:
   - virt-type
 bundle-location: https://api.jujucharms.com/charmstore/v5/openstack-base/archive/bundle.yaml
