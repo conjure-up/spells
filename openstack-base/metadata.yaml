@@ -13,4 +13,7 @@ options-whitelist:
   - flat-network-providers
   nova-compute:
   - virt-type
+  nova-cloud-controller:
+  - console-access-protocol
+  - console-ssl-cert
 bundle-location: https://api.jujucharms.com/charmstore/v5/openstack-base/archive/bundle.yaml
