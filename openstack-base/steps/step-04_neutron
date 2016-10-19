@@ -10,6 +10,9 @@ tmpfile=$(mktemp)
 
 $SCRIPTPATH/share/novarc > $tmpfile
 cat $SCRIPTPATH/share/common.sh >> $tmpfile
+
+
+
 cat $SCRIPTPATH/share/neutron.sh >> $tmpfile
 
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:neutron.sh

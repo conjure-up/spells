@@ -1,0 +1,155 @@
+#!/usr/bin/python
+
+try:
+  from quantumclient.v2_0 import client
+except ImportError:
+  from neutronclient.v2_0 import client
+
+from keystoneclient.v2_0 import client as ks_client
+import optparse
+import os
+import sys
+import logging
+
+usage = """Usage: %prog [options] name cidr
+
+For example:
+
+  %prog -t admin -r provider-router admin_net 10.5.5.0/24
+
+will create a new network for the admin tenant called 'admin_net' with a
+default gateway of 10.5.5.1 and a dhcp allocation range of
+10.5.5.2->10.5.5.254
+"""
+
+if __name__ == '__main__':
+    parser = optparse.OptionParser(usage)
+    parser.add_option('-t', '--tenant',
+                      help='Tenant name to create network for',
+                      dest='tenant', action='store',
+                      default=None)
+    parser.add_option('-s', '--shared',
+                      help='Create a shared rather than private network',
+                      dest='shared', action='store_true', default=False)
+    parser.add_option('-r', '--router',
+                      help='Router to plug new network into',
+                      dest='router', action='store', default=None)
+    parser.add_option("-d", "--debug",
+                      help="Enable debug logging",
+                      dest="debug", action="store_true",  default=False)
+    parser.add_option("-D", "--disable-dhcp",
+                      help="Disable dhcp on network",
+                      dest="dhcp", action="store_false",  default=True)
+    parser.add_option("-N", "--dns-nameservers",
+                      help="Comma separated list of dns servers to use.",
+                      dest="dns_servers", action="store",  default=None)
+    parser.add_option("--network-type",
+                      help="Network type.",
+                      dest="network_type", action="store", default='gre')
+    (opts, args) = parser.parse_args()
+
+    if len(args) != 2:
+        parser.print_help()
+        sys.exit(1)
+
+    if opts.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    net_name = args[0]
+    subnet_name = "{}_subnet".format(net_name)
+    cidr = args[1]
+
+    keystone = ks_client.Client(username=os.environ['OS_USERNAME'],
+                                password=os.environ['OS_PASSWORD'],
+                                tenant_name=os.environ['OS_TENANT_NAME'],
+                                auth_url=os.environ['OS_AUTH_URL'],
+                                region_name=os.environ['OS_REGION_NAME'])
+    quantum = client.Client(username=os.environ['OS_USERNAME'],
+                            password=os.environ['OS_PASSWORD'],
+                            tenant_name=os.environ['OS_TENANT_NAME'],
+                            auth_url=os.environ['OS_AUTH_URL'],
+                            region_name=os.environ['OS_REGION_NAME'])
+
+    # Resolve tenant id
+    tenant_id = None
+    for tenant in [t._info for t in keystone.tenants.list()]:
+        if (tenant['name'] ==
+            (opts.tenant or os.environ['OS_TENANT_NAME'])):
+            tenant_id = tenant['id']
+            break  # Tenant ID found - stop looking
+    if not tenant_id:
+        logging.error("Unable to locate tenant id for %s.", opts.tenant)
+        sys.exit(1)
+
+    # Create network
+    networks = quantum.list_networks(name=net_name)
+    if len(networks['networks']) == 0:
+        logging.info('Creating network: %s',
+                     net_name)
+        network_msg = {
+            'network': {
+                'name': net_name,
+                'shared': opts.shared,
+                'tenant_id': tenant_id,
+            }
+        }
+        if opts.network_type == 'vxlan':
+            network_msg['network']['provider:segmentation_id'] = 1233
+            network_msg['network']['provider:network_type'] = opts.network_type
+        network = quantum.create_network(network_msg)['network']
+    else:
+        logging.warning('Network %s already exists.', net_name)
+        network = networks['networks'][0]
+
+    # Create subnet
+    subnets = quantum.list_subnets(name=subnet_name)
+    if len(subnets['subnets']) == 0:
+        logging.info('Creating subnet for %s',
+                     net_name)
+        subnet_msg = {
+            'subnet': {
+                'name': subnet_name,
+                'network_id': network['id'],
+                'enable_dhcp': opts.dhcp,
+                'cidr': cidr,
+                'ip_version': 4,
+                'tenant_id': tenant_id
+            }
+        }
+        subnet = quantum.create_subnet(subnet_msg)['subnet']
+    else:
+        logging.warning('Subnet %s already exists.', subnet_name)
+        subnet = subnets['subnets'][0]
+
+    # Update dns_nameservers
+    if opts.dns_servers:
+        msg = {
+            'subnet': {
+                'dns_nameservers': opts.dns_servers.split(',')
+            }
+        }
+        logging.info('Updating dns_nameservers (%s) for subnet %s',
+                     opts.dns_servers,
+                     subnet_name)
+        quantum.update_subnet(subnet['id'], msg)
+
+    # Plug subnet into router if provided
+    if opts.router:
+        routers = quantum.list_routers(name=opts.router)
+        if len(routers['routers']) == 0:
+            logging.error('Unable to locate provider router %s', opts.router)
+            sys.exit(1)
+        else:
+            # Check to see if subnet already plugged into router
+            ports = quantum.list_ports(device_owner='network:router_interface',
+                                       network_id=network['id'])
+            if len(ports['ports']) == 0:
+                logging.info('Adding interface from %s to %s',
+                             opts.router, subnet_name)
+                router = routers['routers'][0]
+                quantum.add_interface_router(router['id'],
+                                             {'subnet_id': subnet['id']})
+            else:
+                logging.warning('Router already connected to subnet')

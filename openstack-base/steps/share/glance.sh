@@ -1,6 +1,6 @@
-imagetype=root.tar.xz
+imagetype=disk1.img
 diskformat=raw
-imagesuffix="-lxd"
+imagesuffix="-vm"
 
 mkdir -p $HOME/glance-images || true
 if [ ! -f $HOME/glance-images/xenial-server-cloudimg-amd64-$imagetype ]; then

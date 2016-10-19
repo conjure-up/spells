@@ -2,3 +2,27 @@ title: Neutron
 description: |
   Configure Neutron networking. This step will setup a usable OpenStack network so that your instances may communicate with the outside world.
 viewable: True
+required: True
+additional-input:
+  - label: External network default gateway
+    key: EXTERNAL_GATEWAY
+    type: text
+  - label: CIDR of external network
+    key: EXTERNAL_CIDR
+    type: text
+  - label: Range of floating IPs to use (seperated by :)
+    key: FLOATING_IP_RANGE
+    type: text
+  - label: Tentant name to create internal network for
+    key: INTERNAL_TENANT
+    type: text
+    default: admin
+  - label: Router to plug the internal network to
+    key: INTERNAL_ROUTER
+    default: provider-router
+  - label: Comma separated list of dns servers to use
+    key: INTERNAL_DNS_SERVERS
+  - label: CIDR of internal network
+    key: INTERNAL_CIDR
+    type: text
+    default: 10.5.5.0/24
