@@ -1,0 +1,40 @@
+name: juju-##MODEL##
+config:
+  boot.autostart: "true"
+  linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
+  raw.lxc: |
+    lxc.aa_profile=unconfined
+    lxc.mount.auto=proc:mixed sys:rw
+  security.nesting: "true"
+  security.privileged: "true"
+description: ""
+devices:
+  aadisable:
+    path: /sys/module/nf_conntrack/parameters/hashsize
+    source: /dev/null
+    type: disk
+  aadisable1:
+    path: /sys/module/apparmor/parameters/enabled
+    source: /dev/null
+    type: disk
+  eth0:
+    mtu: "9000"
+    name: eth0
+    nictype: bridged
+    parent: lxdbr0
+    type: nic
+  eth1:
+    mtu: "9000"
+    name: eth1
+    nictype: bridged
+    parent: conjureup0
+    type: nic
+  mem:
+    path: /dev/mem
+    type: unix-char
+  root:
+    path: /
+    type: disk
+  tun:
+    path: /dev/net/tun
+    type: unix-char
