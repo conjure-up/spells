@@ -1,5 +1,3 @@
-cloud-blacklist:
-- localhost
 friendly-name: Canonical Kubernetes
 version: 1
 bundle-location: https://api.jujucharms.com/charmstore/v5/canonical-kubernetes/archive/bundle.yaml
