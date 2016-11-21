@@ -1,0 +1,3 @@
+title: Kubernetes Cluster Status Check
+description: Run 'kubectl get nodes', 'get pods', and 'get services' to show cluster status.
+viewable: True
