@@ -1,0 +1,3 @@
+friendly-name: Kubernetes Core
+version: 1
+bundle-location: https://api.jujucharms.com/charmstore/v5/kubernetes-core/archive/bundle.yaml
