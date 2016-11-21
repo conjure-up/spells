@@ -15,7 +15,7 @@ if provider_type == "lxd":
     # Give LXD enough time to learn about the profile
     time.sleep(5)
     try:
-        profilename = run('juju-2.0 switch | cut -d/ -f2',
+        profilename = run('juju switch | cut -d/ -f2',
                           shell=True,
                           stdout=PIPE,
                           stderr=PIPE)

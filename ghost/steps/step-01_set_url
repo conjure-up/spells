@@ -10,7 +10,7 @@ BLOGURL = os.environ.get('BLOGURL', None)
 
 if BLOGURL is not None:
     try:
-        run('juju-2.0 config ghost url={}'.format(BLOGURL),
+        run('juju config ghost url={}'.format(BLOGURL),
             shell=True, check=True)
         success("Visit your Ghost application at {}".format(BLOGURL))
     except CalledProcessError as e:

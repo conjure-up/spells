@@ -28,7 +28,7 @@ log() {
 # machine status
 agentState()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".machines[\"$1\"][\"juju-status\"][\"current\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".machines[\"$1\"][\"juju-status\"][\"current\"]"
 }
 
 # Gets current workload state for service
@@ -41,7 +41,7 @@ agentState()
 # unit status
 agentStateUnit()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
 }
 
 # Gets current leader of a service
@@ -63,7 +63,7 @@ for leader in leader_yaml:
         print(leader['UnitId'])
 "
 
-    juju-2.0 run -m $JUJU_CONTROLLER:$JUJU_MODEL --application $1 is-leader --format yaml | env python3 -c "$py_script"
+    juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --application $1 is-leader --format yaml | env python3 -c "$py_script"
 }
 
 # Exports the variables required for communicating with your cloud.
@@ -93,7 +93,7 @@ configOpenrc()
 # IP Address of unit
 unitAddress()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"public-address\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"public-address\"]"
 }
 
 # Get workload status of unit
@@ -106,7 +106,7 @@ unitAddress()
 # String of status
 unitStatus()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
 }
 
 # Get juju status of unit
@@ -119,7 +119,7 @@ unitStatus()
 # String of status
 unitJujuStatus()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"juju-status\"][\"current\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"juju-status\"][\"current\"]"
 }
 
 
@@ -133,7 +133,7 @@ unitJujuStatus()
 # machine identifier
 unitMachine()
 {
-    juju-2.0 status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"machine\"]"
+    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"machine\"]"
 }
 
 # Waits for machine to start
