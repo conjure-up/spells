@@ -10,11 +10,11 @@ openstack:
     - key: openstack-base
       name: OpenStack Base for MAAS
       description: |
-        Deploys a basic OpenStack Cloud (Mitaka release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services, using a minimum of 4 physical servers in MAAS.
+        Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
     - key: openstack-novalxd
       name: OpenStack with NovaLXD
       description: |
-        Deploys a basic OpenStack Cloud (Mitaka release), configured to use LXD (the lightweight container hypervisor), on Ubuntu 16.04, providing Dashboard, Compute, Network, Object Storage, Identity and Image services.
+        Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
 
         This can be deployed on a Single machine for quick Proof-of-Concepts and local development of OpenStack components and services.
 kubernetes:
