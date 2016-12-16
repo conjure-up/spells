@@ -17,9 +17,6 @@ NODES="$(~/kubectl $args get nodes | perl -p -e 's/\n/\\n/')"
 PODS="$(~/kubectl $args get --all-namespaces pods | perl -p -e 's/\n/\\n/')"
 SERVICES="$(~/kubectl $args get --all-namespaces services | perl -p -e 's/\n/\\n/')"
 
-juju expose kibana
-
-KIBANA_ADDR=$(unitAddress kibana 0)
-result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES\n\nView Kibana at http://$KIBANA_ADDR/"
+result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES"
 
 exposeResult "$result" 0 "true"
