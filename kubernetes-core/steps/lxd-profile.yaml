@@ -1,5 +1,6 @@
 name: juju-##MODEL##
 config:
+  security.idmap.isolated: "true"
   boot.autostart: "true"
   linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
   raw.lxc: |
