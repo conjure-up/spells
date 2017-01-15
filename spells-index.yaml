@@ -29,10 +29,10 @@ kubernetes:
         Kubernetes is an open-source platform for deploying, scaling, and operations of application containers across a cluster of hosts. This is a minimal Kubernetes cluster with intended usage for small deployments for testing and development.
 bigdata:
   spells:
-    - key: apache-processing-mapreduce
-      name: Apache Processing MapReduce
+    - key: hadoop-processing
+      name: Apache Hadoop 
       description: |
-        MapReduce is a software framework for easily writing applications which process vast amounts of data in-parallel on large clusters of machines.
+        Deploys complete deployment of the core Hadoop components of the Apache Bigtop platform to perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity. 
     - key: realtime-syslog-analytics
       name: Realtime Syslog Analytics
       description: |
