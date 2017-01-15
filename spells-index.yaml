@@ -32,7 +32,7 @@ bigdata:
     - key: hadoop-processing
       name: Apache Hadoop 
       description: |
-        Deploys complete deployment of the core Hadoop components of the Apache Bigtop platform to perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity. 
+        Provides a complete deployment of the core Hadoop components of the Apache Bigtop platform to perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity. 
     - key: realtime-syslog-analytics
       name: Realtime Syslog Analytics
       description: |
