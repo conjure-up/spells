@@ -19,12 +19,6 @@ devices:
     nictype: bridged
     parent: conjureup0
     type: nic
-  mem:
-    path: /dev/mem
-    type: unix-char
   root:
     path: /
     type: disk
-  tun:
-    path: /dev/net/tun
-    type: unix-char
