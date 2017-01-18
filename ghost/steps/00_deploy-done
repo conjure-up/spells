@@ -17,7 +17,7 @@ if any([state == 'error' for state in agent_states]):
     error('Error in one of the applications deployment')
 
 log.debug("Checking agent_states: {}".format(agent_states))
-if agent_states.count('active') == 1 and agent_states.count('idle') == 2:
+if agent_states.count('active') == 2 and agent_states.count('idle') == 1:
     success('Applications are ready')
 
 fail('Applications not ready yet')
