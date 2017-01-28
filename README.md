@@ -5,7 +5,7 @@
 ```bash
 $ conjure-up
 # or
-$ conjure-up elk-stack
+$ conjure-up kubernetes
 # or
 $ conjure-up openstack
 ```
