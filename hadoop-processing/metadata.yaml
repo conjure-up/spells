@@ -1,0 +1,10 @@
+friendly-name: Apache Hadoop
+options-whitelist:
+  namenode:
+  - ganglia_metrics
+  resourcemanager:
+  - ganglia_metrics
+  slave:
+  - ganglia_metrics
+version: 1
+bundle-location: https://api.jujucharms.com/charmstore/v5/hadoop-processing/archive/bundle.yaml 
