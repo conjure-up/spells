@@ -1,5 +1,5 @@
-title: Terasort Benchmark 
+title: Terasort Benchmark
 description: |
-  Runs teragen to generate sample data, and then runs terasort to sort that data. 
-viewable: True
-required: False 
+  Runs teragen to generate sample data, and then runs terasort to sort that data.
+viewable: False
+required: False
