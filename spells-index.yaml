@@ -8,7 +8,7 @@ _unassigned_spells:
 openstack:
   spells:
     - key: openstack-base
-      name: OpenStack with NovaKVM
+      name: OpenStack Base for MAAS
       description: |
         Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
     - key: openstack-novalxd
@@ -30,10 +30,22 @@ kubernetes:
 bigdata:
   spells:
     - key: hadoop-processing
-      name: Apache Hadoop 
+      name: Apache Hadoop Cluster 
       description: |
         Provides a complete deployment of the core Hadoop components of the Apache Bigtop platform to perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity. 
-    - key: realtime-syslog-analytics
-      name: Realtime Syslog Analytics
+    - key: spark-processing
+      name: Apache Spark Cluster 
       description: |
-        An end-to-end Big Data solution that enables ingestion, processing, and visualization of log data.
+        Provides a complete deployment of Apache Spark in standalone HA mode as provided by Apache Bigtop. Ganglia and rsyslog applications are included to monitor cluster health and syslog activity.
+    - key: hadoop-spark
+      name: Apache Hadoop + Apache Spark Cluster
+      description: |
+        Provides a complete deployment of Hadoop and Spark components from Apache Bigtop that performs distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity.
+    - key: hadoop-kafka 
+      name: Apache Hadoop + Apache Kafka Cluster 
+      description: |
+        Provides a complete deployment of Hadoop and Kafka components from Apache Bigtop that perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity.
+    - key: realtime-syslog-analytics
+      name: Apache Hadoop/Spark/Zeppelin Realtime Syslog Analytics
+      description: |
+        Provides a big data environment for analysing syslog events. Built around Apache Hadoop, Apache Spark, Apache Zeppeling, Apache Flume, and Rsyslog components it offers log analyzation via Hadoop or Spark processing with Zeppelin notebook for development.

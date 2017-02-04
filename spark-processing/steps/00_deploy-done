@@ -4,10 +4,10 @@ from conjureup.hooklib.writer import success, fail, error
 import logging
 
 log = logging.getLogger('conjureup')
-NUM_AGENTS = 8 
+NUM_AGENTS = 7 
 
 
-log.debug("Running deploy-done for Apache Hadoop installation.")
+log.debug("Running deploy-done for Spark Hadoop installation.")
 agent_states = juju.agent_states()
 
 errored_units = [(unit_name, message) for unit_name, state, message

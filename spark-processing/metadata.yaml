@@ -1,0 +1,6 @@
+friendly-name: Apache Spark Cluster 
+options-whitelist:
+  spark:
+  - spark_execution_mode 
+version: 1
+bundle-location: https://api.jujucharms.com/charmstore/v5/spark-processing/archive/bundle.yaml 
