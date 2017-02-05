@@ -1,3 +1,4 @@
 friendly-name: Apache Hadoop + Kafka Cluster
 version: 1
 bundle-location: https://api.jujucharms.com/charmstore/v5/hadoop-kafka/archive/bundle.yaml
+cloud-blacklist: [localhost]
