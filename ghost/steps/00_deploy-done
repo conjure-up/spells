@@ -1,23 +1,6 @@
-#!/usr/bin/env python3
-from conjureup.hooklib.writer import success, fail, error, log
-from conjureup.hooklib import juju
+#!/bin/bash
 
-log.debug("Running deploy-done for Ghost installation.")
-juju_status = juju.status()
-agent_states = []
-for k, v in juju_status['applications'].items():
-    if 'units' in v:
-        for unit in v['units']:
-            _unit = v['units'][unit]
-            unit_status = _unit['workload-status']['current']
-            if unit_status == 'unknown':
-                unit_status = _unit['juju-status']['current']
-            agent_states.append(unit_status)
-if any([state == 'error' for state in agent_states]):
-    error('Error in one of the applications deployment')
+juju wait -m $JUJU_CONTROLLER:$JUJU_MODEL
 
-log.debug("Checking agent_states: {}".format(agent_states))
-if agent_states.count('active') == 2 and agent_states.count('idle') == 1:
-    success('Applications are ready')
-
-fail('Applications not ready yet')
+printf '{"message": "Applications Ready", "returnCode": 0, "isComplete": "true"}'
+exit 0
