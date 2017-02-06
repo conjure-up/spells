@@ -8,7 +8,7 @@ _unassigned_spells:
 openstack:
   spells:
     - key: openstack-base
-      name: OpenStack Base for MAAS
+      name: OpenStack with NovaKVM
       description: |
         Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
     - key: openstack-novalxd
