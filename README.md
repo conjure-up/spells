@@ -8,4 +8,6 @@ $ conjure-up
 $ conjure-up kubernetes
 # or
 $ conjure-up openstack
+# or
+$ conjure-up bigdata
 ```
