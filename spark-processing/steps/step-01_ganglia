@@ -12,7 +12,6 @@ ganglia_ip = applications['units']['ganglia/0']['public-address']
 try:
     run('juju expose ganglia', shell=True, check=True)
 except CalledProcessError as e:
-    log.error(e)
     error("Unable to expose Ganglia: ".format(e))
 
 if ganglia_ip:
