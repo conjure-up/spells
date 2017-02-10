@@ -1,0 +1,7 @@
+substrates: [localhost, aws]
+credentials:
+  aws:
+    auth-type: access-key
+    access-key: <key>
+    secret-key: <key>
+test-phases: [deploy, post]
