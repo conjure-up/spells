@@ -33,6 +33,6 @@ if provider_type == "lxd":
         error(e)
 
     if profile_edit.returncode > 0:
-        error(profile_edit.stderr)
+        error(profile_edit.stderr.decode())
 
 success("Successful pre-deploy.")
