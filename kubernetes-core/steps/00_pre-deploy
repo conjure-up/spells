@@ -11,7 +11,7 @@ provider_type = os.environ.get('JUJU_PROVIDERTYPE', None)
 juju_model = os.environ.get('JUJU_MODEL', None)
 
 if provider_type == "lxd":
-    log.debug("Running pre-deploy for OpenStack")
+    log.debug("Running pre-deploy for Kubernetes")
 
     if not juju_model:
         error("Unable to determine which LXD profile to edit.")
