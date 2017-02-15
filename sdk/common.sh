@@ -14,7 +14,9 @@ info() {
 }
 
 _log() {
-    echo -e "\e[$1\e[1m[$2]\e[0m $@"
+    color=shift
+    label=shift
+    echo -e "\e[$color\e[1m[$label]\e[0m $@"
 }
 
 log() {
