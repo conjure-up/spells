@@ -1,3 +1,5 @@
+: ${CONJURE_UP_HEADLESS:=0}
+
 # loggers
 #
 # Arguments:
@@ -14,9 +16,14 @@ info() {
 }
 
 log() {
+
     if [ $CONJURE_UP_HEADLESS ]; then
         echo -e "\e[32m\e[1m[ info ]\e[0m $@]"
     fi
+}
+
+test-log() {
+    echo -e "\e[32m\e[1m[ test ]\e[0m $@]"
 }
 
 # Gets current juju state for machine
