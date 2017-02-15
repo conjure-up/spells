@@ -1,5 +1,3 @@
-: ${CONJURE_UP_HEADLESS:=0}
-
 # loggers
 #
 # Arguments:
@@ -15,15 +13,16 @@ info() {
     logger -t "conjure-up/$name" "[INFO] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
 }
 
-log() {
-
-    if [ $CONJURE_UP_HEADLESS ]; then
-        echo -e "\e[32m\e[1m[ info ]\e[0m $@]"
-    fi
+_log() {
+    echo -e "\e[$1\e[1m[test]\e[0m $msg"
 }
 
-test-log() {
-    echo -e "\e[32m\e[1m[ test ]\e[0m $@]"
+log() {
+    _log 32m info $msg
+}
+
+testLog() {
+    _log 33m test $msg
 }
 
 # Gets current juju state for machine
