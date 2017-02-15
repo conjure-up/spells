@@ -1,12 +1,15 @@
 #!/bin/bash
 
+set -eu
+
 # Path to executing script
 SCRIPT=$(readlink -e $0)
 
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
-. $SCRIPTPATH/common.sh
+. $SCRIPTPATH/../../sdk/common.sh
+
 
 args=""
 if [ -f ~/.kube/config.conjure-up ]; then

@@ -1,37 +1,18 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
-import os
-from subprocess import PIPE, CalledProcessError, run
-from conjureup.hooklib.writer import success, error, log
+set -eu
 
-SCRIPTPATH = os.path.dirname(os.path.abspath(__file__))
+# Path to executing script
+SCRIPT=$(readlink -e $0)
 
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
 
-provider_type = os.environ.get('JUJU_PROVIDERTYPE', None)
-juju_model = os.environ.get('JUJU_MODEL', None)
+. $SCRIPTPATH/../../sdk/common.sh
 
-if provider_type == "lxd":
-    log.debug("Running pre-deploy for Kubernetes")
+if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
+    debug "Running pre-deploy for $CONJURE_UP_SPELL"
+    sed "s/##MODEL##/$JUJU_MODEL/" $SCRIPTPATH/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL" || exposeResult "Failed to set profile" $? "false"
+fi
 
-    if not juju_model:
-        error("Unable to determine which LXD profile to edit.")
-
-    log.debug("Processing lxd profile: {}".format(juju_model))
-
-    try:
-        profile_edit = run(
-            'sed "s/##MODEL##/{profile}/" '
-            '{scriptpath}/lxd-profile.yaml | '
-            'lxc profile edit "juju-{profile}"'.format(
-                profile=juju_model,
-                scriptpath=SCRIPTPATH),
-            shell=True,
-            stdout=PIPE,
-            stderr=PIPE)
-    except CalledProcessError as e:
-        error(e)
-
-    if profile_edit.returncode > 0:
-        error(profile_edit.stderr.decode())
-
-success("Successful pre-deploy.")
+exposeResult "Successful pre-deploy." 0 "true"
