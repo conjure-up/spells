@@ -14,7 +14,7 @@ info() {
 }
 
 _log() {
-    echo -e "\e[$1\e[1m[test]\e[0m $1"
+    echo -e "\e[$1\e[1m[$2]\e[0m $3"
 }
 
 log() {
