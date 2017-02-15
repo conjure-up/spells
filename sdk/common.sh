@@ -14,15 +14,15 @@ info() {
 }
 
 _log() {
-    echo -e "\e[$1\e[1m[$2]\e[0m $3"
+    echo -e "\e[$1\e[1m[$2]\e[0m $@"
 }
 
 log() {
-    _log 32m info $1
+    _log 32m info $@
 }
 
 testLog() {
-    _log 33m test $1
+    _log 33m test $@
 }
 
 # Gets current juju state for machine
