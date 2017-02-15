@@ -12,13 +12,13 @@ devices:
     mtu: "9000"
     name: eth0
     nictype: bridged
-    parent: lxdbr0
+    parent: conjureup0
     type: nic
   eth1:
     mtu: "9000"
     name: eth1
     nictype: bridged
-    parent: conjureup0
+    parent: conjureup1
     type: nic
   root:
     path: /

@@ -17,18 +17,6 @@ devices:
     path: /sys/module/apparmor/parameters/enabled
     source: /dev/null
     type: disk
-  eth0:
-    mtu: "9000"
-    name: eth0
-    nictype: bridged
-    parent: lxdbr0
-    type: nic
-  eth1:
-    mtu: "9000"
-    name: eth1
-    nictype: bridged
-    parent: conjureup0
-    type: nic
   root:
     path: /
     type: disk
