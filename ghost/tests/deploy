@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -eu
+
+conjure-up --notrack ghost $CLOUD $JUJU_CONTROLLER $JUJU_MODEL

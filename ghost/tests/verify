@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eu
+
+# Path to executing script
+SCRIPT=$(readlink -e $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/../../sdk/common.sh
+
+log "Ghost verifying website is accessibility"
+curl --silent $(unitAddress "haproxy")|grep -qP 'Welcome\sto\sGhost' || exit 1
+
+log "Ghost changing port and verifying website accessibility"
+juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost port=8888
+curl --silent $(unitAddress "haproxy")|grep -qP 'Welcome\sto\sGhost' || exit 1
