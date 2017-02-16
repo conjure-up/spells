@@ -13,18 +13,12 @@ info() {
     logger -t "conjure-up/$name" "[INFO] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
 }
 
-_log() {
-    color=shift
-    label=shift
-    echo -e "\e[$color\e[1m[$label]\e[0m $@"
-}
-
 log() {
-    _log 32m info $@
+    echo -e "\e[32m\e[1m[info]\e[0m $@"
 }
 
 testLog() {
-    _log 33m test $@
+    echo -e "\e[32m\e[1m[test]\e[0m $@"
 }
 
 # Gets current juju state for machine
