@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eu
 
 # Path to executing script
@@ -8,6 +7,13 @@ SCRIPT=$(readlink -e $0)
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
-. $SCRIPTPATH/../../sdk/common.sh
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-exit 0
+testLog "Checking for ~/bin/kubectl"
+test -f $HOME/bin/kubectl
+
+testLog "Checking for ~/bin/kubectl.$JUJU_MODEL"
+test -f $HOME/bin/kubectl.$JUJU_MODEL
+
+testLog "Verifying that the correct kubectl config is used"
+egrep -q "config\.$JUJU_MODEL" $HOME/bin/kubectl.$JUJU_MODEL

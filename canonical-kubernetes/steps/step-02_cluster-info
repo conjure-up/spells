@@ -1,20 +1,18 @@
 #!/bin/bash
 
+set -eu
+
 # Path to executing script
 SCRIPT=$(readlink -e $0)
 
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
+
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-args=""
-if [ -f ~/.kube/config.conjure-up ]; then
-    args="--kubeconfig=$HOME/.kube/config.conjure-up"
-fi
-
-NODES="$(~/bin/kubectl $args get nodes | perl -p -e 's/\n/\\n/')"
-PODS="$(~/bin/kubectl $args get --all-namespaces pods | perl -p -e 's/\n/\\n/')"
-SERVICES="$(~/bin/kubectl $args get --all-namespaces services | perl -p -e 's/\n/\\n/')"
+NODES="$(~/bin/kubectl.$JUJU_MODEL get nodes | perl -p -e 's/\n/\\n/')"
+PODS="$(~/bin/kubectl.$JUJU_MODEL get --all-namespaces pods | perl -p -e 's/\n/\\n/')"
+SERVICES="$(~/bin/kubectl.$JUJU_MODEL get --all-namespaces services | perl -p -e 's/\n/\\n/')"
 
 result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES"
 

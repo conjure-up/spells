@@ -1,23 +1,27 @@
 #!/bin/bash
 
+set -eu
+
 # Path to executing script
 SCRIPT=$(readlink -e $0)
 
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
+
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
-cmd_to_run="~/bin/kubectl"
-if [ ! -f ~/.kube/config ]; then
-    juju scp kubernetes-master/0:config ~/.kube/config
-else
-    juju scp kubernetes-master/0:config ~/.kube/config.conjure-up
-    cmd_to_run="$cmd_to_run --kubeconfig=~/.kube/config.conjure-up"
-fi
+cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
 
-juju scp kubernetes-master/0:kubectl $HOME/bin/kubectl
+cat<<EOF>'$HOME/bin/kubectl.$JUJU_MODEL'
+kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL $@
+EOF
+
+chmod +x $HOME/bin/kubectl.$JUJU_MODEL
+
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:kubectl $HOME/bin/kubectl
 
 exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
