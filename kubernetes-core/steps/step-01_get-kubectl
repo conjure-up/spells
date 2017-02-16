@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 # Path to executing script
 SCRIPT=$(readlink -e $0)
