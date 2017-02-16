@@ -5,8 +5,7 @@ SCRIPT=$(readlink -e $0)
 
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
-
-. $SCRIPTPATH/common.sh
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 args=""
 if [ -f ~/.kube/config.conjure-up ]; then
