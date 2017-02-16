@@ -14,11 +14,11 @@ info() {
 }
 
 log() {
-    printf "\e[32m\e[1m[info]\e[0m $@"
+    printf "\e[32m\e[1m[info]\e[0m $@\n"
 }
 
 testLog() {
-    printf "\e[33m\e[1m[test]\e[0m $@"
+    printf "\e[33m\e[1m[test]\e[0m $@\n"
 }
 
 # Gets current juju state for machine
