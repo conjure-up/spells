@@ -16,4 +16,4 @@ testLog "Checking for ~/bin/kubectl.$JUJU_MODEL"
 test -f $HOME/bin/kubectl.$JUJU_MODEL
 
 testLog "Verifying that the correct kubectl config is used"
-egrep -q "config\.$JUJU_MODEL" $HOME/bin/kubectl.$JUJU_MODEL || "Failed to find config.$JUJU_MODEL" && exit 1
+egrep -q "config\.$JUJU_MODEL" $HOME/bin/kubectl.$JUJU_MODEL
