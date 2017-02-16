@@ -17,3 +17,7 @@ test -f $HOME/bin/kubectl.$JUJU_MODEL
 
 testLog "Verifying that the correct kubectl config is used"
 egrep -q "config\.$JUJU_MODEL" $HOME/bin/kubectl.$JUJU_MODEL
+
+testLog "Cleaning up configs and binaries"
+rm -rf ~/.kube* || true
+rm -rf ~/bin/kubectl* || true
