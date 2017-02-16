@@ -17,7 +17,7 @@ cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
 
 cat<<EOF>$HOME/bin/kubectl.$JUJU_MODEL
-kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL
+kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL $@
 EOF
 
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
