@@ -2,4 +2,4 @@
 
 set -eu
 
-conjure-up --notrack hadoop-kafka $CLOUD $JUJU_CONTROLLER $JUJU_MODEL
+conjure-up --notrack hadoop-kafka $CLOUD $JUJU_CONTROLLER $JUJU_MODEL $@

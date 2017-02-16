@@ -2,4 +2,4 @@
 
 set -eu
 
-conjure-up --notrack canonical-kubernetes $CLOUD $JUJU_CONTROLLER $JUJU_MODEL
+conjure-up --notrack canonical-kubernetes $CLOUD $JUJU_CONTROLLER $JUJU_MODEL $@
