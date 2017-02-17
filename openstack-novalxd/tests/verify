@@ -10,25 +10,25 @@ SCRIPTPATH=$(dirname $SCRIPT)
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 testLog "Verifying trusty images are imported"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"trusty-lxd\" | grep -q \"trusty-lxd\""
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"trusty-lxd\" | grep -q \"trusty-lxd\"" > /dev/null 2>&1
 
 testLog "Verifying xenial images are imported"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"xenial-lxd\" | grep -q \"xenial-lxd\""
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"xenial-lxd\" | grep -q \"xenial-lxd\"" > /dev/null 2>&1
 
 testLog "Verify ssh key imported"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && openstack keypair show ubuntu-keypair > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && openstack keypair show ubuntu-keypair > /dev/null 2>&1" > /dev/null 2>&1
 
 testLog "Verify neutron external network"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ext-net > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ext-net > /dev/null 2>&1" > /dev/null 2>&1
 
 testLog "Verify neutron subnet"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ext-subnet > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ext-subnet > /dev/null 2>&1" > /dev/null 2>&1
 
 testLog "Verify neutron ubuntu network"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ubuntu-net > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ubuntu-net > /dev/null 2>&1" > /dev/null 2>&1
 
 testLog "Verify neutron ubuntu subnet"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ubuntu-subnet > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ubuntu-subnet > /dev/null 2>&1" > /dev/null 2>&1
 
 testLog "Verify neutron ubuntu router"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron router-show ubuntu-router > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron router-show ubuntu-router > /dev/null 2>&1" > /dev/null 2>&1
