@@ -1,7 +1,5 @@
 #!/bin/bash
-
 set -eu
-
 
 # Path to executing script
 SCRIPT=$(readlink -e $0)

@@ -89,7 +89,6 @@ configOpenrc()
 #
 # Arguments:
 # $1: service
-# $2: unit number
 #
 # Returns:
 # IP Address of unit
