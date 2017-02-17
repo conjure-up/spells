@@ -1,25 +1,15 @@
-#!/usr/bin/env python3
-from conjureup.hooklib.writer import success, fail, error
-from conjureup.utils import run
-from subprocess import CalledProcessError
-import logging
-import os
+#!/bin/bash
 
-JUJU_CONTROLLER = os.environ['JUJU_CONTROLLER']
-JUJU_MODEL = os.environ['JUJU_MODEL']
-JUJU_CM_STR = "{}:{}".format(JUJU_CONTROLLER, JUJU_MODEL)
+set -eu
 
-log = logging.getLogger('conjureup')
-BLOGURL = os.environ.get('BLOGURL', None)
+# Path to executing script
+SCRIPT=$(readlink -e $0)
 
-if BLOGURL is not None:
-    try:
-        run('juju config -m {} ghost url={}'.format(
-            JUJU_CM_STR, BLOGURL),
-            shell=True, check=True)
-        success("Visit your Ghost application at {}".format(BLOGURL))
-    except CalledProcessError as e:
-        log.error(e)
-        error("Unable to set URL for ghost: ".format(e))
-else:
-    fail("Could not determine a BLOGURL to set")
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost url="$BLOGURL"
+
+exposeResult "Visit your Ghost application at $BLOGURL" 0 "true"

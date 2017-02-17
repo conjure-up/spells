@@ -1,6 +1,15 @@
 #!/bin/bash
 
+set -eu
+
+# Path to executing script
+SCRIPT=$(readlink -e $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
 juju wait -m $JUJU_CONTROLLER:$JUJU_MODEL
 
-printf '{"message": "Applications Ready", "returnCode": 0, "isComplete": "true"}'
-exit 0
+exposeResult "Applications Ready" 0 "true"
