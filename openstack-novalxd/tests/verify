@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eu
 
 # Path to executing script
@@ -8,4 +7,11 @@ SCRIPT=$(readlink -e $0)
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
-. $SCRIPTPATH/../../sdk/common.sh
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+testLog "Verifying trusty images are imported"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL glance/0 "glance image-list --property-filter name=\"trusty-lxd\" | grep -q \"trusty-lxd\""
+
+testLog "Verifying xenial images are imported"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL glance/0 "glance image-list --property-filter name=\"xenial-lxd\" | grep -q \"xenial-lxd\""
+
