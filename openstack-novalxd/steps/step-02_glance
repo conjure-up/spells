@@ -9,6 +9,10 @@ SCRIPTPATH=$(dirname $SCRIPT)
 tmpfile=$(mktemp)
 
 $SCRIPTPATH/share/novarc > $tmpfile
+
+# Copy over credentials early
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:novarc
+
 cat $SCRIPTPATH/share/common.sh >> $tmpfile
 cat $SCRIPTPATH/share/glance.sh >> $tmpfile
 
