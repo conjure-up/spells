@@ -8,7 +8,7 @@ SCRIPT=$(readlink -e $0)
 # Directory housing script
 SCRIPTPATH=$(dirname $SCRIPT)
 
-. $SCRIPTPATH/../../sdk/common.sh
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 log "Ghost verifying website is accessibility"
 curl --silent $(unitAddress "haproxy")|grep -qP 'Welcome\sto\sGhost' || exit 1
