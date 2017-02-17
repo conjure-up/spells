@@ -22,13 +22,13 @@ testLog "Verify neutron external network"
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ext-net > /dev/null 2>&1"
 
 testLog "Verify neutron subnet"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron neutron subnet-show ext-subnet > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ext-subnet > /dev/null 2>&1"
 
 testLog "Verify neutron ubuntu network"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron neutron net-show ubuntu-net > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron net-show ubuntu-net > /dev/null 2>&1"
 
 testLog "Verify neutron ubuntu subnet"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron neutron subnet-show ubuntu-subnet > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron subnet-show ubuntu-subnet > /dev/null 2>&1"
 
 testLog "Verify neutron ubuntu router"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron neutron router-show ubuntu-router > /dev/null 2>&1"
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "source novarc && neutron router-show ubuntu-router > /dev/null 2>&1"
