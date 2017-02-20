@@ -1,0 +1,6 @@
+#!/bin/bash
+
+juju wait -m $JUJU_CONTROLLER:$JUJU_MODEL
+
+printf '{"message": "Applications Ready", "returnCode": 0, "isComplete": "true"}'
+exit 0

@@ -1,0 +1,19 @@
+cloud-whitelist:
+- maas
+friendly-name: OpenStack Nova-KVM Telemetry on MAAS
+options-whitelist:
+  keystone:
+  - admin-password
+  mysql:
+  - max-connections
+  neutron-gateway:
+  - bridge-mappings
+  - data-port
+  neutron-api:
+  - flat-network-providers
+  nova-compute:
+  - virt-type
+  nova-cloud-controller:
+  - console-access-protocol
+  - console-ssl-cert
+bundle-location: https://api.jujucharms.com/charmstore/v5/openstack-telemetry/archive/bundle.yaml

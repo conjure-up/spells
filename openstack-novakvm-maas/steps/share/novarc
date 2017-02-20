@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "export OS_USERNAME=admin"
+echo "export OS_PASSWORD=openstack"
+echo "export OS_TENANT_NAME=admin"
+echo "export OS_REGION_NAME=RegionOne"
+echo "export OS_AUTH_URL=${OS_AUTH_PROTOCOL:-http}://`juju run --unit  keystone/0 "unit-get private-address"`:5000/v2.0"
