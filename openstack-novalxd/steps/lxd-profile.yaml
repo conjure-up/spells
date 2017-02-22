@@ -22,4 +22,5 @@ devices:
     type: nic
   root:
     path: /
+    pool: default
     type: disk
