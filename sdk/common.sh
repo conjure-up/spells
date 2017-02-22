@@ -14,11 +14,19 @@ info() {
 }
 
 log() {
-    printf "\e[32m\e[1m[info]\e[0m $@\n"
+    if [[ $- == *i* ]]; then
+        printf "\e[32m\e[1m[info]\e[0m $@\n"
+    else
+        printf "[info] $@\n"
+    fi
 }
 
 testLog() {
-    printf "\e[33m\e[1m[test]\e[0m $@\n"
+    if [[ $- == *i* ]];then
+        printf "\e[33m\e[1m[test]\e[0m $@\n"
+    else
+        printf "[test] $@\n"
+    fi
 }
 
 # Gets current juju state for machine
