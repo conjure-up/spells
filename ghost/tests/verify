@@ -10,9 +10,9 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-log "Ghost verifying website is accessibility"
+testLog "Ghost verifying website is accessibility"
 curl --silent $(unitAddress "haproxy")|grep -qP 'Welcome\sto\sGhost' || exit 1
 
-log "Ghost changing port and verifying website accessibility"
+testLog "Ghost changing port and verifying website accessibility"
 juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost port=8888
 curl --silent $(unitAddress "haproxy")|grep -qP 'Welcome\sto\sGhost' || exit 1
