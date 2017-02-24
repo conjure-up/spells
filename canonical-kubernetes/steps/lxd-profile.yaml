@@ -19,4 +19,5 @@ devices:
     type: disk
   root:
     path: /
+    pool: default
     type: disk

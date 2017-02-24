@@ -72,8 +72,6 @@ services:
   ceph-radosgw:
     charm: cs:xenial/ceph-radosgw
     num_units: 1
-    options:
-      use-embedded-webserver: true
   glance:
     charm: cs:xenial/glance
     num_units: 1
