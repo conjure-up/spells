@@ -1,6 +1,6 @@
 cloud-whitelist:
-- localhost
-friendly-name: OpenStack with NovaLXD
+- maas
+friendly-name: OpenStack Nova-LXD on MAAS
 options-whitelist:
   keystone:
   - admin-password
@@ -12,3 +12,4 @@ options-whitelist:
   - ext-port
   nova-compute:
   - virt-type
+bundle-location: https://api.jujucharms.com/charmstore/v5/~openstack-charmers/openstack-lxd/archive/bundle.yaml

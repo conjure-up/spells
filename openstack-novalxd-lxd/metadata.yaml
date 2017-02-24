@@ -1,6 +1,6 @@
 cloud-whitelist:
 - localhost
-friendly-name: OpenStack with NovaLXD
+friendly-name: OpenStack Nova-LXD on LXD
 options-whitelist:
   keystone:
   - admin-password

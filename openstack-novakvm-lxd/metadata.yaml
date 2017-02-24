@@ -1,6 +1,6 @@
 cloud-whitelist:
 - maas
-friendly-name: OpenStack with NovaKVM
+friendly-name: OpenStack Nova-KVM Base on LXD
 options-whitelist:
   keystone:
   - admin-password

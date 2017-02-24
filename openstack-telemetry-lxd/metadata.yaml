@@ -1,6 +1,6 @@
 cloud-whitelist:
 - maas
-friendly-name: OpenStack Nova-KVM Telemetry on MAAS
+friendly-name: OpenStack Nova-LXD Telemetry on LXD
 options-whitelist:
   keystone:
   - admin-password
