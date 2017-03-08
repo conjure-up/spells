@@ -10,6 +10,8 @@ SCRIPTPATH=$(dirname $SCRIPT)
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-juju wait -m $JUJU_CONTROLLER:$JUJU_MODEL
+if ! juju wait -wm $JUJU_CONTROLLER:$JUJU_MODEL; then
+    exposeResult "Applications did not start successfully" 1 "false"
+fi
 
 exposeResult "Applications Ready" 0 "true"
