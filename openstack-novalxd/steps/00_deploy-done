@@ -1,6 +1,17 @@
 #!/bin/bash
 
-juju wait -m $JUJU_CONTROLLER:$JUJU_MODEL
+set -eu
 
-printf '{"message": "Applications Ready", "returnCode": 0, "isComplete": "true"}'
-exit 0
+# Path to executing script
+SCRIPT=$(readlink -e $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+if ! juju wait -wm $JUJU_CONTROLLER:$JUJU_MODEL; then
+    exposeResult "Applications did not start successfully" 1 "false"
+fi
+
+exposeResult "Applications Ready" 0 "true"
