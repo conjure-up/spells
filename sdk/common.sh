@@ -246,3 +246,11 @@ expandPath() {
       ;;
   esac
 }
+
+# Grabs current directory housing script ($0)
+#
+# Arguments:
+# $0: current script
+scriptPath() {
+    env python3 -c "import os,sys; print(os.path.dirname(os.path.abspath(\"$0\")))"
+}
