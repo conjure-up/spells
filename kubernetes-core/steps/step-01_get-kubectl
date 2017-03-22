@@ -7,7 +7,7 @@ set -eu
 mkdir -p $HOME/bin
 
 cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-echo "juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --unit kubernetes-master/0 -- /home/ubuntu/kubectl \$@" > $HOME/bin/kubectl.$JUJU_MODEL
+echo "juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --application kubernetes-master -- '$HOME/kubectl $@'" > $HOME/bin/kubectl.$JUJU_MODEL
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
 
 exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
