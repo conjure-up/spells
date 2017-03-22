@@ -1,12 +1,6 @@
 #!/bin/bash
 set -eu
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 testLog "Verifying trusty images are imported"

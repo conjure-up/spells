@@ -1,16 +1,12 @@
 #!/bin/bash
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 tmpfile=$(mktemp)
 
-$SCRIPTPATH/share/novarc > $tmpfile
-cat $SCRIPTPATH/share/common.sh >> $tmpfile
-cat $SCRIPTPATH/share/neutron.sh >> $tmpfile
+$(scriptPath)/share/novarc > $tmpfile
+cat $(scriptPath)/share/common.sh >> $tmpfile
+cat $(scriptPath)/share/neutron.sh >> $tmpfile
 
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:neutron.sh
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash neutron.sh"

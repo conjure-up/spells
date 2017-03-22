@@ -2,12 +2,6 @@
 
 set -eu
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
-. $SCRIPTPATH/../../sdk/common.sh
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 exit 0
