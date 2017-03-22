@@ -4,16 +4,10 @@ set -eu
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
 cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
-
-echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
-
+echo "juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0 -- ./kubectl \$@" > $HOME/bin/kubectl.$JUJU_MODEL
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
-
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:kubectl $HOME/bin/kubectl
 
 exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
