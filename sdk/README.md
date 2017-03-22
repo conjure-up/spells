@@ -16,12 +16,6 @@ heading of your scripts:
 
 set -eu
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 ```
 

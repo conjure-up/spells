@@ -2,12 +2,6 @@
 
 set -eu
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost url="$BLOGURL"

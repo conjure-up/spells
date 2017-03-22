@@ -1,20 +1,16 @@
 #!/bin/bash
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 tmpfile=$(mktemp)
 
-$SCRIPTPATH/share/novarc > $tmpfile
+$(scriptPath)/share/novarc > $tmpfile
 
 # Copy over credentials early
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:novarc
 
-cat $SCRIPTPATH/share/common.sh >> $tmpfile
-cat $SCRIPTPATH/share/glance.sh >> $tmpfile
+cat $(scriptPath)/share/common.sh >> $tmpfile
+cat $(scriptPath)/share/glance.sh >> $tmpfile
 
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:glance.sh
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash glance.sh"
