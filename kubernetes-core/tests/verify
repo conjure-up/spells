@@ -3,14 +3,8 @@ set -eu
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-testLog "Checking for ~/bin/kubectl"
-test -f $HOME/bin/kubectl
-
 testLog "Checking for ~/bin/kubectl.$JUJU_MODEL"
 test -f $HOME/bin/kubectl.$JUJU_MODEL
-
-testLog "Verifying that the correct kubectl config is used"
-egrep -q "config\.$JUJU_MODEL" $HOME/bin/kubectl.$JUJU_MODEL
 
 master_ip=$(unitAddress "kubernetes-master")
 testLog "Verifying kubernetes master ($master_ip) is listening"
