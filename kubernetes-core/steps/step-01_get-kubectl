@@ -4,10 +4,21 @@ set -eu
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
+mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
 cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-echo "juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --unit kubernetes-master/0 -- /home/ubuntu/kubectl \$@" > $HOME/bin/kubectl.$JUJU_MODEL
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
+
+if [[ $(uname-s) = "Darwin" ]]; then
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
+    chmod +x kubectl
+    mv kubectl /usr/local/bin/kubectl
+else
+    sudo snap install kubectl --classic --edge
+fi
+
+echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
 
 exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
