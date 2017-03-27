@@ -1,16 +1,10 @@
 #!/bin/bash
 
-# Path to executing script
-SCRIPT=$(readlink -e $0)
-
-# Directory housing script
-SCRIPTPATH=$(dirname $SCRIPT)
-
-. $SCRIPTPATH/helpers
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 tmpfile=$(mktemp)
-$SCRIPTPATH/vars > $tmpfile
-cat $SCRIPTPATH/setup-landscape.sh >> $tmpfile
+$(scriptPath)/vars > $tmpfile
+cat $(scriptPath)/setup-landscape.sh >> $tmpfile
 
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile landscape-server/0:setup-landscape.sh
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL landscape-server/0 "bash setup-landscape.sh"
