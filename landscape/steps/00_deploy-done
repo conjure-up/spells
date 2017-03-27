@@ -1,0 +1,16 @@
+#!/bin/bash
+set -eu
+
+# Path to executing script
+SCRIPT=$(readlink -e $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/helpers
+
+if ! juju wait -wm $JUJU_CONTROLLER:$JUJU_MODEL; then
+    exposeResult "Applications did not start successfully" 1 "false"
+fi
+
+exposeResult "Applications Ready" 0 "true"

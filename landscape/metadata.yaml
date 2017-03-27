@@ -1,0 +1,3 @@
+cloud-whitelist: [maas]
+friendly-name: "Landscape"
+bundle-location: https://api.jujucharms.com/charmstore/v5/landscape-dense-maas/archive/bundle.yaml

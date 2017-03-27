@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Path to executing script
+SCRIPT=$(readlink -e $0)
+
+# Directory housing script
+SCRIPTPATH=$(dirname $SCRIPT)
+
+. $SCRIPTPATH/helpers
+
+tmpfile=$(mktemp)
+$SCRIPTPATH/vars > $tmpfile
+cat $SCRIPTPATH/setup-landscape.sh >> $tmpfile
+
+juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile landscape-server/0:setup-landscape.sh
+juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL landscape-server/0 "bash setup-landscape.sh"
+RET=$?
+
+if [ $RET -gt 0 ]; then
+    exposeResult "Unable to register against Landscape server, please check your deployment." 1 "false"
+fi
+
+result_message="Landscape is now available, to access visit: https://`juju run --unit haproxy/0 \"unit-get private-address\"`/account/standalone/openstack \n\nlogin: $LDS_EMAIL \npassword: $LDS_PASSWORD"
+
+exposeResult "$result_message" 0 "true"
