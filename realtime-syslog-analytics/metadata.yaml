@@ -3,4 +3,4 @@ options-whitelist:
   spark:
   - spark_execution_mode
 version: 1
-bundle-location: https://api.jujucharms.com/charmstore/v5/realtime-syslog-analytics/archive/bundle.yaml
+bundle-name: realtime-syslog-analytics

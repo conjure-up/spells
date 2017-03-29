@@ -1,6 +1,6 @@
-friendly-name: Apache Hadoop Spark Cluster 
+friendly-name: Apache Hadoop Spark Cluster
 options-whitelist:
   spark:
-  - spark_execution_mode 
+  - spark_execution_mode
 version: 1
-bundle-location: https://api.jujucharms.com/charmstore/v5/hadoop-spark/archive/bundle.yaml
+bundle-name: hadoop-spark
