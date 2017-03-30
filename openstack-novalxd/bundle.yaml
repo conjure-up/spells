@@ -110,8 +110,6 @@ services:
   neutron-openvswitch:
     charm: cs:xenial/neutron-openvswitch
     num_units: 0
-    options:
-      openstack-origin: cloud:xenial-newton
   nova-cloud-controller:
     charm: cs:xenial/nova-cloud-controller
     num_units: 1
