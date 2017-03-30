@@ -4,10 +4,6 @@ set -eu
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-NODES="$(~/bin/kubectl.$JUJU_MODEL get nodes | perl -p -e 's/\n/\\n/')"
-PODS="$(~/bin/kubectl.$JUJU_MODEL get --all-namespaces pods | perl -p -e 's/\n/\\n/')"
-SERVICES="$(~/bin/kubectl.$JUJU_MODEL get --all-namespaces services | perl -p -e 's/\n/\\n/')"
+INFO="$(~/bin/kubectl.$JUJU_MODEL cluster-info | perl -p -e 's/\n/\\n/')"
 
-result="Nodes:\n$NODES\nPods:\n$PODS\nServices:\n$SERVICES"
-
-exposeResult "$result" 0 "true"
+exposeResult "$INFO" 0 "true"
