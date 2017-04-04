@@ -1,0 +1,4 @@
+title: Nova
+description: |
+  Configure Nova. This step will setup a usable OpenStack compute with standard flavors.
+viewable: True
