@@ -5,6 +5,7 @@ config:
   raw.lxc: |
     lxc.aa_profile=unconfined
     lxc.mount.auto=proc:rw sys:rw
+    lxc.cap.drop=
   security.nesting: "true"
   security.privileged: "true"
 description: ""
