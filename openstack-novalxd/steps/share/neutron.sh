@@ -7,6 +7,8 @@ get_host_ns() {
     perl -lne 's/^nameserver\s+// or next; s/\s.*//; print && exit' /etc/resolv.conf
 }
 
+sudo apt-get -qqyf python3-openstackclient > /dev/null 2>&1 || true
+
 if ! openstack network show ext-net >/dev/null 2>&1; then
     debug "adding ext-net"
     if ! openstack network create --external ext-net >/dev/null 2>&1; then
