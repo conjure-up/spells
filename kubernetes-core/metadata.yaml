@@ -1,3 +1,8 @@
 friendly-name: Kubernetes Core
 version: 1
 bundle-name: kubernetes-core
+options-whitelist:
+  kubernetes-master:
+    - allow-privileged
+  kubernetes-worker:
+    - allow-privileged
