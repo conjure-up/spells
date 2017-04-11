@@ -2,7 +2,5 @@ friendly-name: The Canonical Distribution of Kubernetes
 version: 1
 bundle-name: canonical-kubernetes
 options-whitelist:
-  kubernetes-master:
-    - allow-privileged
   kubernetes-worker:
     - allow-privileged
