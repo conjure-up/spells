@@ -22,5 +22,5 @@ devices:
     type: nic
   root:
     path: /
-    pool: default
+    pool: conjureup
     type: disk

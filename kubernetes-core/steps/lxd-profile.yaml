@@ -20,5 +20,5 @@ devices:
     type: disk
   root:
     path: /
-    pool: default
+    pool: conjureup
     type: disk
