@@ -5,6 +5,7 @@ config:
   security.privileged: "true"
   linux.kernel_modules: openvswitch,nbd,ip_tables,ip6_tables,netlink_diag
   raw.lxc : |
+    lxc.aa_profile=unconfined
     lxc.mount.auto=sys:rw
 devices:
   eth0:
