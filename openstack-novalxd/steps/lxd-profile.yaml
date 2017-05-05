@@ -1,5 +1,6 @@
 name: juju-##MODEL##
 config:
+  security.idmap.isolated: "true"
   boot.autostart: "true"
   security.nesting: "true"
   security.privileged: "true"
