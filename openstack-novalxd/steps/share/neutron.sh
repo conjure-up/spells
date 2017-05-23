@@ -69,7 +69,8 @@ done
 
 # configure security groups
 debug "setting security roles"
-openstack security group rule create --ingress --ethertype IPv4 --protocol icmp --prefix 0.0.0.0/0 default >/dev/null 2>&1 || true
-openstack security group rule create --ingress --ethertype IPv4 --protocol tcmp --dst-port 22 --prefix 0.0.0.0/0 default >/dev/null 2>&1 || true
+SGID=$(openstack security group list --project admin -c ID -f value)
+openstack security group rule create --ingress --ethertype IPv4 --protocol icmp --prefix 0.0.0.0/0 $SGID >/dev/null 2>&1
+openstack security group rule create --ingress --ethertype IPv4 --protocol tcmp --dst-port 22 --prefix 0.0.0.0/0 $SGID >/dev/null 2>&1
 
 exposeResult "Neutron networking is now configured and is available to you during instance creation." 0 "true"
