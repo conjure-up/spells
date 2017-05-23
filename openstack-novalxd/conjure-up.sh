@@ -1,3 +1,3 @@
 #!/bin/bash
 set -x
-conjure-up --apt-proxy http://ubuntu:3142 --apt-https-proxy http://ubuntu:3142 . localhost
+conjure-up --apt-proxy http://$(hostname):3142 --apt-https-proxy http://$(hostname):3142 $(dirname $0) localhost
