@@ -94,6 +94,7 @@ services:
       max-connections: 20000
       dataset-size: 256M
       source: cloud:xenial-ocata
+      innodb-buffer-pool-size: 50%
   neutron-api:
     charm: cs:xenial/neutron-api
     num_units: 1
