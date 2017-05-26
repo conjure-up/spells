@@ -19,11 +19,12 @@ if [[ $(uname -s) = "Darwin" ]]; then
     chmod +x kubefed
     mv kubefed /usr/local/bin/kubefed
 else
-    sudo snap install kubectl --classic 1>&2
-    sudo snap install kubefed --classic 1>&2
+    sudo snap install kubectl --classic
+    sudo snap install kubefed --classic
 fi
 
 echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
 
-exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
+printf "result: The Kubernetes client utility is now available at '$cmd_to_run'"
+exit 0

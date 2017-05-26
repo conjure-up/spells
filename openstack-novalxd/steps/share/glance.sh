@@ -29,4 +29,5 @@ if ! glance image-list --property-filter name="xenial$imagesuffix" | grep -q "xe
            --visibility=public --file=$HOME/glance-images/xenial-server-cloudimg-amd64-$imagetype > /dev/null 2>&1
 fi
 
-exposeResult "Glance images for Trusty (14.04) and Xenial (16.04) are imported and accessible via Horizon dashboard." 0 "true"
+printf "result: Glance images for Trusty (14.04) and Xenial (16.04) are imported and accessible via Horizon dashboard."
+exit 0

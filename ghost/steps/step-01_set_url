@@ -6,4 +6,5 @@ set -eu
 
 juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost url="$BLOGURL"
 
-exposeResult "Visit your Ghost application at $BLOGURL" 0 "true"
+printf "Visit your Ghost application at $BLOGURL"
+exit 0
