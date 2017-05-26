@@ -7,7 +7,7 @@ set -eu
 if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
     lxc storage create conjureup dir || printf "conjureup storage pool already exists, skipping"
-    sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL" || printf "Failed to set profile" && exit 1
+    sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL"
 fi
 
 printf "result: Successful pre-deploy."
