@@ -19,8 +19,8 @@ if [[ $(uname -s) = "Darwin" ]]; then
     chmod +x kubefed
     mv kubefed /usr/local/bin/kubefed
 else
-    sudo snap install kubectl --classic
-    sudo snap install kubefed --classic
+    sudo snap install kubectl --classic || true
+    sudo snap install kubefed --classic || true
 fi
 
 echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
