@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+horizon_ip=$(unitAddress openstack-dashboard 0)
+
+exposeResult "Login to Horizon: http://$horizon_ip/horizon l: admin p: openstack" 0 "true"
