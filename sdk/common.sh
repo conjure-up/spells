@@ -1,3 +1,4 @@
+#!/bin/bash
 # loggers
 #
 # Arguments:
@@ -5,27 +6,27 @@
 # $@: rest of log message
 debug() {
     name=$CONJURE_UP_SPELL
-    logger -t "conjure-up/$name" "[DEBUG] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
+    logger -t "conjure-up/$name" "[DEBUG] ($JUJU_CONTROLLER:$JUJU_MODEL)" "$@"
 }
 
 info() {
     name=$CONJURE_UP_SPELL
-    logger -t "conjure-up/$name" "[INFO] ($JUJU_CONTROLLER:$JUJU_MODEL) $@"
+    logger -t "conjure-up/$name" "[INFO] ($JUJU_CONTROLLER:$JUJU_MODEL)" "$@"
 }
 
 log() {
     if [[ $- == *i* ]]; then
-        printf "\e[32m\e[1m[info]\e[0m $@\n"
+        printf "\e[32m\e[1m[info]\e[0m %s\n" "$@"
     else
-        printf "[info] $@\n"
+        printf "[info] %s\n" "$@"
     fi
 }
 
 testLog() {
     if [[ $- == *i* ]];then
-        printf "\e[33m\e[1m[test]\e[0m $@\n"
+        printf "\e[33m\e[1m[test]\e[0m %s\n" "$@"
     else
-        printf "[test] $@\n"
+        printf "[test] %s\n" "$@"
     fi
 }
 
@@ -38,7 +39,7 @@ testLog() {
 # machine status
 agentState()
 {
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".machines[\"$1\"][\"juju-status\"][\"current\"]"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq ".machines[\"$1\"][\"juju-status\"][\"current\"]"
 }
 
 # Gets current workload state for service
@@ -51,7 +52,7 @@ agentState()
 # unit status
 agentStateUnit()
 {
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
 }
 
 # Gets current leader of a service
@@ -73,7 +74,7 @@ for leader in leader_yaml:
         print(leader['UnitId'])
 "
 
-    juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --application $1 is-leader --format yaml | env python3 -c "$py_script"
+    juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --application "$1" is-leader --format yaml | env python3 -c "$py_script"
 }
 
 # Exports the variables required for communicating with your cloud.
@@ -111,7 +112,7 @@ unit = status_yaml['applications']['$1']['units']
 units = list(unit.keys())
 print(unit[units[0]]['public-address'])
 "
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL $1 --format yaml | env python3 -c "$py_script"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$1" --format yaml | env python3 -c "$py_script"
 }
 
 # Get workload status of unit
@@ -124,7 +125,7 @@ print(unit[units[0]]['public-address'])
 # String of status
 unitStatus()
 {
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"workload-status\"][\"current\"]"
 }
 
 # Get juju status of unit
@@ -137,7 +138,7 @@ unitStatus()
 # String of status
 unitJujuStatus()
 {
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"juju-status\"][\"current\"]"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"juju-status\"][\"current\"]"
 }
 
 
@@ -151,7 +152,7 @@ unitJujuStatus()
 # machine identifier
 unitMachine()
 {
-    juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"machine\"]"
+    juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"machine\"]"
 }
 
 # Waits for machine to start
@@ -189,7 +190,7 @@ waitForService()
 # $3: true/false
 exposeResult()
 {
-    printf '{"message": "%s", "returnCode": %d, "isComplete": %s}' "$1" $2 "$3"
+    printf '{"message": "%s", "returnCode": %d, "isComplete": %s}' "$1" "$2" "$3"
     exit 0
 }
 
@@ -201,7 +202,7 @@ checkUnitsForErrors() {
     applications=$1
     for i in "${applications[@]}"
     do
-        if [ $(unitStatus $i 0) = "error" ]; then
+        if [ $(unitStatus "$i" 0) = "error" ]; then
             debug "$i, gave a charm error."
             exposeResult "Error with $i, please check juju status" 1 "false"
         fi
@@ -217,7 +218,7 @@ checkUnitsForActive() {
     for i in "${applications[@]}"
     do
         debug "Checking agent state of $i: $(unitStatus $i 0)"
-        if [ $(unitStatus $i 0) != "active" ]; then
+        if [ $(unitStatus "$i" 0) != "active" ]; then
             exposeResult "$i not quite ready yet" 0 "false"
         fi
     done
@@ -253,4 +254,13 @@ expandPath() {
 # $0: current script
 scriptPath() {
     env python3 -c "import os,sys; print(os.path.dirname(os.path.abspath(\"$0\")))"
+}
+
+# sets a redis namespace result for a step
+#
+# Arguments:
+# $1: result message
+setResult()
+{
+    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
 }
