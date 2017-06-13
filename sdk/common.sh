@@ -262,5 +262,17 @@ scriptPath() {
 # $1: result message
 setResult()
 {
-    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
+    local conjure_redis_cli
+    local system_redis_cli
+    local cli
+
+    conjure_redis_cli=$(which conjure-up.redis-cli)
+    system_redis_cli=$(which redis-cli)
+
+    if [ "$conjure_redis_cli" = "/snap/bin/conjure-up.redis-cli" ]; then
+       cli="$conjure_redis_cli"
+    else
+        cli="$system_redis_cli"
+    fi
+    $cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
 }
