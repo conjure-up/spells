@@ -1,4 +1,10 @@
 relations:
+- - heat:amqp
+  - rabbitmq-server:amqp
+- - heat:identity-service
+  - keystone:identity-service
+- - heat:shared-db
+  - mysql:shared-db
 - - designate
   - mysql:shared-db
 - - designate
@@ -67,6 +73,9 @@ relations:
   - lxd:lxd
 series: xenial
 services:
+  heat:
+    charm: cs:xenial/heat
+    num_units: 1
   designate:
     charm: cs:xenial/designate
     num_units: 1
