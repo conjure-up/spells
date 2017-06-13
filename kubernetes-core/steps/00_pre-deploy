@@ -2,7 +2,7 @@
 
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     printf "Running pre-deploy for LXD container"
@@ -10,5 +10,5 @@ if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL"
 fi
 
-printf "result: Successful pre-deploy"
+setResult "Successful pre-deploy"
 exit 0
