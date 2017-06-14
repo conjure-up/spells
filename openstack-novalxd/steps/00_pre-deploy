@@ -1,12 +1,11 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
-    lxc storage create conjureup dir >/dev/null 2>&1 || debug "Storage pool conjureup already exists" && true
     sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL" || setResult "Failed to set profile" && exit 1
 fi
 
