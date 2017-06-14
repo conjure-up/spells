@@ -18,7 +18,3 @@ devices:
     path: /sys/module/apparmor/parameters/enabled
     source: /dev/null
     type: disk
-  root:
-    path: /
-    pool: conjureup
-    type: disk
