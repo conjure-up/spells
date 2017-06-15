@@ -7,20 +7,3 @@ config:
   raw.lxc : |
     lxc.aa_profile=unconfined
     lxc.mount.auto=sys:rw
-devices:
-  eth0:
-    mtu: "9000"
-    name: eth0
-    nictype: bridged
-    parent: conjureup1
-    type: nic
-  eth1:
-    mtu: "9000"
-    name: eth1
-    nictype: bridged
-    parent: conjureup0
-    type: nic
-  root:
-    path: /
-    pool: conjureup
-    type: disk
