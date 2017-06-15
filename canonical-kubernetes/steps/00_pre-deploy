@@ -6,7 +6,7 @@ set -eu
 
 if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
-    sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL"
+    sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | conjure-up.lxc profile edit "juju-$JUJU_MODEL"
 fi
 
 exposeResult "Successful pre-deploy." 0 "true"
