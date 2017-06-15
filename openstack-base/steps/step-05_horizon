@@ -4,4 +4,5 @@
 
 horizon_ip=$(unitAddress openstack-dashboard 0)
 
-exposeResult "Login to Horizon: http://$horizon_ip/horizon l: admin p: openstack" 0 "true"
+printf "result: Login to Horizon: http://$horizon_ip/horizon l: admin p: openstack"
+exit 0

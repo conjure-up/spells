@@ -7,7 +7,7 @@ services:
       dataset-size: "80%"
       max-connections: 20000
   ghost:
-    charm: cs:xenial/ghost
+    charm: cs:ghost
     num_units: 1
   haproxy:
     charm: cs:haproxy

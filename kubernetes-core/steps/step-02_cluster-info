@@ -2,8 +2,9 @@
 
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 INFO="$(~/bin/kubectl.$JUJU_MODEL cluster-info | perl -p -e 's/\n/\\n/'| perl -pe 's/\x1b\[[0-9;]*m//g')"
 
-exposeResult "$INFO" 0 "true"
+setResult "$INFO"
+exit 0

@@ -2,10 +2,12 @@
 
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if ! juju wait -wm $JUJU_CONTROLLER:$JUJU_MODEL; then
-    exposeResult "Applications did not start successfully" 1 "false"
+if ! juju wait -vwm "$JUJU_CONTROLLER:$JUJU_MODEL"; then
+    setResult "Applications did not start successfully"
+    exit 1
 fi
 
-exposeResult "Applications Ready" 0 "true"
+setResult "result: Applications Ready"
+exit 0

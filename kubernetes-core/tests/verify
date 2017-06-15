@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 testLog "Checking for ~/bin/kubectl.$JUJU_MODEL"
 test -f $HOME/bin/kubectl.$JUJU_MODEL

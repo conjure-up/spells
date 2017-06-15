@@ -2,28 +2,29 @@
 
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-mkdir -p $HOME/.kube
-mkdir -p $HOME/bin
+mkdir -p "$HOME/.kube"
+mkdir -p "$HOME/bin"
 
 cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config ~/.kube/config."$JUJU_MODEL"
 
 if [[ $(uname -s) = "Darwin" ]]; then
     repo=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/
-    curl -sLO $repo/kubectl
+    curl -sLO "$repo/kubectl"
     chmod +x kubectl
     mv kubectl /usr/local/bin/kubectl
-    curl -sLO $repo/kubefed
+    curl -sLO "$repo/kubefed"
     chmod +x kubefed
     mv kubefed /usr/local/bin/kubefed
 else
-    sudo snap install kubectl --classic 1>&2
-    sudo snap install kubefed --classic 1>&2
+    sudo snap install kubectl --classic || true
+    sudo snap install kubefed --classic || true
 fi
 
-echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
-chmod +x $HOME/bin/kubectl.$JUJU_MODEL
+echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > "$HOME/bin/kubectl.$JUJU_MODEL"
+chmod +x "$HOME/bin/kubectl.$JUJU_MODEL"
 
-exposeResult "The Kubernetes client utility is now available at '$cmd_to_run'" 0 "true"
+setResult "The Kubernetes client utility is now available at '$cmd_to_run'"
+exit 0

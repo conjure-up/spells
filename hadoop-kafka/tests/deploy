@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-conjure-up --notrack hadoop-kafka $CLOUD $JUJU_CONTROLLER $JUJU_MODEL $@

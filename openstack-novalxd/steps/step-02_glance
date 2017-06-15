@@ -4,15 +4,13 @@
 
 tmpfile=$(mktemp)
 
-$(scriptPath)/share/novarc &> $tmpfile
+$(scriptPath)/share/novarc > "$tmpfile"
 
 # Copy over credentials early
-res=$(juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile \
-                nova-cloud-controller/0:novarc 2>&1) || \
-exposeResult "Error deploying novarc to nova-cloud-controller/0: $res" 1 "false"
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:novarc
 
-cat $(scriptPath)/share/common.sh >> $tmpfile
-cat $(scriptPath)/share/glance.sh >> $tmpfile
+cat $(scriptPath)/share/common.sh >> "$tmpfile"
+cat $(scriptPath)/share/glance.sh >> "$tmpfile"
 
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:glance.sh
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash glance.sh"
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:glance.sh
+juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash glance.sh"

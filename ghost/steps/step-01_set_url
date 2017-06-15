@@ -2,8 +2,9 @@
 
 set -eu
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-juju config -m $JUJU_CONTROLLER:$JUJU_MODEL ghost url="$BLOGURL"
+juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" ghost url="$BLOGURL"
 
-exposeResult "Visit your Ghost application at $BLOGURL" 0 "true"
+setResult "Visit your Ghost application at $BLOGURL"
+exit 0
