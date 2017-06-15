@@ -1,7 +1,0 @@
-#!/bin/bash
-
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
-
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "sudo apt-get -y install python{,3}-heatclient" >/dev/null 2>/dev/null
-res=$(juju run-action -m $JUJU_CONTROLLER:$JUJU_MODEL heat/0 domain-setup 2>&1)
-exposeResult "$res" 0 "true"
