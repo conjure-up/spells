@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eu
-
-conjure-up --notrack spark-processing $CLOUD $JUJU_CONTROLLER $JUJU_MODEL $@
