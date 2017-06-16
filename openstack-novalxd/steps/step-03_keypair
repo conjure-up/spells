@@ -1,45 +1,47 @@
 #!/bin/bash
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-_ssh_public_key=$(expandPath $SSHPUBLICKEY)
+_ssh_public_key=$(expandPath "$SSHPUBLICKEY")
 debug "Environment Variables: $_ssh_public_key"
 
 tmpfile=$(mktemp)
 debug "Created tmpfile: $tmpfile"
 
-cat <<EOF> $tmpfile
+cat <<EOF > $tmpfile
 sudo apt update > /dev/null 2>&1
 sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
 EOF
 
 # write credentials
-$(scriptPath)/share/novarc >> $tmpfile
+$(scriptPath)/share/novarc >> "$tmpfile"
 
 # include lib
-cat $(scriptPath)/share/common.sh >> $tmpfile
+cat $(scriptPath)/share/common.sh >> "$tmpfile"
 
-if [ ! -f $_ssh_public_key ]; then
+if [ ! -f "$_ssh_public_key" ]; then
     debug "Couldnt find $_ssh_public_key, attempting to create one: " ${_ssh_public_key%.*}
     ssh-keygen -N '' -f ${_ssh_public_key%.*} > /dev/null 2>&1
     debug "ssh-keygen result: $?"
 fi
 
 # Set ssh public key on controller
-echo "export SSHPUBLICKEY=$HOME/.ssh/$(basename $_ssh_public_key)" >> $tmpfile
+echo "export SSHPUBLICKEY=$HOME/.ssh/$(basename $_ssh_public_key)" >> "$tmpfile"
 
 # write final script
-cat $(scriptPath)/share/keypair.sh >> $tmpfile
+cat $(scriptPath)/share/keypair.sh >> "$tmpfile"
 
 debug "Creating .ssh directory on controller node"
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
 
 debug "SCPing over ${_ssh_public_key%.*} to controller node"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL ${_ssh_public_key%.*}* nova-cloud-controller/0:.ssh/.
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" ${_ssh_public_key%.*}* nova-cloud-controller/0:.ssh/.
 debug "scp result: $?"
 
 debug "SCPing over $tmpfile controller node"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $tmpfile nova-cloud-controller/0:keypair.sh
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" $tmpfile nova-cloud-controller/0:keypair.sh
 debug "scp result: $?"
 
-juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL nova-cloud-controller/0 "bash keypair.sh"
+keypair_out=$(juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash keypair.sh")
+setResult "$keypair_out"
+exit 0

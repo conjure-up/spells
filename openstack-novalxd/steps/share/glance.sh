@@ -30,4 +30,3 @@ if ! glance image-list --property-filter name="xenial$imagesuffix" | grep -q "xe
 fi
 
 printf "Glance images for Trusty (14.04) and Xenial (16.04) are imported and accessible via Horizon dashboard."
-exit 0
