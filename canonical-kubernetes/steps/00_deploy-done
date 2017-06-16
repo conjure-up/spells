@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
