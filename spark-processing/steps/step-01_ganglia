@@ -1,20 +1,10 @@
-#!/usr/bin/env python3
-from conjureup.hooklib import juju
-from conjureup.hooklib.writer import success, fail, error
-from conjureup.utils import run
-from subprocess import CalledProcessError
+#!/bin/bash
 
+set -eu
 
-status = juju.status()
-applications = status['applications']['ganglia']
-ganglia_ip = applications['units']['ganglia/0']['public-address']
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-try:
-    run('juju expose ganglia', shell=True, check=True)
-except CalledProcessError as e:
-    error("Unable to expose Ganglia: ".format(e))
+ip=$(unitAddress ganglia 0)
 
-if ganglia_ip:
-    success("Ganglia UI Monitoring is now configured "
-            "and can be viewed at http://{}/ganglia".format(ganglia_ip))
-fail("Unable to determine Ganglia UI URL")
+setResult "Ganglia UI Monitoring is now configured and can be viewed at http://$ip/ganglia"
+exit 0

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 tmpfile=$(mktemp)
 $(scriptPath)/vars > $tmpfile
@@ -11,11 +11,11 @@ juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL landscape-server/0 "bash setup-landscap
 RET=$?
 
 if [ $RET -gt 0 ]; then
-    printf "Unable to register against Landscape server, please check your deployment."
+    setResult "Unable to register against Landscape server, please check your deployment."
     exit 1
 fi
 
 result_message="Landscape is now available, to access visit: https://`juju run --unit haproxy/0 \"unit-get private-address\"`/account/standalone/openstack \n\nlogin: $LDS_EMAIL \npassword: $LDS_PASSWORD"
 
-printf "result: $result_message"
+setResult "$result_message"
 exit 0
