@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 tmpfile=$(mktemp)
 
@@ -13,4 +13,6 @@ cat $(scriptPath)/share/common.sh >> "$tmpfile"
 cat $(scriptPath)/share/glance.sh >> "$tmpfile"
 
 juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:glance.sh
-juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash glance.sh"
+glance_out=$(juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash glance.sh")
+setResult "$glance_out"
+exit 0

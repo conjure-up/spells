@@ -1,8 +1,3 @@
-fail_cleanly() {
-    printf "$1"
-    exit 1
-}
-
 # Get host namserver
 get_host_ns() {
     perl -lne 's/^nameserver\s+// or next; s/\s.*//; print && exit' /etc/resolv.conf
@@ -72,4 +67,3 @@ neutron security-group-rule-create --direction ingress --ethertype IPv4 --protoc
 neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol tcp --port-range-min 22 --port-range-max 22 --remote-ip-prefix 0.0.0.0/0 default > /dev/null 2>&1 || true
 
 printf "Neutron networking is now configured and is available to you during instance creation."
-exit 0

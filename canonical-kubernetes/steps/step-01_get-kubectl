@@ -26,5 +26,5 @@ fi
 echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
 chmod +x $HOME/bin/kubectl.$JUJU_MODEL
 
-printf "result: The Kubernetes client utility is now available at '$cmd_to_run'"
+setResult "The Kubernetes client utility is now available at '$cmd_to_run'"
 exit 0
