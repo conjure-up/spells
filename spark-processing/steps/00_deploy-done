@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 retry_arg="-r5"

@@ -266,8 +266,8 @@ setResult()
     local system_redis_cli
     local cli
 
-    conjure_redis_cli=$(which conjure-up.redis-cli)
-    system_redis_cli=$(which redis-cli)
+    conjure_redis_cli=$(which conjure-up.redis-cli || true)
+    system_redis_cli=$(which redis-cli || true)
 
     if [ "$conjure_redis_cli" = "/snap/bin/conjure-up.redis-cli" ]; then
        cli="$conjure_redis_cli"
