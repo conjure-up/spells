@@ -256,12 +256,10 @@ scriptPath() {
     env python3 -c "import os,sys; print(os.path.dirname(os.path.abspath(\"$0\")))"
 }
 
-# sets a redis namespace result for a step
+# call the right redis-cli (mainly to ease dev testing)
 #
-# Arguments:
-# $1: result message
-setResult()
-{
+# All arguments will be passed through to redis-cli
+redis-cli() {
     local conjure_redis_cli
     local system_redis_cli
     local cli
@@ -274,5 +272,14 @@ setResult()
     else
         cli="$system_redis_cli"
     fi
-    $cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
+    "$cli" "$@"
+}
+
+# sets a redis namespace result for a step
+#
+# Arguments:
+# $1: result message
+setResult()
+{
+    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
 }
