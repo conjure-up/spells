@@ -9,7 +9,5 @@ if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
     sed "s/##MODEL##/$JUJU_MODEL/" "$(scriptPath)/lxd-profile.yaml" | conjure-up.lxc profile edit "juju-$JUJU_MODEL"
 fi
 
-juju model-config -m "$JUJU_CONTROLLER:$JUJU_MODEL" resource-tags="KubernetesCluster=workshop"
-
 setResult "Successful pre-deploy."
 exit 0
