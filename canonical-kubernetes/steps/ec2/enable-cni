@@ -93,21 +93,18 @@ add_role_to_profile() {
     >&2 echo "IAM role juju-kubernetes-$role added to instance profile juju-kubernetes-$role"
 }
 
-attach_profile_to_instances() {
+get_instance_ids() {
     role="$1"  # master or worker
-    # shellcheck disable=SC2016
-    jmes_query='Reservations[*].Instances[*].[join(`,`, [@.InstanceId,(@.Tags[?Key==`juju-units-deployed`].Value)[0]])]'
-    if ! instances=$(aws ec2 describe-instances \
-                     --profile "$JUJU_CREDENTIAL" \
-                     --output text \
-                     --filters "Name=tag:juju-units-deployed,Values=*kubernetes-$role*" \
-                               "Name=instance-state-name,Values=running" \
-                     --query "$jmes_query" 2>&1); then
-        abort "$instances"
-    fi
+    instances="$(juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" "kubernetes-$role" --format=yaml | grep instance-id | awk '{print $2}')"
     if [[ -z "$instances" ]]; then
         abort "Unable to find kubernetes-$role instances"
     fi
+    echo "$instances"
+}
+
+attach_profile_to_instances() {
+    role="$1"  # master or worker
+    instances="$(get_instance_ids "$role")"
     for instance in $instances; do
         instance_id="$(cut -d, -f1 <<< "$instance")"
         unit_name="$(cut -d, -f2 <<< "$instance")"
@@ -124,7 +121,51 @@ attach_profile_to_instances() {
     done
 }
 
+tag_application() {
+    role="$1"  # master or worker
+    tag="$2"
+    instances="$(get_instance_ids "$role")"
+    if ! group_id=$(aws ec2 describe-instances \
+                    --profile "$JUJU_CREDENTIAL" \
+                    --filter "Name=instance-id,Values=$(echo "$instances" | tr ' ' ',')" \
+                    --query "Reservations[0].Instances[0].SecurityGroups[1].GroupId" \
+                    --output text 2>&1); then
+        abort "$group_id"
+    fi
+    if [[ "$group_id" == None ]]; then
+        abort "Unable to locate shared Security Group for kubernetes-$role"
+    fi
+    echo "Tagging kubernetes-$role with KubernetesCluster=$tag"
+    # shellcheck disable=SC2086
+    if ! result=$(aws ec2 create-tags \
+                  --profile "$JUJU_CREDENTIAL" \
+                  --tags "Key=KubernetesCluster,Value=$tag" \
+                  --resources $instances $group_id 2>&1); then
+        abort "$result"
+    fi
+    >&2 echo "Created tag KubernetesCluster=$tag on $instances $group_id"
+}
+
+configure_k8s() {
+    role="$1"  # master or worker
+    if [[ "$role" == "master" ]]; then
+        snaps="kube-apiserver kube-controller-manager"
+    else
+        snaps="kubelet"
+    fi
+    for snap in $snaps; do
+        echo "Configuring cloud-provider for $snap"
+        result=$(juju run --format=yaml --application "kubernetes-$role" -- \
+                 bash -c "snap set $snap cloud-provider=aws && service snap.$snap.daemon restart" 2>&1)
+        if echo "$result" | grep -q 'ReturnCode: [^0]'; then
+            abort "$result"
+        fi
+        >&2 echo "Configured cloud-provider=aws for $snap"
+    done
+}
+
 enable_cni() {
+    cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
     load_iam_policy master
     load_iam_policy worker
     load_iam_role master
@@ -137,4 +178,7 @@ enable_cni() {
     add_role_to_profile worker
     attach_profile_to_instances master
     attach_profile_to_instances worker
+    tag_application master "$cluster_tag"
+    configure_k8s master
+    configure_k8s worker
 }
