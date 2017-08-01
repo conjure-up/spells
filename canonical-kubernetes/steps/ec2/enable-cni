@@ -99,7 +99,7 @@ get_instance_ids() {
     if [[ -z "$instances" ]]; then
         abort "Unable to find kubernetes-$role instances"
     fi
-    echo "$instances"
+    echo "$instances" | tr '\n' ' '
 }
 
 attach_profile_to_instances() {
@@ -206,6 +206,7 @@ enable_cni() {
     attach_profile_to_instances master
     attach_profile_to_instances worker
     tag_application master "$cluster_tag"
+    tag_application worker "$cluster_tag"
     tag_subnets worker "$cluster_tag"
     configure_k8s master
     configure_k8s worker
