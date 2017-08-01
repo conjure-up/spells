@@ -125,11 +125,12 @@ tag_application() {
     role="$1"  # master or worker
     tag="$2"
     instances="$(get_instance_ids "$role")"
+    # shellcheck disable=SC2086
     if ! group_id=$(aws ec2 describe-instances \
                     --profile "$JUJU_CREDENTIAL" \
-                    --filter "Name=instance-id,Values=$(echo "$instances" | tr ' ' ',')" \
-                    --query "Reservations[0].Instances[0].SecurityGroups[1].GroupId" \
-                    --output text 2>&1); then
+                    --instance-ids $instances \
+                    --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
+                    --output text | grep -v -- '-.$' | awk '{print $1}' 2>&1); then
         abort "$group_id"
     fi
     if [[ "$group_id" == None ]]; then
