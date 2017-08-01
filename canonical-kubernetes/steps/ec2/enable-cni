@@ -121,27 +121,54 @@ attach_profile_to_instances() {
     done
 }
 
+get_security_groups() {
+    instances="$1"
+    sg_type="$2"  # shared or unique
+    if [[ "$sg_type" == "shared" ]]; then
+        sg_flag="-v"
+    else
+        sg_flag=""
+    fi
+    # shellcheck disable=SC2086
+    if ! group_ids="$(aws ec2 describe-instances \
+                      --profile "$JUJU_CREDENTIAL" \
+                      --instance-ids $instances \
+                      --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
+                      --output text | grep $sg_flag -- 'juju.*-.$' | awk '{print $1}' 2>&1)"; then
+        abort "$group_ids"
+    fi
+    if [[ "$group_ids" == None ]]; then
+        abort "Unable to locate $sg_type Security Groups for $instances"
+    fi
+    echo "$group_ids"
+}
+
+remove_shared_security_group_tag() {
+    role="$1"  # master or worker
+    instances="$(get_instance_ids "$role")"
+    group_id="$(get_security_groups "$instances" shared)"
+    echo "Removing KubernetesCluster tag from shared security group for kubernetes-$role"
+    # shellcheck disable=SC2086
+    if ! result=$(aws ec2 delete-tags \
+                  --profile "$JUJU_CREDENTIAL" \
+                  --tags "Key=KubernetesCluster" \
+                  --resources $group_id 2>&1); then
+        abort "$result"
+    fi
+    >&2 echo "Removed KubernetesCluster tag from $group_id for kubernetes-$role"
+}
+
 tag_application() {
     role="$1"  # master or worker
     tag="$2"
     instances="$(get_instance_ids "$role")"
-    # shellcheck disable=SC2086
-    if ! group_id="$(aws ec2 describe-instances \
-                     --profile "$JUJU_CREDENTIAL" \
-                     --instance-ids $instances \
-                     --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
-                     --output text | grep -v -- '-.$' | awk '{print $1}' 2>&1)"; then
-        abort "$group_id"
-    fi
-    if [[ "$group_id" == None ]]; then
-        abort "Unable to locate shared Security Group for kubernetes-$role"
-    fi
+    group_ids="$(get_security_groups "$instances" unique)"
     echo "Tagging kubernetes-$role with KubernetesCluster=$tag"
     # shellcheck disable=SC2086
     if ! result=$(aws ec2 create-tags \
                   --profile "$JUJU_CREDENTIAL" \
                   --tags "Key=KubernetesCluster,Value=$tag" \
-                  --resources $instances $group_id 2>&1); then
+                  --resources $instances $group_ids 2>&1); then
         abort "$result"
     fi
     >&2 echo "Created tag KubernetesCluster=$tag on $instances $group_id"
@@ -192,22 +219,37 @@ configure_k8s() {
 }
 
 enable_cni() {
-    cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
+    cluster_tag="$(juju model-config --format=tabular cdk-tag)"
+
+    # loading policy & role docs, and creating profile
     load_iam_policy master
     load_iam_policy worker
     load_iam_role master
     load_iam_role worker
     create_instance_profile master
     create_instance_profile worker
+
+    # connecting together all of the roles, policies, and profiles
     attach_policy_to_role master
     attach_policy_to_role worker
     add_role_to_profile master
     add_role_to_profile worker
     attach_profile_to_instances master
     attach_profile_to_instances worker
+
+    # managing the tagging
+    remove_shared_security_group_tag master
+    remove_shared_security_group_tag worker
+    # The model-config should ensure that all necessary resources are tagged
+    # but during bootstrap it seems that tags sometimes don't get applied.
+    # So here we're being explicit about ensuring everything that needs tagging
+    # gets it so that we work out of the box.  Hopefully the model-config will
+    # ensure the tag gets applied to any new units properly.
     tag_application master "$cluster_tag"
     tag_application worker "$cluster_tag"
     tag_subnets worker "$cluster_tag"
+
+    # enable the config in the cluster
     configure_k8s master
     configure_k8s worker
 }
