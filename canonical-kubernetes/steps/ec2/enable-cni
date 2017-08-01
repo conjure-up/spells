@@ -126,11 +126,11 @@ tag_application() {
     tag="$2"
     instances="$(get_instance_ids "$role")"
     # shellcheck disable=SC2086
-    if ! group_id=$(aws ec2 describe-instances \
-                    --profile "$JUJU_CREDENTIAL" \
-                    --instance-ids $instances \
-                    --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
-                    --output text | grep -v -- '-.$' | awk '{print $1}' 2>&1); then
+    if ! group_id="$(aws ec2 describe-instances \
+                     --profile "$JUJU_CREDENTIAL" \
+                     --instance-ids $instances \
+                     --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
+                     --output text | grep -v -- '-.$' | awk '{print $1}' 2>&1)"; then
         abort "$group_id"
     fi
     if [[ "$group_id" == None ]]; then
@@ -145,6 +145,32 @@ tag_application() {
         abort "$result"
     fi
     >&2 echo "Created tag KubernetesCluster=$tag on $instances $group_id"
+}
+
+tag_subnets() {
+    role="$1"  # master or worker
+    tag="$2"
+    instances="$(get_instance_ids "$role")"
+    # shellcheck disable=SC2086
+    if ! subnet_ids="$(aws ec2 describe-instances \
+                       --profile "$JUJU_CREDENTIAL" \
+                       --instance-ids $instances \
+                       --query "Reservations[*].Instances[*].SubnetId" \
+                       --output text | tr '\n' ' ' 2>&1)"; then
+        abort "$subnet_ids"
+    fi
+    if [[ "$subnet_ids" == None ]]; then
+        abort "Unable to locate subnets for kubernetes-$role"
+    fi
+    echo "Tagging kubernetes-$role subnets with KubernetesCluster=$tag"
+    # shellcheck disable=SC2086
+    if ! result=$(aws ec2 create-tags \
+                  --profile "$JUJU_CREDENTIAL" \
+                  --tags "Key=KubernetesCluster,Value=$tag" \
+                  --resources $subnet_ids 2>&1); then
+        abort "$result"
+    fi
+    >&2 echo "Created tag KubernetesCluster=$tag on $subnet_ids"
 }
 
 configure_k8s() {
@@ -180,6 +206,7 @@ enable_cni() {
     attach_profile_to_instances master
     attach_profile_to_instances worker
     tag_application master "$cluster_tag"
+    tag_subnets worker "$cluster_tag"
     configure_k8s master
     configure_k8s worker
 }
