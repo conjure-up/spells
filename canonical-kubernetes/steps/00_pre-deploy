@@ -10,7 +10,7 @@ if [[ "$JUJU_PROVIDERTYPE" == "lxd" ]]; then
 fi
 
 cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
-juju model-config resource-tags="KubernetesCluster=$cluster_tag" cdk-tag="$cluster_tag"
+juju model-config -m "$JUJU_CONTROLLER:$JUJU_MODEL" resource-tags="KubernetesCluster=$cluster_tag" cdk-tag="$cluster_tag"
 
 setResult "Successful pre-deploy."
 exit 0
