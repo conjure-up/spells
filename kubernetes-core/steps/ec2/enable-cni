@@ -2,15 +2,19 @@
 
 set -eu
 
-data_dir="$(dirname "$BASH_SOURCE")"
-aws_account_id=$(aws --profile "$JUJU_CREDENTIAL" sts get-caller-identity --output text --query 'Account')
-
 abort() {
     >&2 echo "$@"
     echo "Unable to enable AWS integration"
     setResult "Unable to enable AWS integration (see logs for details)"
     exit 0
 }
+
+data_dir="$(dirname "$BASH_SOURCE")"
+if ! aws_account_id=$(aws sts get-caller-identity \
+                      --profile "$JUJU_CREDENTIAL" \
+                      --output text --query 'Account' 2>&1); then
+    abort "Unable to determine account ID: $aws_account_id"
+fi
 
 load_iam_policy() {
     role="$1"  # master or worker
