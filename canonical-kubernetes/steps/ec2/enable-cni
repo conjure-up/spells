@@ -115,6 +115,7 @@ attach_profile_to_instances() {
         echo "Attaching instance profile juju-kubernetes-$role to $unit_name"
         if ! result=$(aws ec2 associate-iam-instance-profile \
                       --profile "$JUJU_CREDENTIAL" \
+                      --region "$JUJU_REGION" \
                       --iam-instance-profile Name="juju-kubernetes-$role" \
                       --instance-id "$instance_id" \
                       --query 'IamInstanceProfileAssociation.AssociationId' \
@@ -136,6 +137,7 @@ get_security_groups() {
     # shellcheck disable=SC2086
     if ! group_ids="$(aws ec2 describe-instances \
                       --profile "$JUJU_CREDENTIAL" \
+                      --region "$JUJU_REGION" \
                       --instance-ids $instances \
                       --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
                       --output text | grep $sg_flag -- 'juju.*-.$' | awk '{print $1}' 2>&1)"; then
@@ -155,6 +157,7 @@ remove_shared_security_group_tag() {
     # shellcheck disable=SC2086
     if ! result=$(aws ec2 delete-tags \
                   --profile "$JUJU_CREDENTIAL" \
+                  --region "$JUJU_REGION" \
                   --tags "Key=KubernetesCluster" \
                   --resources $group_id 2>&1); then
         abort "$result"
@@ -171,9 +174,20 @@ tag_application() {
     # shellcheck disable=SC2086
     if ! result=$(aws ec2 create-tags \
                   --profile "$JUJU_CREDENTIAL" \
+                  --region "$JUJU_REGION" \
                   --tags "Key=KubernetesCluster,Value=$tag" \
                   --resources $instances $group_ids 2>&1); then
         abort "$result"
+    fi
+    if [[ "$role" == "master" ]]; then
+        # shellcheck disable=SC2086
+        if ! result=$(aws ec2 create-tags \
+                      --profile "$JUJU_CREDENTIAL" \
+                      --region "$JUJU_REGION" \
+                      --tags "Key=k8s.io/role/master,Value=true" \
+                      --resources $instances 2>&1); then
+            abort "$result"
+        fi
     fi
     >&2 echo "Created tag KubernetesCluster=$tag on $instances $group_id"
 }
@@ -185,6 +199,7 @@ tag_subnets() {
     # shellcheck disable=SC2086
     if ! subnet_ids="$(aws ec2 describe-instances \
                        --profile "$JUJU_CREDENTIAL" \
+                       --region "$JUJU_REGION" \
                        --instance-ids $instances \
                        --query "Reservations[*].Instances[*].SubnetId" \
                        --output text | tr '\n' ' ' 2>&1)"; then
@@ -197,6 +212,7 @@ tag_subnets() {
     # shellcheck disable=SC2086
     if ! result=$(aws ec2 create-tags \
                   --profile "$JUJU_CREDENTIAL" \
+                  --region "$JUJU_REGION" \
                   --tags "Key=KubernetesCluster,Value=$tag" \
                   --resources $subnet_ids 2>&1); then
         abort "$result"
