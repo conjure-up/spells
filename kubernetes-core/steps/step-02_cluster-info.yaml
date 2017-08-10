@@ -1,3 +1,0 @@
-title: Kubernetes Cluster Status Check
-description: Run 'kubectl cluster-info' to show cluster status.
-viewable: True
