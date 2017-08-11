@@ -155,75 +155,6 @@ unitMachine()
     juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format json | jq -r ".applications[\"$1\"][\"units\"][\"$1/$2\"][\"machine\"]"
 }
 
-# Waits for machine to start
-#
-# Arguments:
-# machine: machine number
-waitForMachine()
-{
-    for machine; do
-        while [ "$(agentState $machine)" != started ]; do
-            sleep 5
-        done
-    done
-}
-
-# Waits for service to start
-#
-# Arguments:
-# service: service name
-waitForService()
-{
-
-    for service; do
-        while [ "$(agentStateUnit "$service" 0)" != active ]; do
-            sleep 5
-        done
-    done
-}
-
-# Parses result into json output
-#
-# Arguments:
-# $1: return message
-# $2: return code
-# $3: true/false
-exposeResult()
-{
-    printf '{"message": "%s", "returnCode": %d, "isComplete": %s}' "$1" "$2" "$3"
-    exit 0
-}
-
-# Checks an array of applications for an error flag
-#
-# Arguments:
-# $1: array of applications
-checkUnitsForErrors() {
-    applications=$1
-    for i in "${applications[@]}"
-    do
-        if [ $(unitStatus "$i" 0) = "error" ]; then
-            debug "$i, gave a charm error."
-            exposeResult "Error with $i, please check juju status" 1 "false"
-        fi
-    done
-}
-
-# Checks an array of applications for an active flag
-#
-# Arguments:
-# $1: array of applications
-checkUnitsForActive() {
-    applications=$1
-    for i in "${applications[@]}"
-    do
-        debug "Checking agent state of $i: $(unitStatus $i 0)"
-        if [ $(unitStatus "$i" 0) != "active" ]; then
-            exposeResult "$i not quite ready yet" 0 "false"
-        fi
-    done
-}
-
 # Safely expands tilde paths
 #
 # Arguments:
@@ -282,4 +213,28 @@ redis-cli() {
 setResult()
 {
     redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
+}
+
+# autoincrements a file as to not overwrite existing ones
+#
+# Arguments:
+# $1: path to file
+autoincrFile()
+{
+    name="$1"
+    if [[ -e "$name" ]] ; then
+        i=0
+        while [[ -e "$name-$i" ]] ; do
+            let i++
+        done
+        printf "$name-$i"
+    fi
+}
+
+# uuidgen printing first 3 characters
+genHash()
+{
+    local sha
+    sha=$(uuidgen | cut -d- -f1)
+    printf "${sha:0:3}"
 }

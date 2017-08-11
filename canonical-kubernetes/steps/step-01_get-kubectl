@@ -1,14 +1,18 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
-cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
+kubeconfig_path=$(autoincrFile "$HOME/.kube/config")
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$kubeconfig_path"
+
+# Create a unique context for this config
+hash=$(genHash)
+sed -i "s/juju-context/juju-context-$hash/g" "$kubeconfig_path"
 
 if [[ $(uname -s) = "Darwin" ]]; then
     repo=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/
@@ -23,8 +27,7 @@ else
     sudo snap install kubefed --classic || true
 fi
 
-echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
-chmod +x $HOME/bin/kubectl.$JUJU_MODEL
-
-setResult "The Kubernetes client utility is now available at '$cmd_to_run'"
+latest_config_filename="${kubeconfig_path##*/}"
+redis-cli set "conjure-up.$CONJURE_UP_SPELL.latest_config_filename" "$latest_config_filename"
+setResult "The Kubernetes client utility is now available, run with \`kubectl --kubeconfig=\$HOME/.kube/$latest_config_filename\`"
 exit 0
