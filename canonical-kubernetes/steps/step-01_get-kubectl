@@ -8,7 +8,11 @@ mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
 kubeconfig_path=$(autoincrFile "$HOME/.kube/config")
-juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "~/.kube/$kubeconfig_path"
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$kubeconfig_path"
+
+# Create a unique context for this config
+hash=$(genHash)
+sed -i "s/juju-context/juju-context-$hash/g" "$kubeconfig_path"
 
 if [[ $(uname -s) = "Darwin" ]]; then
     repo=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/
