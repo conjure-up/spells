@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
@@ -28,5 +28,5 @@ else
 fi
 
 latest_config_filename="${kubeconfig_path##*/}"
-setResult "The Kubernetes client utility is now available, append this clusters config with 'export KUBECONFIG=$KUBECONFIG:$latest_config_filename'"
+setResult "The Kubernetes client utility is now available, run with \`kubectl --kubeconfig=\$HOME/.kube/$latest_config_filename\`"
 exit 0
