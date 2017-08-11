@@ -283,3 +283,19 @@ setResult()
 {
     redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
 }
+
+# autoincrements a file as to not overwrite existing ones
+#
+# Arguments:
+# $1: path to file
+autoincrFile()
+{
+name="$1"
+if [[ -e "$name" ]] ; then
+    i=0
+    while [[ -e "$name-$i" ]] ; do
+        let i++
+    done
+    printf "$name-$i"
+fi
+}

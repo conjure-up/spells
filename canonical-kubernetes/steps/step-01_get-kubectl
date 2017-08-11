@@ -7,8 +7,8 @@ set -eu
 mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
-cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
+kubeconfig_path=$(autoincrFile "$HOME/.kube/config")
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "~/.kube/$kubeconfig_path"
 
 if [[ $(uname -s) = "Darwin" ]]; then
     repo=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/
@@ -23,8 +23,6 @@ else
     sudo snap install kubefed --classic || true
 fi
 
-echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
-chmod +x $HOME/bin/kubectl.$JUJU_MODEL
-
-setResult "The Kubernetes client utility is now available at '$cmd_to_run'"
+latest_config_filename="${kubeconfig_path##*/}"
+setResult "The Kubernetes client utility is now available, append this clusters config with 'export KUBECONFIG=$KUBECONFIG:$latest_config_filename'"
 exit 0
