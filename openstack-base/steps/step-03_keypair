@@ -8,11 +8,6 @@ debug "Environment Variables: $_ssh_public_key"
 tmpfile=$(mktemp)
 debug "Created tmpfile: $tmpfile"
 
-cat <<EOF> $tmpfile
-sudo apt update > /dev/null 2>&1
-sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
-EOF
-
 # write credentials
 $(scriptPath)/share/novarc >> $tmpfile
 
