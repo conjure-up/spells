@@ -229,7 +229,7 @@ configure_k8s() {
     fi
     for snap in $snaps; do
         echo "Configuring cloud-provider for $snap"
-        result=$(juju run --format=yaml --application "kubernetes-$role" -- \
+        result=$(juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --format=yaml --application "kubernetes-$role" -- \
                  bash -c "snap set $snap cloud-provider=aws && service snap.$snap.daemon restart" 2>&1)
         if echo "$result" | grep -q 'ReturnCode: [^0]'; then
             abort "$result"
@@ -239,7 +239,7 @@ configure_k8s() {
 }
 
 enable_cni() {
-    cluster_tag="$(juju model-config --format=tabular cdk-tag)"
+    cluster_tag="$(juju model-config -m $JUJU_CONTROLLER:$JUJU_MODEL --format=tabular cdk-tag)"
 
     # loading policy & role docs, and creating profile
     load_iam_policy master
