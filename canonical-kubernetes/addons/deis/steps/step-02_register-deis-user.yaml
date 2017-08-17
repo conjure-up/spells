@@ -1,0 +1,21 @@
+title: Register Deis user
+description: Register an initial admin user for Deis
+viewable: True
+required: True
+additional-input:
+  - label: Username
+    key: DEIS_USERNAME
+    type: text
+    default: admin
+  - label: Password
+    key: DEIS_PASSWORD
+    type: password
+    default: password
+  - label: Email
+    key: DEIS_EMAIL
+    type: text
+    default: user@example.com
+  - label: SSH public key path
+    key: SSHPUBLICKEY
+    type: text
+    default: ~/.ssh/id_rsa.pub

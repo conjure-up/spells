@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+deis_register_url=$(getKey "deis-register-url")
+deis_elb_host=$(getKey "deis-elb-host")
+
+echo "Registering initial admin user"
+deis register "$deis_register_url" --username=$DEIS_USERNAME --password=$DEIS_PASSWORD --email=$DEIS_EMAIL
+
+echo "Uploading ssh keys"
+_ssh_public_key=$(expandPath "$SSHPUBLICKEY")
+if [ ! -f "$_ssh_public_key" ]; then
+    echo "Couldnt find $_ssh_public_key, attempting to create one: " ${_ssh_public_key%.*}
+    ssh-keygen -N '' -f ${_ssh_public_key%.*} > /dev/null 2>&1
+    echo "ssh-keygen result: $?"
+fi
+
+deis keys:add $SSHPUBLICKEY
+
+# EXAMPLE TEST
+# $ git clone https://github.com/heroku/node-js-getting-started.git
+# $ cd node-js-getting-started/
+# $ deis create node-js-getting-started
+# $ git push deis master
+
+setResult "Deis is ready to go!\n\nYour applications can be reached via http://<application-name>.$deis_elb_host.nip.io.\n\nVisit https://deis.com/docs/workflow/applications/deploying-apps/ to learn more about deploying Deis applications!"
+
+exit 0
