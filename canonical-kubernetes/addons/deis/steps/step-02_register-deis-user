@@ -37,6 +37,12 @@ deis keys:add "$_ssh_public_key"
 # $ deis create node-js-getting-started
 # $ git push deis master
 
-setResult "Deis is ready to go!\n\nYour applications can be reached via http://<application-name>.$deis_elb_host.nip.io.\n\nVisit https://deis.com/docs/workflow/applications/deploying-apps/ to learn more about deploying Deis applications!"
+setResult "$(cat <<EOF
+Deis is ready to go!
+
+Your applications can be reached via http://<application-name>.$deis_elb_host
+
+Visit https://deis.com/docs/workflow/applications/deploying-apps/ to learn more about deploying Deis applications!
+EOF)"
 
 exit 0
