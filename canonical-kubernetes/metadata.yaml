@@ -1,4 +1,4 @@
-friendly-name: The Canonical Distribution of Kubernetes
+friendly-name: Canonical Distribution of Kubernetes
 version: 1
 bundle-name: canonical-kubernetes
 options-whitelist:

@@ -1,13 +1,12 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
 mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
-cmd_to_run="~/bin/kubectl.$JUJU_MODEL"
 juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
 
 if [[ $(uname -s) = "Darwin" ]]; then
@@ -23,8 +22,8 @@ else
     sudo snap install kubefed --classic || true
 fi
 
-echo "kubectl --kubeconfig=$HOME/.kube/config.$JUJU_MODEL \$@" > $HOME/bin/kubectl.$JUJU_MODEL
-chmod +x $HOME/bin/kubectl.$JUJU_MODEL
+echo "KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL /snap/bin/kubectl \$@" > $HOME/bin/kubectl
+chmod +x $HOME/bin/kubectl
 
-setResult "The Kubernetes client utility is now available at '$cmd_to_run'"
+setResult "The Kubernetes client utility (kubectl) is now available"
 exit 0
