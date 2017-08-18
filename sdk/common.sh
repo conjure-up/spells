@@ -291,7 +291,7 @@ setResult()
 # $2: VALUE
 setKey()
 {
-    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.$1" "$2"
+    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
 }
 
 # gets a redis namespace key/value
@@ -300,5 +300,5 @@ setKey()
 # $1: KEY
 getKey()
 {
-    redis-cli get "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.$1"
+    redis-cli get "conjure-up.$CONJURE_UP_SPELL.$1"
 }

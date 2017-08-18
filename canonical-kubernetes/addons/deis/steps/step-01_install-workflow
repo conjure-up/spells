@@ -19,7 +19,7 @@ chmod +x $HOME/bin/deis
 echo "Installing Helm CLI"
 HELM_VERSION="v2.6.0"
 curl -fsSL -o $WORK_DIR/helm-stable.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-"$HELM_VERSION"-linux-amd64.tar.gz
-tar -C $WORK_DIR -zxvf helm-stable.tar.gz
+tar -C $WORK_DIR -zxvf $WORK_DIR/helm-stable.tar.gz
 mv $WORK_DIR/linux-amd64/helm $HOME/bin/helm
 
 init_count=0
@@ -33,9 +33,8 @@ done
 
 
 check_ready_replicas() {
-    local ready_replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq .status.readyReplicas)"
-    local replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq .status.replicas)"
-    [[ -z "$ready_replicas" ]] || ready_replicas=0
+    local ready_replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.readyReplicas // 0')"
+    local replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.replicas // 0')"
     [[ "$ready_replicas" -eq "$replicas" ]]
 }
 

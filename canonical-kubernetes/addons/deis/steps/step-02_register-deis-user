@@ -7,8 +7,19 @@ set -eux
 deis_register_url=$(getKey "deis-register-url")
 deis_elb_host=$(getKey "deis-elb-host")
 
-echo "Registering initial admin user"
-deis register "$deis_register_url" --username=$DEIS_USERNAME --password=$DEIS_PASSWORD --email=$DEIS_EMAIL
+register_user() {
+    deis register "$deis_register_url --username=$DEIS_USERNAME --password=$DEIS_PASSWORD --email=$DEIS_EMAIL"
+}
+
+register_count=0
+while ! register_user; do
+    if [[ "$register_count" -gt 15 ]]; then
+        break
+    fi
+    echo "Registering initial admin user"
+    ((register_count=register_count+1))
+    sleep 10
+done
 
 echo "Uploading ssh keys"
 _ssh_public_key=$(expandPath "$SSHPUBLICKEY")
@@ -18,7 +29,7 @@ if [ ! -f "$_ssh_public_key" ]; then
     echo "ssh-keygen result: $?"
 fi
 
-deis keys:add $SSHPUBLICKEY
+deis keys:add "$_ssh_public_key"
 
 # EXAMPLE TEST
 # $ git clone https://github.com/heroku/node-js-getting-started.git
