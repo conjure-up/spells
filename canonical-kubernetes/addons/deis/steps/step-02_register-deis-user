@@ -8,7 +8,7 @@ deis_register_url=$(getKey "deis-register-url")
 deis_elb_host=$(getKey "deis-elb-host")
 
 register_user() {
-    deis register "$deis_register_url --username=$DEIS_USERNAME --password=$DEIS_PASSWORD --email=$DEIS_EMAIL"
+    deis register "$deis_register_url" --username=$DEIS_USERNAME --password=$DEIS_PASSWORD --email=$DEIS_EMAIL
 }
 
 register_count=0
