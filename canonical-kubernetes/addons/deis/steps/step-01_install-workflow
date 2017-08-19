@@ -52,7 +52,11 @@ echo "Adding Deis chart"
 helm repo add deis https://charts.deis.com/workflow
 
 echo "Install Deis workflow"
-helm install deis/workflow --namespace deis
+aws_secret_access_key="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_secret_access_key/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
+aws_access_key_id="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_access_key_id/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
+
+helm install deis/workflow --namespace deis \
+     --set global.storage=s3,s3.accesskey="$aws_access_key_id",s3.secretkey="$aws_secret_access_key",s3.region="$JUJU_REGION",s3.registry_bucket="$DEIS_S3_REGISTRY_BUCKET",s3.builder_bucket="$DEIS_S3_BUILDER_BUCKET",s3.database_bucket="$DEIS_S3_DATABASE_BUCKET"
 
 echo "Get AWS ELB hostname"
 aws_elb_host="$(kubectl --namespace=deis get svc deis-router -ojson|jq -r .status.loadBalancer.ingress[0].hostname)"

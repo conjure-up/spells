@@ -1,3 +1,19 @@
 title: Install Deis Workflow
-description: Download and install Deis Workflow and Helm
+description: |
+  Download and install Deis Workflow and Helm. It is highly recommended to
+  create Amazon S3 buckets for off-cluster Object Storage. Please make sure these
+  are unique bucket names as to not collide with others.
 viewable: True
+additional-input:
+  - label: S3 builder bucket
+    key: DEIS_S3_BUILDER_BUCKET
+    type: text
+    default: conjure-up-deis-builder
+  - label: S3 registry bucket
+    key: DEIS_S3_REGISTRY_BUCKET
+    type: text
+    default: conjure-up-deis-registry
+  - label: S3 database bucket
+    key: DEIS_S3_DATABASE_BUCKET
+    type: text
+    default: conjure-up-deis-database
