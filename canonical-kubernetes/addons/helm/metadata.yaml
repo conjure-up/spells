@@ -1,0 +1,9 @@
+friendly-name: Helm
+description: |
+  The package manager for Kubernetes
+
+  Helm is the best way to find, share, and use software built for Kubernetes.
+version: 1
+cloud-whitelist:
+  - aws
+  - localhost
