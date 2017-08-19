@@ -1,0 +1,9 @@
+title: Install Helm
+description: |
+  Download and installs Helm
+viewable: True
+additional-input:
+  - label: Helm Version
+    key: HELM_VERSION
+    type: text
+    default: v2.6.0
