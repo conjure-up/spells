@@ -5,5 +5,4 @@ description: |
 version: 1
 cloud-whitelist:
   - aws
-# Additional charms/configs needed for Deis Workflow
-# bundle-partial:
+  - localhost

@@ -1,0 +1,95 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
+
+install_deis_cli() {
+    echo "Installing Deis CLI"
+    curl -fsSL -o $HOME/bin/deis  https://storage.googleapis.com/workflow-cli-release/deis-stable-linux-amd64
+    chmod +x $HOME/bin/deis
+}
+
+install_helm() {
+    WORK_DIR=`mktemp -d`
+
+    echo "Installing Helm CLI"
+    HELM_VERSION="v2.6.0"
+    curl -fsSL -o $WORK_DIR/helm-stable.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-"$HELM_VERSION"-linux-amd64.tar.gz
+    tar -C $WORK_DIR -zxvf $WORK_DIR/helm-stable.tar.gz
+    mv $WORK_DIR/linux-amd64/helm $HOME/bin/helm
+
+    init_count=0
+    while ! helm init --upgrade; do
+        if [[ "$init_count" -gt 5 ]]; then
+            break
+        fi
+        ((init_count=init_count+1))
+        sleep 5
+    done
+    rm -rf "$WORK_DIR"
+}
+
+check_ready_replicas() {
+    local ready_replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.readyReplicas // 0')"
+    local replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.replicas // 0')"
+    [[ "$ready_replicas" -eq "$replicas" ]]
+}
+
+wait_for_tiller() {
+    wait_replica_ready=0
+    while ! check_ready_replicas; do
+        echo "Waiting for tiller pod to become ready (try $wait_replica_ready/15)"
+        if [[ "$wait_replica_ready" -gt 15 ]]; then
+            break
+        fi
+        ((wait_replica_ready=wait_replica_ready+1))
+        sleep 10
+    done
+}
+
+install_deis(){
+    echo "Adding Deis chart"
+    helm repo add deis https://charts.deis.com/workflow
+
+    echo "Install Deis workflow"
+    aws_secret_access_key="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_secret_access_key/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
+    aws_access_key_id="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_access_key_id/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
+
+    helm install deis/workflow --namespace deis \
+         --set global.storage=s3,s3.accesskey="$aws_access_key_id",s3.secretkey="$aws_secret_access_key",s3.region="$JUJU_REGION",s3.registry_bucket="$DEIS_S3_REGISTRY_BUCKET",s3.builder_bucket="$DEIS_S3_BUILDER_BUCKET",s3.database_bucket="$DEIS_S3_DATABASE_BUCKET"
+}
+
+setup_elb() {
+    echo "Get AWS ELB hostname"
+    aws_elb_host="$(kubectl --namespace=deis get svc deis-router -ojson|jq -r .status.loadBalancer.ingress[0].hostname)"
+
+    echo "Get AWS name"
+    aws_elb_name="$(echo $aws_elb_host|cut -d- -f1)"
+
+    echo "Update timeout settings for elb"
+    aws elb modify-load-balancer-attributes \
+        --profile "$JUJU_CREDENTIAL" \
+        --region "$JUJU_REGION" \
+        --load-balancer-name  "$aws_elb_name" \
+        --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":1200}}"
+
+    while ! host "$aws_elb_host"; do
+        echo "Waiting for host resolution to load balancer"
+        sleep 10
+    done
+    hostname="$(mapfile -t host_array <<< $(host "$aws_elb_host") && echo ${host_array[0]} | cut -d ' ' -f4)"
+
+    setKey "deis-register-url" "http://deis.$hostname.nip.io"
+    setKey "deis-elb-host" "$hostname.nip.io"
+}
+
+enable_deis() {
+    install_deis_cli
+    install_helm
+    wait_for_tiller
+    install_deis
+    setup_elb
+}
