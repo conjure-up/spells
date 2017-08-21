@@ -43,6 +43,7 @@ Deis is ready to go!
 Your applications can be reached via http://<application-name>.$deis_elb_host
 
 Visit https://deis.com/docs/workflow/applications/deploying-apps/ to learn more about deploying Deis applications!
-EOF)"
+EOF
+)"
 
 exit 0
