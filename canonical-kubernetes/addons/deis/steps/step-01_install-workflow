@@ -55,8 +55,9 @@ echo "Install Deis workflow"
 aws_secret_access_key="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_secret_access_key/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
 aws_access_key_id="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_access_key_id/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
 
+bucket_id=$(pwgen -0AB 4 1)
 helm install deis/workflow --namespace deis \
-     --set global.storage=s3,s3.accesskey="$aws_access_key_id",s3.secretkey="$aws_secret_access_key",s3.region="$JUJU_REGION",s3.registry_bucket="$DEIS_S3_REGISTRY_BUCKET",s3.builder_bucket="$DEIS_S3_BUILDER_BUCKET",s3.database_bucket="$DEIS_S3_DATABASE_BUCKET"
+     --set global.storage=s3,global.use_cni=true,s3.accesskey="$aws_access_key_id",s3.secretkey="$aws_secret_access_key",s3.region="$JUJU_REGION",s3.registry_bucket="$DEIS_S3_REGISTRY_BUCKET-$bucket_id",s3.builder_bucket="$DEIS_S3_BUILDER_BUCKET-$bucket_id",s3.database_bucket="$DEIS_S3_DATABASE_BUCKET-$bucket_id"
 
 echo "Get AWS ELB hostname"
 aws_elb_host="$(kubectl --namespace=deis get svc deis-router -ojson|jq -r .status.loadBalancer.ingress[0].hostname)"
