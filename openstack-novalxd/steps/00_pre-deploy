@@ -6,7 +6,30 @@ set -eux
 
 if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
-    sed "s/##MODEL##/$JUJU_MODEL/" $(scriptPath)/lxd-profile.yaml | lxc profile edit "juju-$JUJU_MODEL"
+    NETWORK=$(getKey "lxd-network-name")
+    STORAGE_POOL=$(getKey "lxd-storage-pool")
+    echo "Network: $(getKey "lxd-network")"
+    lxc profile edit "juju-$JUJU_MODEL" <<EOF
+name: juju-${JUJU_MODEL}
+config:
+  boot.autostart: "true"
+  security.nesting: "true"
+  security.privileged: "true"
+  linux.kernel_modules: openvswitch,nbd,ip_tables,ip6_tables,netlink_diag
+  raw.lxc: |
+    lxc.aa_profile=unconfined
+    lxc.mount.auto=sys:rw
+devices:
+  eth0:
+    nictype: bridged
+    parent: ${NETWORK}
+    type: nic
+  root:
+    path: /
+    pool: ${STORAGE_POOL}
+    type: disk
+EOF
+    lxc network create conjureup0 ipv6.address=none ipv4.address=10.101.0.1/24 ipv4.nat=true || echo "conjureup0 network already exists" && true
 fi
 
 setResult "Successful pre-deploy."
