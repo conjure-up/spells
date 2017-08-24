@@ -9,6 +9,8 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     NETWORK=$(getKey "lxd-network-name")
     STORAGE_POOL=$(getKey "lxd-storage-pool")
     echo "Network: $(getKey "lxd-network")"
+    lxc network create conjureup0 ipv6.address=none ipv4.address=10.101.0.1/24 ipv4.nat=true || echo "conjureup0 network already exists" && true
+
     lxc profile edit "juju-$JUJU_MODEL" <<EOF
 name: juju-${JUJU_MODEL}
 config:
@@ -24,12 +26,15 @@ devices:
     nictype: bridged
     parent: ${NETWORK}
     type: nic
+  eth1:
+    nictype: bridged
+    parent: conjureup0
+    type: nic
   root:
     path: /
     pool: ${STORAGE_POOL}
     type: disk
 EOF
-    lxc network create conjureup0 ipv6.address=none ipv4.address=10.101.0.1/24 ipv4.nat=true || echo "conjureup0 network already exists" && true
 fi
 
 setResult "Successful pre-deploy."
