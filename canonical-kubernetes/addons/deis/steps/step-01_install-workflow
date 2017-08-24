@@ -33,8 +33,8 @@ echo "Adding Deis chart"
 helm repo add deis https://charts.deis.com/workflow
 
 echo "Install Deis workflow"
-aws_secret_access_key="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_secret_access_key/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
-aws_access_key_id="$(awk -F '=' '{if (! ($0 ~ /^;/) && $0 ~ /aws_access_key_id/) print $2}' $HOME/.aws/credentials| tr -d ' ')"
+aws_secret_access_key="$(aws configure get --profile "$JUJU_CREDENTIAL" aws_secret_access_key)"
+aws_access_key_id="$(aws configure get --profile "$JUJU_CREDENTIAL" aws_access_key_id)"
 
 bucket_id=$(pwgen -0AB 4 1)
 helm install deis/workflow --namespace deis \
