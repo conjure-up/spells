@@ -3,34 +3,15 @@
 set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+. "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/common.sh"
 
 export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
-
-WORK_DIR=`mktemp -d`
-
-cleanup() {
-    rm -rf "$WORK_DIR"
-}
 
 echo "Installing Deis CLI"
 curl -fsSL -o $HOME/bin/deis  https://storage.googleapis.com/workflow-cli-release/deis-stable-linux-amd64
 chmod +x $HOME/bin/deis
 
-echo "Installing Helm CLI"
-HELM_VERSION="v2.6.0"
-curl -fsSL -o $WORK_DIR/helm-stable.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-"$HELM_VERSION"-linux-amd64.tar.gz
-tar -C $WORK_DIR -zxvf $WORK_DIR/helm-stable.tar.gz
-mv $WORK_DIR/linux-amd64/helm $HOME/bin/helm
-
-init_count=0
-while ! helm init --upgrade; do
-    if [[ "$init_count" -gt 5 ]]; then
-        break
-    fi
-    ((init_count=init_count+1))
-    sleep 5
-done
-
+install_helm
 
 check_ready_replicas() {
     local ready_replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.readyReplicas // 0')"
@@ -81,5 +62,4 @@ hostname="$(mapfile -t host_array <<< $(host "$aws_elb_host") && echo ${host_arr
 setKey "deis-register-url" "http://deis.$hostname.nip.io"
 setKey "deis-elb-host" "$hostname.nip.io"
 
-cleanup
 exit 0
