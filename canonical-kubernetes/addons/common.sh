@@ -13,7 +13,7 @@ function install_helm() {
         tar -C "$WORK_DIR" -zxvf "$WORK_DIR/helm-stable.tar.gz"
         mv "$WORK_DIR/linux-amd64/helm" "$HOME/bin/.helm"
         chmod +x "$HOME/bin/.helm"
-        mv "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
+        cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
         chmod +x "$HOME/bin/helm"
 
         init_count=0
