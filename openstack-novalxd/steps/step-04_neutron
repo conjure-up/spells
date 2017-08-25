@@ -5,6 +5,18 @@
 tmpfile=$(mktemp)
 
 $(scriptPath)/share/novarc > "$tmpfile"
+
+LXD_NETWORK=$(getKey "lxd-network-name")
+LXD_GATEWAY=$(getKey "lxd-gateway")
+LXD_DHCP_RANGE_START=$(getKey "lxd-network-dhcp-range-start")
+LXD_DHCP_RANGE_STOP=$(getKey "lxd-network-dhcp-range-stop")
+
+cat<<EOF>> "$tmpfile"
+export LXD_NETWORK=${LXD_NETWORK}
+export LXD_GATEWAY=${LXD_GATEWAY}
+export LXD_DHCP_RANGE_START=${LXD_DHCP_RANGE_START}
+export LXD_DHCP_RANGE_STOP=${LXD_DHCP_RANGE_STOP}
+EOF
 cat $(scriptPath)/share/common.sh >> "$tmpfile"
 cat $(scriptPath)/share/neutron.sh >> "$tmpfile"
 
