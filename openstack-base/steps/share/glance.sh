@@ -5,11 +5,11 @@ imagesuffix="-kvm"
 mkdir -p $HOME/glance-images || true
 if [ ! -f $HOME/glance-images/xenial-server-cloudimg-amd64-$imagetype ]; then
     debug "Downloading xenial image..."
-    wget -qO ~/glance-images/xenial-server-cloudimg-amd64-$imagetype https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-$imagetype
+    wget --user-agent="conjure-up/openstack-novalxd" -qO ~/glance-images/xenial-server-cloudimg-amd64-$imagetype https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-$imagetype
 fi
 if [ ! -f $HOME/glance-images/trusty-server-cloudimg-amd64-$imagetype ]; then
     debug "Downloading trusty image..."
-    wget -qO ~/glance-images/trusty-server-cloudimg-amd64-$imagetype https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-$imagetype
+    wget --user-agent="conjure-up/openstack-novalxd" -qO ~/glance-images/trusty-server-cloudimg-amd64-$imagetype https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-$imagetype
 fi
 
 if ! glance image-list --property-filter name="trusty$imagesuffix" | grep -q "trusty$imagesuffix" ; then
