@@ -1,0 +1,8 @@
+friendly-name: Gestalt Platform
+description: |
+  By leveling up your application integrations to a declarative model, Gestalt
+  allows you to upgrade your enterprise without throwing away or rewriting your
+  applications.
+version: 1
+cloud-whitelist:
+  - aws

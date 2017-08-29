@@ -1,0 +1,17 @@
+#!/bin/bash
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+retry_arg="-r5"
+if [[ "${CONJURE_UP_MODE-}" == "test" ]]; then
+    retry_arg=""
+fi
+
+if ! juju wait $retry_arg -vwm "$JUJU_CONTROLLER:$JUJU_MODEL"; then
+    setResult "Applications did not start successfully"
+    exit 1
+fi
+
+setResult "Applications Ready"
+exit 0

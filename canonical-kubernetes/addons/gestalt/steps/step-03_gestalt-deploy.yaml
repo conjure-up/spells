@@ -1,0 +1,9 @@
+title: Deploy Gestalt Platform
+description: |
+  Initiate the deployment of Gestalt on Kubernetes
+viewable: True
+additional-input:
+ - label: "External LB Hostname"
+   key: "GESTALT_EXTERNAL_LB_HOSTNAME"
+   type: "string"
+   default: "-"

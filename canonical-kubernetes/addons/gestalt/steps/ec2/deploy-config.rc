@@ -1,0 +1,26 @@
+# --------------------------------------------------------------------
+# AWS Specific Configuration
+# --------------------------------------------------------------------
+
+# Route53 DNS Config
+AWS_DNS_DOMAIN="cluster1.example.com"
+AWS_DNS_HOSTED_ZONE_ID="<Enter AWS Hosted Zone ID>"
+
+# Cert corresponding to AWS_DNS_DOMAIN. Obtain the Cert ARN from AWS Certificate Manager.
+AWS_LB_CERT_ARN="<ARN number of SSL certificate>"
+
+# Elastic Load Balancer Settings, must correspond to JUJU_REGION
+AWS_LB_ZONES="us-east-1a us-east-1b us-east-1c us-east-1d us-east-1e"
+
+# Gestalt LB and DNS resource names
+AWS_GESTALT_UI_LB_NAME="gestalt-ui"
+AWS_GESTALT_UI_DNS_NAME="gestalt-ui"
+
+AWS_GESTALT_KONG_LB_NAME="gestalt-apis"
+AWS_GESTALT_KONG_DNS_NAME="gestalt-apis"
+
+
+# --------------------------------------------------------------------
+# Other settings
+# --------------------------------------------------------------------
+# GESTALT_INSTALL_MODE=debug  # set to 'debug' or any other value for non-debug

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -eux
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+# Provision Ceph Cluster
+juju deploy cs:ceph-mon -n 3
+juju deploy cs:ceph-osd -n 3
+juju add-relation ceph-mon ceph-osd
+
+juju storage-pools
+juju add-storage ceph-osd/0 osd-devices=ebs,20G,1
+juju add-storage ceph-osd/1 osd-devices=ebs,20G,1
+juju add-storage ceph-osd/2 osd-devices=ebs,20G,1
+
+juju add-relation kubernetes-master ceph-mon
+
+retry_arg="-r5"
+if [[ "${CONJURE_UP_MODE-}" == "test" ]]; then
+    retry_arg=""
+fi
+
+if ! juju wait $retry_arg -vwm "$JUJU_CONTROLLER:$JUJU_MODEL"; then
+    setResult "Applications did not start successfully"
+    exit 1
+fi
+result="Ceph Cluster provisioning and being added to Kubernetes cluster..."
+setResult $result
+exit 0

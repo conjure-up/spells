@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -eux
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$(dirname "$0")/$JUJU_PROVIDERTYPE/gestalt-functions.sh"
+install_gestalt="$(dirname "$0")/$JUJU_PROVIDERTYPE/install-gestalt.sh"
+
+# Create PVs
+echo "Creating PersistentVolumes"
+for i in `seq 1 20`; do
+  juju run-action kubernetes-master/0 create-rbd-pv name=rbd2-$i size=1280
+done
+
+retry_arg="-r5"
+if [[ "${CONJURE_UP_MODE-}" == "test" ]]; then
+    retry_arg=""
+fi
+
+if ! juju wait $retry_arg -vwm "$JUJU_CONTROLLER:$JUJU_MODEL"; then
+    setResult "Applications did not start successfully"
+    exit 1
+fi
+
+# Start install
+install_gestalt
+
+# ~/bin/kubectl logs gestalt-cdk-install > $(scriptPath)/cdk-cluster-info.txt
+
+# result="$(cat ~/CDK_CLUSTER_INFO.txt)"
+
+setResult "Install complete"
+exit 0

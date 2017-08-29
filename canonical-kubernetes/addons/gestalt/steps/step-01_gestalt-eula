@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+setResult "EULA accepted"
+exit 0
