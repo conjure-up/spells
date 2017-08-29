@@ -256,49 +256,30 @@ scriptPath() {
     env python3 -c "import os,sys; print(os.path.dirname(os.path.abspath(\"$0\")))"
 }
 
-# call the right redis-cli (mainly to ease dev testing)
-#
-# All arguments will be passed through to redis-cli
-redis-cli() {
-    local conjure_redis_cli
-    local system_redis_cli
-    local cli
-
-    conjure_redis_cli=$(which conjure-up.redis-cli || true)
-    system_redis_cli=$(which redis-cli || true)
-
-    if [ "$conjure_redis_cli" = "/snap/bin/conjure-up.redis-cli" ]; then
-       cli="$conjure_redis_cli"
-    else
-        cli="$system_redis_cli"
-    fi
-    "$cli" "$@"
-}
-
-# sets a redis namespace result for a step
+# sets a namespace result for a step
 #
 # Arguments:
 # $1: result message
 setResult()
 {
-    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
+    chlp unitdata set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
 }
 
-# sets a redis namespace key/value
+# sets a namespace key/value
 #
 # Arguments:
 # $1: KEY
 # $2: VALUE
 setKey()
 {
-    redis-cli set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
+    chlp unitdata set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
 }
 
-# gets a redis namespace key/value
+# gets a namespace key/value
 #
 # Arguments:
 # $1: KEY
 getKey()
 {
-    redis-cli get "conjure-up.$CONJURE_UP_SPELL.$1"
+    chlp unitdata get "conjure-up.$CONJURE_UP_SPELL.$1"
 }
