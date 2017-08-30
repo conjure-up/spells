@@ -4,7 +4,7 @@ set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-ip=$(unitAddress spark 0)
+ip=$(unitAddress zeppelin 0)
 
 setResult "Zeppelin UI is now configured and can be viewed at http://$ip:9090"
 exit 0
