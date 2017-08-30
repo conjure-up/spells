@@ -1,5 +1,5 @@
 sudo apt update > /dev/null 2>&1
-sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
+sudo apt -qyf install python3-openstackclient jq > /dev/null 2>&1
 
 imagesuffix="-kvm"
 declare -A arches=(["aarch64"]="arm64" ["x86_64"]="amd64")
