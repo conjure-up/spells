@@ -5,9 +5,11 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
+    tmpfile=$(mktemp)
+
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
     NETWORK=$(getKey "lxd-network-name")
-    if [[ "$NETWORK" = "None"]]; then
+    if [[ "$NETWORK" = "None" ]]; then
         NETWORK="lxdbr0"
     fi
     STORAGE_POOL=$(getKey "lxd-storage-pool")
@@ -16,7 +18,7 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     fi
     lxc network create conjureup0 ipv6.address=none ipv4.address=10.101.0.1/24 ipv4.nat=true || echo "conjureup0 network already exists" && true
 
-    lxc profile edit "juju-$JUJU_MODEL" <<EOF
+    cat <<EOF> "$tmpfile"
 name: juju-${JUJU_MODEL}
 config:
   boot.autostart: "true"
@@ -40,6 +42,7 @@ devices:
     pool: ${STORAGE_POOL}
     type: disk
 EOF
+    cat "$tmpfile" | lxc profile edit "juju-${JUJU_MODEL}"
 fi
 
 setResult "Successful pre-deploy."
