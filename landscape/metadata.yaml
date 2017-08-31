@@ -1,4 +1,0 @@
-cloud-whitelist: [maas]
-friendly-name: "Landscape"
-bundle-name: landscape-dense-maas
-suggested-model: controller
