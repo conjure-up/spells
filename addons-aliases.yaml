@@ -1,0 +1,6 @@
+deis:
+  spell: canonical-kubernetes
+  addons: [deis]
+helm:
+  spell: canonical-kubernetes
+  addons: [helm]
