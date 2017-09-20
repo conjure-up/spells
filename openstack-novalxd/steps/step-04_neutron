@@ -6,7 +6,7 @@ tmpfile=$(mktemp)
 
 $(scriptPath)/share/novarc > "$tmpfile"
 
-LXD_NETWORK=$(getKey "lxd-network-name")
+LXD_NETWORK=$(getKey "lxd-network")
 LXD_GATEWAY=$(getKey "lxd-gateway")
 LXD_DHCP_RANGE_START=$(getKey "lxd-network-dhcp-range-start")
 LXD_DHCP_RANGE_STOP=$(getKey "lxd-network-dhcp-range-stop")

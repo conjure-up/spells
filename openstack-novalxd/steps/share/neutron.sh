@@ -12,9 +12,9 @@ fi
 
 if ! neutron subnet-show ext-subnet > /dev/null 2>&1; then
     debug "adding ext-subnet"
-    if ! neutron subnet-create --name ext-subnet ext-net "$LXD_NETWORK" \
+    if ! neutron subnet-create --name ext-subnet  \
              --gateway "$LXD_GATEWAY" --disable-dhcp \
-             --allocation-pool start="$LXD_DHCP_RANGE_START",end="$LXD_DHCP_RANGE_STOP" > /dev/null 2>&1; then
+             --allocation-pool start="$LXD_DHCP_RANGE_START",end="$LXD_DHCP_RANGE_STOP" ext-net "$LXD_NETWORK"; then
         debug "could not subnet-create ext-subnet"
     fi
 fi
