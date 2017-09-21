@@ -14,10 +14,10 @@ sudo apt -qyf install python3-openstackclient > /dev/null 2>&1
 EOF
 
 # write credentials
-$(scriptPath)/share/novarc >> "$tmpfile"
+$(scriptPath)/../novarc >> "$tmpfile"
 
 # include lib
-cat $(scriptPath)/share/common.sh >> "$tmpfile"
+cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" >> "$tmpfile"
 
 if [ ! -f "$_ssh_public_key" ]; then
     debug "Couldnt find $_ssh_public_key, attempting to create one: " ${_ssh_public_key%.*}
@@ -29,7 +29,7 @@ fi
 echo "export SSHPUBLICKEY=$HOME/.ssh/$(basename $_ssh_public_key)" >> "$tmpfile"
 
 # write final script
-cat $(scriptPath)/share/keypair.sh >> "$tmpfile"
+cat $(scriptPath)/keypair.sh >> "$tmpfile"
 
 debug "Creating .ssh directory on controller node"
 juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
