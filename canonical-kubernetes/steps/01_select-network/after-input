@@ -4,5 +4,9 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-setKey "bundle-add" "$(scriptPath)/$NETWORKPLUGIN.yaml"
+if [[ "$NETWORKPLUGIN" == "calico" ]]; then
+    setKey "bundle-add" "calico.yaml"
+    setKey "bundle-remove""flannel.yaml"
+fi
 
+exit 0
