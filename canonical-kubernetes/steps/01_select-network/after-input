@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+setKey "bundle-add" "$(scriptPath)/$NETWORKPLUGIN.yaml"
+
