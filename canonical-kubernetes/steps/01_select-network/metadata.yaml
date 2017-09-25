@@ -1,6 +1,6 @@
 title: Choose Kubernetes Network Plugin
 description: Choose the type of network plugin you wish to use for your cluster
-viewable: True
+viewable: False
 additional-input:
   - label: Network Plugin
     key: NETWORKPLUGIN
