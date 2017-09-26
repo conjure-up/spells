@@ -256,16 +256,35 @@ scriptPath() {
     env python3 -c "import os,sys; print(os.path.dirname(os.path.abspath(\"$0\")))"
 }
 
-# sets a namespace result for a step
+# sets the result for the current spell, step, and phase
 #
 # Arguments:
 # $1: result message
 setResult()
 {
-    chlp unitdata set "conjure-up.$CONJURE_UP_SPELL.$CONJURE_UP_STEP.result" "$1"
+    setStepKey "$CONJURE_UP_PHASE.result" "$1"
 }
 
-# sets a namespace key/value
+# sets a state key/value namespaced to the current step
+#
+# Arguments:
+# $1: KEY
+# $2: VALUE
+setStepKey()
+{
+  setKey "$CONJURE_UP_STEP.$1" "$2"
+}
+
+# gets a state key/value namespaced to the current step
+#
+# Arguments:
+# $1: KEY
+getStepKey()
+{
+    getKey "$CONJURE_UP_STEP.$1"
+}
+
+# sets a state key/value namespaced to the current spell
 #
 # Arguments:
 # $1: KEY
@@ -275,7 +294,7 @@ setKey()
     chlp unitdata set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
 }
 
-# gets a namespace key/value
+# gets a state key/value namespaced by the current spell
 #
 # Arguments:
 # $1: KEY
