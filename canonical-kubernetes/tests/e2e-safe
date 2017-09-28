@@ -16,6 +16,4 @@ applicationUnits kubernetes-e2e | while read unit; do
         (juju scp $unit:$(echo $output | sed -n 's/^action-id: //p').log .; exit 1)
 done;
 
-juju remove-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e kubernetes-master
-juju remove-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e easyrsa
 juju remove-application -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e
