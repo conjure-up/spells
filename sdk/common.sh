@@ -77,6 +77,18 @@ for leader in leader_yaml:
     juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --application "$1" is-leader --format yaml | env python3 -c "$py_script"
 }
 
+# Gets list of units of an application
+#
+# Arguments:
+# $1: application name
+#
+# Returns:
+# list of units
+applicationUnits()
+{
+    juju status --format=json | jq ".applications[\"$1\"].units | keys | .[]" | sed 's/"//g'
+}
+
 # Exports the variables required for communicating with your cloud.
 #
 # Arguments:

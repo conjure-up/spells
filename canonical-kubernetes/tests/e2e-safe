@@ -1,0 +1,20 @@
+#!/bin/bash
+set -eu
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+juju deploy -m $JUJU_CONTROLLER:$JUJU_MODEL cs:~containers/kubernetes-e2e
+juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e kubernetes-master
+juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e easyrsa
+
+juju-wait -m $JUJU_CONTROLLER:$JUJU_MODEL
+
+applicationUnits kubernetes-e2e | while read unit; do
+    output=$(juju run-action --wait -m $JUJU_CONTROLLER:$JUJU_MODEL $unit test skip='\[(Disruptive|Flaky|Slow|Feature:.*)\]')
+    echo $output | grep -qE '^status: completed' ||
+        (juju scp $unit:$(echo $output | sed -n 's/^action-id: //p').log .; exit 1)
+done;
+
+juju remove-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e kubernetes-master
+juju remove-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e easyrsa
+juju remove-application -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e
