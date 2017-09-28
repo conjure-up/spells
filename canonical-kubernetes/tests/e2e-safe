@@ -4,7 +4,7 @@ set -eu
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 juju deploy -m $JUJU_CONTROLLER:$JUJU_MODEL cs:~containers/kubernetes-e2e
-juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e kubernetes-master
+juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e:kube-control kubernetes-master:kube-control
 juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e easyrsa
 
 juju-wait -m $JUJU_CONTROLLER:$JUJU_MODEL
