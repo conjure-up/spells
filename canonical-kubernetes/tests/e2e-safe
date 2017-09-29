@@ -11,9 +11,8 @@ juju add-relation -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e easyrsa
 juju-wait -q -m $JUJU_CONTROLLER:$JUJU_MODEL
 
 applicationUnits kubernetes-e2e | while read unit; do
-    output=$(juju run-action --wait -m $JUJU_CONTROLLER:$JUJU_MODEL $unit test skip='\[(Disruptive|Flaky|Slow|Feature:.*)\]')
-    echo $output | grep -qE '^status: completed' ||
-        (juju scp $unit:$(echo $output | sed -n 's/^action-id: //p').log .; exit 1)
+    juju run-action --wait -m $JUJU_CONTROLLER:$JUJU_MODEL $unit test skip='\[(Disruptive|Flaky|Slow|Feature:.*)\]' |
+        grep -qE '^status: completed' || (juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL $unit:*.log .; exit 1)
 done;
 
 juju remove-application -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-e2e
