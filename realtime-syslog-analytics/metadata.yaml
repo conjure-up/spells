@@ -1,6 +1,0 @@
-friendly-name: Realtime Syslog Analytics
-options-whitelist:
-  spark:
-  - spark_execution_mode
-version: 1
-bundle-name: realtime-syslog-analytics

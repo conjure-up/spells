@@ -37,15 +37,3 @@ bigdata:
       name: Apache Spark Cluster
       description: |
         Provides a complete deployment of Apache Spark in standalone HA mode as provided by Apache Bigtop. Ganglia and rsyslog applications are included to monitor cluster health and syslog activity.
-    - key: hadoop-spark
-      name: Apache Hadoop + Apache Spark Cluster
-      description: |
-        Provides a complete deployment of Hadoop and Spark components from Apache Bigtop that performs distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity.
-    - key: hadoop-kafka
-      name: Apache Hadoop + Apache Kafka Cluster
-      description: |
-        Provides a complete deployment of Hadoop and Kafka components from Apache Bigtop that perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity.
-    - key: realtime-syslog-analytics
-      name: Apache Hadoop/Spark/Zeppelin Realtime Syslog Analytics
-      description: |
-        Provides a big data environment for analysing syslog events. Built around Apache Hadoop, Apache Spark, Apache Zeppeling, Apache Flume, and Rsyslog components it offers log analyzation via Hadoop or Spark processing with Zeppelin notebook for development.
