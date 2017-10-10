@@ -1,0 +1,11 @@
+title: Choose Logging Application
+description: Choose the preferred logging mechanism
+viewable: True
+additional-input:
+  - label: Logging
+    key: LOGGINGPLUGIN
+    type: choice
+    default: rsyslog
+    choices:
+      - rsyslog
+      - Elastic Beats

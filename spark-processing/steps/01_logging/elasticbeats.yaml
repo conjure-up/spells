@@ -1,0 +1,23 @@
+services:
+  filebeat:
+    charm: cs:xenial/filebeat
+    annotations:
+      gui-x: "500"
+      gui-y: "375"
+  elasticsearch:
+    charm: cs:xenial/elasticsearch
+    num_units: 1
+    annotations:
+      gui-x: "750"
+      gui-y: "200"
+  kibana:
+    charm: cs:trusty/kibana
+    num_units: 1
+    expose: true
+    annotations:
+      gui-x: "1000"
+      gui-y: "200"
+relations:
+  - ["kibana:rest", "elasticsearch:client"]
+  - ["filebeat:elasticsearch", "elasticsearch:client"]
+  - ["filebeat:beats-host", "spark:juju-info"]

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$LOGGINGPLUGIN" != "rsyslog" ]]; then
+    setStepKey "bundle-remove" "rsyslog.yaml"
+    setStepKey "bundle-add" "elasticbeats.yaml"
+fi
+
+exit 0
