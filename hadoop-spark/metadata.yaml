@@ -1,6 +1,0 @@
-friendly-name: Apache Hadoop Spark Cluster
-options-whitelist:
-  spark:
-  - spark_execution_mode
-version: 1
-bundle-name: hadoop-spark
