@@ -1,0 +1,7 @@
+services:
+  rsyslog: True
+  rsyslog-forwarder-ha: True
+relations:
+  - ["rsyslog-forwarder-ha:juju-info", "spark:juju-info"]
+  - ["rsyslog-forwarder-ha:juju-info", "zookeeper:juju-info"]
+  - ["rsyslog:aggregator", "rsyslog-forwarder-ha:syslog"]

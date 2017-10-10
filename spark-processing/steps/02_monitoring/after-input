@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$MONITORPLUGIN" != "Ganglia" ]]; then
+    setStepKey "bundle-remove" "ganglia.yaml"
+    setStepKey "bundle-add" "elasticbeats.yaml"
+fi
+
+exit 0
