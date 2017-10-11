@@ -1,0 +1,7 @@
+services:
+  ganglia: True
+  ganglia-node: True
+relations:
+  - ["ganglia-node:juju-info", "spark:juju-info"]
+  - ["ganglia-node:juju-info", "zookeeper:juju-info"]
+  - ["ganglia:node", "ganglia-node:node"]
