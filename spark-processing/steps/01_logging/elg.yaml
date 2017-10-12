@@ -2,7 +2,7 @@ services:
   filebeat:
     charm: cs:~containers/filebeat
   elasticsearch:
-    charm: cs:~elasticsearch-charmers/lasticsearch
+    charm: cs:~elasticsearch-charmers/elasticsearch
     num_units: 1
   graylog:
     charm: cs:~graylog-charmers/graylog
