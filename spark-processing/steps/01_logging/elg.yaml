@@ -1,15 +1,15 @@
 services:
   filebeat:
-    charm: cs:xenial/filebeat
+    charm: cs:~containers/filebeat
   elasticsearch:
-    charm: cs:xenial/elasticsearch
+    charm: cs:~elasticsearch-charmers/lasticsearch
     num_units: 1
   graylog:
     charm: cs:~graylog-charmers/graylog
     num_units: 1
     expose: true
   mongodb:
-    charm: cs:mongodb
+    charm: cs:~mongodb-charmers/mongodb
     num_units: 1
 relations:
   - ["graylog:elasticsearch", "elasticsearch:client"]
