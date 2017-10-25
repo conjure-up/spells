@@ -1,0 +1,10 @@
+#!/bin/bash
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+for app in namenode resourcemanager slave spark; do
+    applicationUnits $app | while read unit; do
+        juju run-action --wait -m $JUJU_CONTROLLER:$JUJU_MODEL $unit smoke-test | grep -qE '^status: completed' || exit 1
+    done
+done
