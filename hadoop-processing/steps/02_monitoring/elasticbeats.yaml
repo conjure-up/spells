@@ -4,6 +4,8 @@ services:
   elasticsearch:
     charm: cs:xenial/elasticsearch
     num_units: 1
+    options:
+      firewall_enabled: false
 relations:
   - ["topbeat:elasticsearch", "elasticsearch:client"]
   - ["topbeat:beats-host", "namenode:juju-info"]
