@@ -7,3 +7,4 @@ services:
 relations:
   - ["topbeat:elasticsearch", "elasticsearch:client"]
   - ["topbeat:beats-host", "spark:juju-info"]
+  - ["topbeat:beats-host", "zookeeper:juju-info"]
