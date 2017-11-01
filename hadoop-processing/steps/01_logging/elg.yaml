@@ -5,14 +5,15 @@ services:
     charm: cs:xenial/elasticsearch
     num_units: 1
   graylog:
-    charm: cs:~graylog-charmers/graylog
+    charm: cs:xenial/graylog
     num_units: 1
     expose: true
   mongodb:
-    charm: cs:mongodb
+    charm: cs:xenial/mongodb
     num_units: 1
 relations:
   - ["graylog:elasticsearch", "elasticsearch:client"]
   - ["graylog:mongodb", "mongodb:database"]
   - ["filebeat:elasticsearch", "elasticsearch:client"]
-  - ["filebeat:beats-host", "spark:juju-info"]
+  - ["filebeat:beats-host", "namenode:juju-info"]
+  - ["filebeat:beats-host", "slave:juju-info"]
