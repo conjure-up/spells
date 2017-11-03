@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$LOGGINGPLUGIN" == "rsyslog" ]]; then
+    ip=$(unitAddress rsyslog 0)
+    setResult "Rsyslog is now configured. Syslog events are aggregated on $ip."
+elif [[ "$LOGGINGPLUGIN" == "Graylog" ]]; then
+    ip=$(unitAddress apache2 0)
+    setResult "Graylog is now configured. The administrative interface is available at http://$ip/"
+fi
+
+exit 0
