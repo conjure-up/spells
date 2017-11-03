@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$MONITORPLUGIN" == "Ganglia" ]]; then
+    ip=$(unitAddress ganglia 0)
+    setResult "Ganglia UI Monitoring is now configured and can be viewed at http://$ip/ganglia"
+fi
+exit 0
