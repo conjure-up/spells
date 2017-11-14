@@ -8,4 +8,4 @@ additional-input:
     default: Ganglia
     choices:
       - Ganglia
-      - Elastic Beats
+      - Telegraf/Prometheus/Grafana

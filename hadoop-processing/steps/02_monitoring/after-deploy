@@ -5,7 +5,20 @@ set -eu
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$MONITORPLUGIN" == "Ganglia" ]]; then
-    ip=$(unitAddress ganglia 0)
-    setResult "Ganglia UI Monitoring is now configured and can be viewed at http://$ip/ganglia"
+    ip=$(unitAddress ganglia)
+    setResult "Ganglia UI can be viewed at http://$ip/ganglia"
+else
+    # gather vars (stripping quotes) for later config and result message
+    grafana_url=$(unitAddress grafana)
+    grafana_port=$(juju config grafana port | sed -e 's/"//')
+    prom_url=$(unitAddress prometheus)
+    prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//')
+    prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//')
+
+    juju config telegraf promreg_authtoken="$prom_token" \
+                         promreg_url="http://$prom_url:$prom_port"
+
+    setResult "Grafana Dashboards can be viewed at http://$grafana_url:$grafana_port"
 fi
+
 exit 0
