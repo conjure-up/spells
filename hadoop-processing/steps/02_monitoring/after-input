@@ -6,7 +6,7 @@ set -eux
 
 if [[ "$MONITORPLUGIN" != "Ganglia" ]]; then
     setStepKey "bundle-remove" "ganglia.yaml"
-    setStepKey "bundle-add" "elasticbeats.yaml"
+    setStepKey "bundle-add" "tpg.yaml"
 fi
 
 exit 0
