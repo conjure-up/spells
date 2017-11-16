@@ -15,6 +15,7 @@ else
     prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//')
     prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//')
 
+    juju config prometheus prometheus_registration_listen='0.0.0.0'
     juju config telegraf promreg_authtoken="$prom_token" \
                          promreg_url="http://$prom_url:$prom_port"
 
