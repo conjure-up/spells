@@ -303,7 +303,7 @@ getStepKey()
 # $2: VALUE
 setKey()
 {
-    chlp unitdata set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
+    kv-cli "$KV_DB" set "conjure-up.$CONJURE_UP_SPELL.$1" "$2"
 }
 
 # gets a state key/value namespaced by the current spell
@@ -312,5 +312,5 @@ setKey()
 # $1: KEY
 getKey()
 {
-    chlp unitdata get "conjure-up.$CONJURE_UP_SPELL.$1"
+    kv-cli "$KV_DB" get "conjure-up.$CONJURE_UP_SPELL.$1"
 }
