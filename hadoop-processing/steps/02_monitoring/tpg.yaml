@@ -1,17 +1,26 @@
 services:
   grafana:
-    charm: cs:xenial/grafana
-    series: xenial
+    charm: cs:xenial/grafana-4
     num_units: 1
     expose: true
+    to:
+      - "0"
   prometheus:
-    charm: cs:~prometheus-charmers/xenial/prometheus
+    charm: cs:xenial/prometheus-5
     num_units: 1
+    options:
+      prometheus_registration_listen: '0.0.0.0'
+    to:
+      - "1"
   telegraf:
-    charm: cs:xenial/telegraf
-    series: xenial
+    charm: cs:xenial/telegraf-6
 relations:
   - ["prometheus:grafana-source", "grafana:grafana-source"]
   - ["telegraf:prometheus-client", "prometheus:target"]
   - ["namenode:juju-info", "telegraf:juju-info"]
   - ["slave:juju-info", "telegraf:juju-info"]
+machines:
+  "0":
+    series: "xenial"
+  "1":
+    series: "xenial"
