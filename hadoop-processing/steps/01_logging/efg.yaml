@@ -1,29 +1,22 @@
 services:
   apache2:
-    charm: cs:xenial/apache2
+    charm: cs:xenial/apache2-22
     num_units: 1
     expose: true
     options:
       enable_modules: "headers proxy_html proxy_http"
-      vhost_http_template: |
-        PExvY2F0aW9uICIvIj4KICAgIFJlcXVlc3RIZWFkZXIgc2V0IFgtR3JheWxvZy1TZXJ2ZXItVVJM
-        ICJodHRwOi8ve3tzZXJ2ZXJuYW1lfX0vYXBpLyIKICAgIFByb3h5UGFzcyBodHRwOi8ve3tncmF5
-        bG9nX3dlYn19LwogICAgUHJveHlQYXNzUmV2ZXJzZSBodHRwOi8ve3tncmF5bG9nX3dlYn19Lwo8
-        L0xvY2F0aW9uPgoKPExvY2F0aW9uICIvYXBpLyI+CiAgICBQcm94eVBhc3MgaHR0cDovL3t7Z3Jh
-        eWxvZ19hcGl9fS9hcGkvCiAgICBQcm94eVBhc3NSZXZlcnNlIGh0dHA6Ly97e2dyYXlsb2dfYXBp
-        fX0vYXBpLwo8L0xvY2F0aW9uPgo=
   elasticsearch:
-    charm: cs:xenial/elasticsearch
+    charm: cs:xenial/elasticsearch-21
     num_units: 1
     options:
       firewall_enabled: false
   filebeat:
-    charm: cs:xenial/filebeat
+    charm: cs:xenial/filebeat-7
   graylog:
-    charm: cs:xenial/graylog
+    charm: cs:xenial/graylog-7
     num_units: 1
   mongodb:
-    charm: cs:xenial/mongodb
+    charm: cs:xenial/mongodb-46
     num_units: 1
 relations:
   - ["apache2:reverseproxy", "graylog:website"]

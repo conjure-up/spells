@@ -5,11 +5,15 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$LOGGINGPLUGIN" == "rsyslog" ]]; then
-    ip=$(unitAddress rsyslog 0)
+    ip=$(unitAddress rsyslog)
     setResult "Rsyslog is now configured. Syslog events are aggregated on: $ip"
 elif [[ "$LOGGINGPLUGIN" == "Graylog" ]]; then
-    ip=$(unitAddress apache2 0)
-    setResult "Graylog is now configured. The administrative interface is available at: http://$ip/"
+    ip=$(unitAddress apache2)
+
+    juju config apache2 vhost_http_template="$(base64 $(scriptPath)/graylog-vhost.tmpl)"
+
+    setResult "The Graylog UI is available at: http://$ip/. \
+Retrieve the admin password with 'juju run-action --wait graylog/0 show-admin-password'."
 fi
 
 exit 0
