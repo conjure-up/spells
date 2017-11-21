@@ -6,7 +6,7 @@ set -eux
 
 if [[ "$MONITORPLUGIN" == "Ganglia" ]]; then
     ip=$(unitAddress ganglia)
-    setResult "Ganglia UI can be viewed at: http://$ip/ganglia"
+    setResult "The Ganglia UI is available at: http://$ip/ganglia."
 else
     # gather vars (stripping quotes) for later config and result message
     grafana_url=$(unitAddress grafana)
@@ -17,8 +17,11 @@ else
 
     juju config telegraf promreg_authtoken="$prom_token" \
                          promreg_url="http://$prom_url:$prom_port"
+    juju run-action --wait grafana/0 import-dashboard \
+      dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
 
-    setResult "Grafana Dashboards can be viewed at: http://$grafana_url:$grafana_port"
+    setResult "The Grafana UI is available at: http://$grafana_url:$grafana_port. \
+Retrieve the admin password with 'juju run-action --wait grafana/0 get-admin-password'."
 fi
 
 exit 0
