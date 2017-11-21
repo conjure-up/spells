@@ -10,10 +10,10 @@ if [[ "$MONITORPLUGIN" == "Ganglia" ]]; then
 else
     # gather vars (stripping quotes) for later config and result message
     grafana_url=$(unitAddress grafana)
-    grafana_port=$(juju config grafana port | sed -e 's/"//')
+    grafana_port=$(juju config grafana port | sed -e 's/"//g')
     prom_url=$(unitAddress prometheus)
-    prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//')
-    prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//')
+    prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//g')
+    prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//g')
 
     juju config telegraf promreg_authtoken="$prom_token" \
                          promreg_url="http://$prom_url:$prom_port"
