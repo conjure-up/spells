@@ -3,5 +3,6 @@ services:
   ganglia-node: True
 relations:
   - ["ganglia-node:juju-info", "namenode:juju-info"]
+  - ["ganglia-node:juju-info", "resourcemanager:juju-info"]
   - ["ganglia-node:juju-info", "slave:juju-info"]
   - ["ganglia:node", "ganglia-node:node"]
