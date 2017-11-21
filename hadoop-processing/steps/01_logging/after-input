@@ -6,7 +6,7 @@ set -eux
 
 if [[ "$LOGGINGPLUGIN" != "rsyslog" ]]; then
     setStepKey "bundle-remove" "rsyslog.yaml"
-    setStepKey "bundle-add" "elg.yaml"
+    setStepKey "bundle-add" "efg.yaml"
 fi
 
 exit 0
