@@ -1,11 +1,27 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$MONITORPLUGIN" == "Ganglia" ]]; then
-    ip=$(unitAddress ganglia 0)
-    setResult "Ganglia UI Monitoring is now configured and can be viewed at http://$ip/ganglia"
+    ip=$(unitAddress ganglia)
+    setResult "The Ganglia UI is available at: http://$ip/ganglia."
+elif [[ "$MONITORPLUGIN" == "Telegraf/Prometheus/Grafana" ]]; then
+    # gather vars (stripping quotes) for later config and result message
+    grafana_public_ip=$(unitAddress grafana)
+    grafana_port=$(juju config grafana port | sed -e 's/"//g')
+    prom_ingress_ip=$(juju run --unit prometheus/0 'network-get target --format yaml --ingress-address' | head -1)
+    prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//g')
+    prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//g')
+
+    juju config telegraf promreg_authtoken="$prom_token" \
+                         promreg_url="http://$prom_ingress_ip:$prom_port"
+    juju run-action --wait grafana/0 import-dashboard \
+      dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
+
+    setResult "The Grafana UI is available at: http://$grafana_public_ip:$grafana_port. \
+Retrieve the admin password with 'juju run-action --wait grafana/0 get-admin-password'."
 fi
+
 exit 0
