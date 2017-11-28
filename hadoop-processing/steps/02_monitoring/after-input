@@ -4,7 +4,7 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if [[ "$MONITORPLUGIN" != "Ganglia" ]]; then
+if [[ "$MONITORPLUGIN" == "Telegraf/Prometheus/Grafana" ]]; then
     setStepKey "bundle-remove" "ganglia.yaml"
     setStepKey "bundle-add" "tpg.yaml"
 fi

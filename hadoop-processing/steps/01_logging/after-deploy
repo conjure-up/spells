@@ -4,15 +4,25 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if [[ "$LOGGINGPLUGIN" == "rsyslog" ]]; then
+if [[ "$LOGGINGPLUGIN" == "Rsyslog" ]]; then
     ip=$(unitAddress rsyslog)
     setResult "Rsyslog is now configured. Syslog events are aggregated on: $ip"
-elif [[ "$LOGGINGPLUGIN" == "Graylog" ]]; then
-    ip=$(unitAddress apache2)
+elif [[ "$LOGGINGPLUGIN" == "Elasticsearch/Filebeat/Graylog" ]]; then
+    # gather vars (stripping quotes) for later config and result message
+    proxy_public_ip=$(unitAddress apache2)
+    es_cluster=$(juju config elasticsearch cluster-name | sed -e 's/"//g')
+    graylog_ingress_ip=$(juju run --unit graylog/0 'network-get elasticsearch --format yaml --ingress-address' | head -1)
 
+    # Filebeat treats graylog as a logstash host.
+    # NB: The graylog charm should support a beats relation so we dont have to
+    # set this manually. Also 5044 is hard coded in graylog's log_inputs config.
+    juju config filebeat logstash_hosts="$graylog_ingress_ip:5044"
+
+    # Graylog needs a rev proxy and ES cluster name.
     juju config apache2 vhost_http_template="$(base64 $(scriptPath)/graylog-vhost.tmpl)"
+    juju config graylog elasticsearch_cluster_name="$es_cluster"
 
-    setResult "The Graylog UI is available at: http://$ip/. \
+    setResult "The Graylog UI is available at: http://$proxy_public_ip/. \
 Retrieve the admin password with 'juju run-action --wait graylog/0 show-admin-password'."
 fi
 
