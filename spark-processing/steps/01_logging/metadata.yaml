@@ -5,7 +5,7 @@ additional-input:
   - label: Logging
     key: LOGGINGPLUGIN
     type: choice
-    default: rsyslog
+    default: Rsyslog
     choices:
-      - rsyslog
-      - Graylog
+      - Rsyslog
+      - Elasticsearch/Filebeat/Graylog
