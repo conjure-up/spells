@@ -6,8 +6,6 @@ services:
   prometheus:
     charm: cs:xenial/prometheus-5
     num_units: 1
-    options:
-      prometheus_registration_listen: '0.0.0.0'
   telegraf:
     charm: cs:xenial/telegraf-6
 relations:
