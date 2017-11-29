@@ -1,0 +1,26 @@
+services:
+  apache2:
+    charm: cs:xenial/apache2-22
+    num_units: 1
+    expose: true
+    options:
+      enable_modules: "headers proxy_html proxy_http"
+  elasticsearch:
+    charm: cs:xenial/elasticsearch-21
+    num_units: 1
+    options:
+      firewall_enabled: false
+  filebeat:
+    charm: cs:xenial/filebeat-7
+  graylog:
+    charm: cs:xenial/graylog-7
+    num_units: 1
+  mongodb:
+    charm: cs:xenial/mongodb-46
+    num_units: 1
+relations:
+  - ["apache2:reverseproxy", "graylog:website"]
+  - ["graylog:elasticsearch", "elasticsearch:client"]
+  - ["graylog:mongodb", "mongodb:database"]
+  - ["filebeat:beats-host", "kubernetes-master:juju-info"]
+  - ["filebeat:beats-host", "kubernetes-worker:juju-info"]
