@@ -1,0 +1,11 @@
+title: Choose Logging Application
+description: Choose a logging mechanism
+viewable: True
+additional-input:
+  - label: Logging
+    key: LOGGINGPLUGIN
+    type: choice
+    default: None
+    choices:
+      - None
+      - Elasticsearch/Filebeat/Graylog
