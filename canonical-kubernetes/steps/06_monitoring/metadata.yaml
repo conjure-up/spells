@@ -1,5 +1,5 @@
-title: Choose Monitoring Application
-description: Choose a monitoring mechanism
+title: Monitoring Mechanism
+description: Optional monitoring components
 viewable: True
 additional-input:
   - label: Monitoring
@@ -7,5 +7,4 @@ additional-input:
     type: choice
     default: None
     choices:
-      - None
       - Telegraf/Prometheus/Grafana

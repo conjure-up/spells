@@ -5,7 +5,7 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$LOGGINGPLUGIN" == "None" ]]; then
-    setResult "No additional logging mechanism was selected"
+    setResult "No additional logging mechanism was selected."
 elif [[ "$LOGGINGPLUGIN" == "Elasticsearch/Filebeat/Graylog" ]]; then
     # gather vars (stripping quotes) for later config and result message
     proxy_public_ip=$(unitAddress apache2)

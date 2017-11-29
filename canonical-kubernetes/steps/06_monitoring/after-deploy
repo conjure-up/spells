@@ -5,20 +5,13 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 if [[ "$MONITORPLUGIN" == "None" ]]; then
-    setResult "No additional monitoring mechanism was selected"
+    setResult "No additional monitoring mechanism was selected."
 elif [[ "$MONITORPLUGIN" == "Telegraf/Prometheus/Grafana" ]]; then
     # gather vars (stripping quotes) for later config and result message
     grafana_public_ip=$(unitAddress grafana)
     grafana_port=$(juju config grafana port | sed -e 's/"//g')
     kube_client_pass=$(grep 'password:' ~/.kube/config.$JUJU_MODEL | sed -e 's/ *//g' -e 's/password://')
     kube_ingress_ip=$(juju run --unit kubeapi-load-balancer/0 'network-get website --format yaml --ingress-address' | head -1)
-    prom_ingress_ip=$(juju run --unit prometheus/0 'network-get target --format yaml --ingress-address' | head -1)
-    prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//g')
-    prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//g')
-
-    # register the telegraf endpoints with prometheus
-    juju config telegraf promreg_authtoken="$prom_token" \
-                         promreg_url="http://$prom_ingress_ip:$prom_port"
 
     # configure k8s prometheus scraper
     juju config prometheus scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
@@ -31,6 +24,23 @@ elif [[ "$MONITORPLUGIN" == "Telegraf/Prometheus/Grafana" ]]; then
 
     setResult "The Grafana UI is available at: http://$grafana_public_ip:$grafana_port. \
 Retrieve the admin password with 'juju run-action --wait grafana/0 get-admin-password'."
+else
+    setResult "Ignored unexpected monitoring input: $MONITORPLUGIN."
+
+    # NB: if we ever include a metric provider that doesn't support the
+    # prometheus:target relation, we may want to explore the prom_reg layer:
+    #  https://git.launchpad.net/~prometheus-registration-developers/prometheus-registration/+git/layer-promreg-client/tree/README.md
+    #  https://git.launchpad.net/~prometheus-registration-developers/prometheus-registration/tree/README.md
+    # For example, if telegraf didn't support a direct prometheus relation, we
+    # would configure it like this:
+    #
+    #prom_ingress_ip=$(juju run --unit prometheus/0 'network-get target --format yaml --ingress-address' | head -1)
+    #prom_port=$(juju config prometheus prometheus_registration_port | sed -e 's/"//g')
+    #prom_token=$(juju config prometheus prometheus_registration_authtoken | sed -e 's/"//g')
+    #
+    #juju config prometheus prometheus_registration_listen='0.0.0.0'
+    #juju config telegraf promreg_authtoken="$prom_token" \
+    #                     promreg_url="http://$prom_ingress_ip:$prom_port"
 fi
 
 exit 0
