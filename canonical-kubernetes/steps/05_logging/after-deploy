@@ -23,6 +23,8 @@ elif [[ "$LOGGINGPLUGIN" == "Elasticsearch/Filebeat/Graylog" ]]; then
 
     setResult "The Graylog UI is available at: http://$proxy_public_ip/. \
 Retrieve the admin password with 'juju run-action --wait graylog/0 show-admin-password'."
+else
+    setResult "Ignored unexpected logging input: $LOGGINGPLUGIN."
 fi
 
 exit 0

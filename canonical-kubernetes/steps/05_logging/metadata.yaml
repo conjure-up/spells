@@ -7,4 +7,5 @@ additional-input:
     type: choice
     default: None
     choices:
+      - None
       - Elasticsearch/Filebeat/Graylog
