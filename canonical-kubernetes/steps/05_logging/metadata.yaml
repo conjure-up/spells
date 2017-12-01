@@ -1,11 +1,9 @@
 title: Logging Mechanism
 description: Optional logging components
+required: True
 viewable: True
 additional-input:
-  - label: Logging
+  - label: Elasticsearch/Filebeat/Graylog
     key: LOGGINGPLUGIN
-    type: choice
-    default: None
-    choices:
-      - None
-      - Elasticsearch/Filebeat/Graylog
+    type: boolean
+    default: "No"
