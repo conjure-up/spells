@@ -4,7 +4,7 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if [[ "$LOGGINGPLUGIN" == "Elasticsearch/Filebeat/Graylog" ]]; then
+if [[ "$LOGGINGPLUGIN" == "Yes" ]]; then
     setStepKey "bundle-add" "efg.yaml"
 fi
 
