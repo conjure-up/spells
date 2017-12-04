@@ -30,8 +30,8 @@ relations:
   - ["apache2:reverseproxy", "graylog:website"]
   - ["graylog:elasticsearch", "elasticsearch:client"]
   - ["graylog:mongodb", "mongodb:database"]
-  - ["filebeat:beats-host", "spark:juju-info"]
-  - ["filebeat:beats-host", "zookeeper:juju-info"]
+  - ["spark:juju-info", "filebeat:beats-host"]
+  - ["zookeeper:juju-info", "filebeat:beats-host"]
 machines:
   "5":
     series: "xenial"
