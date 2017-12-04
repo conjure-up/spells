@@ -10,7 +10,7 @@ sudo apt update > /dev/null 2>&1
 sudo apt -qyf install python-novaclient python-keystoneclient python-glanceclient python-neutronclient python-openstackclient > /dev/null 2>&1
 EOF
 
-$(scriptPath)/../novarc > "$tmpfile"
+$(scriptPath)/../novarc >> "$tmpfile"
 
 # Copy over credentials early
 juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:novarc
