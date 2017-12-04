@@ -1873,7 +1873,7 @@
       ]
     },
     "timezone": "browser",
-    "title": "Telegraf Node Metrics",
+    "title": "Node Metrics (via Telegraf)",
     "version": 4
   },
   "overwrite": false
