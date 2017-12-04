@@ -32,8 +32,12 @@ bigdata:
     - key: hadoop-processing
       name: Apache Hadoop Cluster
       description: |
-        Provides a complete deployment of the core Hadoop components of the Apache Bigtop platform to perform distributed data processing at scale. Ganglia and rsyslog applications are also provided to monitor cluster health and syslog activity.
+        Deploys a core Hadoop cluster with Apache Bigtop components to perform distributed data processing at scale. Monitoring and Logging options are available to monitor cluster health and application/syslog activity.
     - key: spark-processing
       name: Apache Spark Cluster
       description: |
-        Provides a complete deployment of Apache Spark in standalone HA mode as provided by Apache Bigtop. Ganglia and rsyslog applications are included to monitor cluster health and syslog activity.
+        Deploys a highly-available Spark cluster with Apache Bigtop components. Monitoring and Logging options are available to monitor cluster health and application/syslog activity.
+    - key: hadoop-spark
+      name: Apache Hadoop + Spark Cluster
+      description: |
+        Deploys a cluster with Hadoop and Spark components from Apache Bigtop to provide both batch and streaming data processing workflows. Monitoring and Logging options are available to monitor cluster health and application/syslog activity.

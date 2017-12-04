@@ -1,0 +1,11 @@
+title: Monitoring Mechanism
+description: Choose the preferred monitoring mechanism
+viewable: True
+additional-input:
+  - label: Monitoring
+    key: MONITORPLUGIN
+    type: choice
+    default: Ganglia
+    choices:
+      - Ganglia
+      - Telegraf/Prometheus/Grafana

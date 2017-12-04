@@ -1,0 +1,11 @@
+title: Logging Mechanism
+description: Choose the preferred logging mechanism
+viewable: True
+additional-input:
+  - label: Logging
+    key: LOGGINGPLUGIN
+    type: choice
+    default: Rsyslog
+    choices:
+      - Rsyslog
+      - Elasticsearch/Filebeat/Graylog
