@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$LOGGINGPLUGIN" == "Elasticsearch/Filebeat/Graylog" ]]; then
+    setStepKey "bundle-remove" "rsyslog.yaml"
+    setStepKey "bundle-add" "efg.yaml"
+fi
+
+exit 0
