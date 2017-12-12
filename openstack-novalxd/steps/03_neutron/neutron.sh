@@ -5,7 +5,7 @@ get_host_ns() {
 
 if ! neutron net-show ext-net > /dev/null 2>&1; then
     debug "adding ext-net"
-    if ! neutron net-create --router:external ext-net > /dev/null 2>&1; then
+    if ! openstack network create --external --provider-network-type flat --provider-physical-network physnet1 ext-net > /dev/null 2>&1; then
         debug "could not net-create ext-net"
     fi
 fi

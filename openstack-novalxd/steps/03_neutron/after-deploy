@@ -20,6 +20,7 @@ EOF
 cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" >> "$tmpfile"
 cat $(scriptPath)/neutron.sh >> "$tmpfile"
 
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" $(scriptPath)/neutron*net nova-cloud-controller/0:.
 juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:neutron.sh
 neutron_out=$(juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash neutron.sh")
 setResult "$neutron_out"
