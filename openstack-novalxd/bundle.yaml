@@ -81,12 +81,14 @@ services:
     num_units: 1
     options:
       openstack-origin: cloud:xenial-pike
+      worker-multiplier: 0.25
   keystone:
     charm: cs:xenial/keystone
     num_units: 1
     options:
       admin-password: openstack
       openstack-origin: cloud:xenial-pike
+      worker-multiplier: 0.25
   mysql:
     charm: cs:xenial/percona-cluster
     num_units: 1
@@ -100,12 +102,13 @@ services:
       neutron-security-groups: true
       overlay-network-type: "gre vxlan"
       openstack-origin: cloud:xenial-pike
-      flat-network-providers: eth0
+      flat-network-providers: physnet1
   neutron-gateway:
     charm: cs:xenial/neutron-gateway
     num_units: 1
     options:
-      ext-port: eth1
+      bridge-mappings: physnet1:br-ex
+      data-port: br-ex:eth1
       openstack-origin: cloud:xenial-pike
   neutron-openvswitch:
     charm: cs:xenial/neutron-openvswitch
@@ -115,8 +118,8 @@ services:
     num_units: 1
     options:
       network-manager: Neutron
-      console-access-protocol: novnc
       openstack-origin: cloud:xenial-pike
+      worker-multiplier: 0.25
   nova-compute:
     charm: cs:xenial/nova-compute
     num_units: 1
