@@ -13,8 +13,8 @@ fi
 if ! neutron subnet-show ext-subnet > /dev/null 2>&1; then
     debug "adding ext-subnet"
     if ! neutron subnet-create --name ext-subnet  \
-             --gateway "$LXD_GATEWAY" --disable-dhcp \
-             --allocation-pool start="$LXD_DHCP_RANGE_START",end="$LXD_DHCP_RANGE_STOP" ext-net "$LXD_NETWORK" > /dev/null 2>&1; then
+             --gateway 10.101.0.1 --disable-dhcp \
+             --allocation-pool start=10.101.0.100,end=10.101.0.200 ext-net eth1 > /dev/null 2>&1; then
         debug "could not subnet-create ext-subnet"
     fi
 fi
@@ -29,8 +29,8 @@ fi
 if ! neutron subnet-show ubuntu-subnet > /dev/null 2>&1; then
     debug "adding ubuntu-subnet"
     if ! neutron subnet-create --name ubuntu-subnet \
-            --gateway 10.101.0.1 \
-            --dns-nameserver $(get_host_ns) ubuntu-net 10.101.0.0/24 > /dev/null 2>&1; then
+            --gateway 10.101.5.1 \
+            --dns-nameserver $(get_host_ns) ubuntu-net 10.101.5.0/24 > /dev/null 2>&1; then
         debug "could not add ubuntusubnet"
     fi
 fi
@@ -63,7 +63,9 @@ done
 
 # configure security groups
 debug "setting security roles"
-neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol icmp --remote-ip-prefix 0.0.0.0/0 default > /dev/null 2>&1 || true
-neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol tcp --port-range-min 22 --port-range-max 22 --remote-ip-prefix 0.0.0.0/0 default > /dev/null 2>&1 || true
+sudo apt-get install -qyf jq > /dev/null 2>&1
+first_secgroup=$(neutron security-group-list -f json|jq .[0].id) || true
+neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol icmp --remote-ip-prefix 0.0.0.0/0 "$first_secgroup" > /dev/null 2>&1 || true
+neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol tcp --port-range-min 22 --port-range-max 22 --remote-ip-prefix 0.0.0.0/0 "$first_secgroup" > /dev/null 2>&1 || true
 
 printf "Neutron networking is now configured and is available to you during instance creation."
