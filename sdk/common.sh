@@ -312,5 +312,5 @@ setKey()
 # $1: KEY
 getKey()
 {
-    kv-cli "$KV_DB" get "conjure-up.$CONJURE_UP_SPELL.$1"
+    kv-cli "$KV_DB" get "conjure-up.$CONJURE_UP_SPELL.$1" || echo "None"
 }
