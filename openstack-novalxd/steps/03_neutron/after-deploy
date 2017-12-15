@@ -4,23 +4,13 @@
 
 tmpfile=$(mktemp)
 
-$(scriptPath)/../novarc > "$tmpfile"
+"$(scriptPath)/../novarc" > "$tmpfile"
 
-LXD_NETWORK=$(getKey "lxd-network")
-LXD_GATEWAY=$(getKey "lxd-gateway")
-LXD_DHCP_RANGE_START=$(getKey "lxd-network-dhcp-range-start")
-LXD_DHCP_RANGE_STOP=$(getKey "lxd-network-dhcp-range-stop")
-
-cat<<EOF>> "$tmpfile"
-export LXD_NETWORK=${LXD_NETWORK}
-export LXD_GATEWAY=${LXD_GATEWAY}
-export LXD_DHCP_RANGE_START=${LXD_DHCP_RANGE_START}
-export LXD_DHCP_RANGE_STOP=${LXD_DHCP_RANGE_STOP}
-EOF
 cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" >> "$tmpfile"
-cat $(scriptPath)/neutron.sh >> "$tmpfile"
+cat "$(scriptPath)/neutron.sh" >> "$tmpfile"
 
-juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" $(scriptPath)/neutron*net nova-cloud-controller/0:.
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$(scriptPath)/neutron-ext-net" nova-cloud-controller/0:.
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$(scriptPath)/neutron-tenant-net" nova-cloud-controller/0:.
 juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$tmpfile" nova-cloud-controller/0:neutron.sh
 neutron_out=$(juju ssh -m "$JUJU_CONTROLLER:$JUJU_MODEL" nova-cloud-controller/0 "bash neutron.sh")
 setResult "$neutron_out"

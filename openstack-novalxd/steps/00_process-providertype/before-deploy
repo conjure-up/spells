@@ -20,7 +20,7 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
         ipv6.address=none \
         ipv6.nat=false \
         ipv4.address=10.101.0.1/24 \
-        ipv4.nat=true || echo "conjureup0 network already exists" && true
+        ipv4.nat=true || printf "conjureup0 network already exists" && true
 
     cat <<EOF> "$tmpfile"
 name: juju-${JUJU_MODEL}
