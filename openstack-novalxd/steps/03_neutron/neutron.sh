@@ -64,7 +64,7 @@ done
 # configure security groups
 debug "setting security roles"
 sudo apt-get install -qyf jq > /dev/null 2>&1
-first_secgroup=$(neutron security-group-list -f json|jq .[0].id) || true
+first_secgroup=$(openstack security group list -f json|jq .[0].id) || true
 neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol icmp --remote-ip-prefix 0.0.0.0/0 "$first_secgroup" > /dev/null 2>&1 || true
 neutron security-group-rule-create --direction ingress --ethertype IPv4 --protocol tcp --port-range-min 22 --port-range-max 22 --remote-ip-prefix 0.0.0.0/0 "$first_secgroup" > /dev/null 2>&1 || true
 
