@@ -135,12 +135,13 @@ get_security_groups() {
         sg_flag=""
     fi
     # shellcheck disable=SC2086
+    # get security groups that match juju-{uuid}-{machine-num}
     if ! group_ids="$(aws ec2 describe-instances \
                       --profile "$JUJU_CREDENTIAL" \
                       --region "$JUJU_REGION" \
                       --instance-ids $instances \
                       --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
-                      --output text | grep $sg_flag -- 'juju.*-.$' | awk '{print $1}' 2>&1)"; then
+                      --output text | grep $sg_flag -E -- 'juju.{37}-[[:digit:]]+$'' | awk '{print $1}' 2>&1)"; then
         abort "$group_ids"
     fi
     if [[ "$group_ids" == None ]]; then
