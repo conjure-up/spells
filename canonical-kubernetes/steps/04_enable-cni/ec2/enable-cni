@@ -99,7 +99,7 @@ add_role_to_profile() {
 
 get_instance_ids() {
     role="$1"  # master or worker
-    instances="$(juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" "kubernetes-$role" --format=yaml | grep instance-id | awk '{print $2}')"
+    instances="$(juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" "kubernetes-$role*" --format=yaml | grep instance-id | awk '{print $2}')"
     if [[ -z "$instances" ]]; then
         abort "Unable to find kubernetes-$role instances"
     fi
