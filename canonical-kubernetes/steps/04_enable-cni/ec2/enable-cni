@@ -99,7 +99,7 @@ add_role_to_profile() {
 
 get_instance_ids() {
     role="$1"  # master or worker
-    instances="$(juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" "kubernetes-$role*" --format=yaml | grep instance-id | awk '{print $2}')"
+    instances="$(juju status -m "$JUJU_CONTROLLER:$JUJU_MODEL" --format=json | jq -r ".machines as \$machines | .applications[] | select(.\"charm-name\"==\"kubernetes-$role\") | \$machines[.units[].machine].\"instance-id\"")"
     if [[ -z "$instances" ]]; then
         abort "Unable to find kubernetes-$role instances"
     fi
@@ -141,7 +141,7 @@ get_security_groups() {
                       --region "$JUJU_REGION" \
                       --instance-ids $instances \
                       --query "Reservations[0].Instances[0].SecurityGroups[*].[GroupId,GroupName]" \
-                      --output text | grep $sg_flag -E -- 'juju.{37}-[[:digit:]]+$'' | awk '{print $1}' 2>&1)"; then
+                      --output text | grep $sg_flag -E -- 'juju.{37}-[[:digit:]]+$' | awk '{print $1}' 2>&1)"; then
         abort "$group_ids"
     fi
     if [[ "$group_ids" == None ]]; then
