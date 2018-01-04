@@ -4,7 +4,7 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if [[ "$LOGGINGPLUGIN" == "Yes" ]]; then
+if [[ "$LOGGINGPLUGIN" == "Yes" || "$LOGGINGPLUGIN" == "True" ]]; then
     setStepKey "bundle-add" "efg.yaml"
 fi
 

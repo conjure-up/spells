@@ -4,9 +4,9 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-if [[ "$LOGGINGPLUGIN" == "No" ]]; then
+if [[ "$LOGGINGPLUGIN" == "No" || "$LOGGINGPLUGIN" == "False" ]]; then
     setResult "No additional logging mechanism was selected."
-elif [[ "$LOGGINGPLUGIN" == "Yes" ]]; then
+elif [[ "$LOGGINGPLUGIN" == "Yes" || "$LOGGINGPLUGIN" == "True" ]]; then
     # gather vars (stripping quotes) for later config and result message
     proxy_public_ip=$(unitAddress apache2)
     es_cluster=$(juju config elasticsearch cluster-name | sed -e 's/"//g')
@@ -21,8 +21,10 @@ elif [[ "$LOGGINGPLUGIN" == "Yes" ]]; then
     juju config apache2 vhost_http_template="$(base64 $(scriptPath)/graylog-vhost.tmpl)"
     juju config graylog elasticsearch_cluster_name="$es_cluster"
 
-    setResult "The Graylog UI is available at: http://$proxy_public_ip/. \
-Retrieve the admin password with 'juju run-action --wait graylog/0 show-admin-password'."
+    setResult "The Graylog UI is accessible at: http://$proxy_public_ip/. \
+Retrieve the admin password with 'juju run-action --wait graylog/0 show-admin-password'. \
+NOTE: Graylog configuration may still be in progress. It may take up to 5 minutes for \
+the web interface to become ready."
 else
     setResult "Ignored unexpected logging input: $LOGGINGPLUGIN."
 fi
