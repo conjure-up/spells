@@ -13,6 +13,16 @@ elif [[ "$MONITORPLUGIN" == "Telegraf/Prometheus/Grafana" ]]; then
     kube_client_pass=$(grep 'password:' ~/.kube/config.$JUJU_MODEL | sed -e 's/ *//g' -e 's/password://')
     kube_ingress_ip=$(juju run --unit kubeapi-load-balancer/0 'network-get website --format yaml --ingress-address' | head -1)
 
+    # if we didnt get a password from our kube config, get it from the master
+    if [[ -z "${kube_client_pass}" ]]; then
+      kube_client_pass=$(juju run --unit kubernetes-master/0 'cut -d, -f1 /root/cdk/basic_auth.csv')
+    fi
+    # if we didnt get a load balancer ip, fall back to the private address
+    # NB: use private ip so we dont waste resources scraping the public address
+    if [[ -z "${kube_ingress_ip}" ]]; then
+      kube_ingress_ip=$(juju run --unit kubeapi-load-balancer/0 'unit-get private-address' | head -1)
+    fi
+
     # configure k8s prometheus scraper
     juju config prometheus scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
 
