@@ -10,11 +10,11 @@ openstack:
     - key: openstack-base
       name: OpenStack with NovaKVM
       description: |
-        Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
+        Deploys a basic OpenStack Cloud (Pike release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
     - key: openstack-novalxd
       name: OpenStack with NovaLXD
       description: |
-        Deploys a basic OpenStack Cloud (Newton release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
+        Deploys a basic OpenStack Cloud (Pike release) on Ubuntu 16.04 LTS, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.
 
         This can be deployed on a Single machine for quick Proof-of-Concepts and local development of OpenStack components and services.
 kubernetes:
