@@ -1,6 +1,12 @@
 deis:
   spell: canonical-kubernetes
   addons: [deis]
+graylog:
+  spell: canonical-kubernetes
+  addons: [graylog]
 helm:
   spell: canonical-kubernetes
   addons: [helm]
+prometheus:
+  spell: canonical-kubernetes
+  addons: [prometheus]
