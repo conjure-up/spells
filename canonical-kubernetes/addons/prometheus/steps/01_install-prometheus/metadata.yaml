@@ -1,0 +1,11 @@
+title: Monitoring Mechanism
+description: Optional monitoring components
+viewable: True
+additional-input:
+  - label: Monitoring
+    key: MONITORPLUGIN
+    type: choice
+    default: None
+    choices:
+      - None
+      - Telegraf/Prometheus/Grafana
