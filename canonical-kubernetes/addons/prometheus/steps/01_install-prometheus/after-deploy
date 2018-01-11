@@ -6,28 +6,29 @@ set -eux
 
 # gather vars (stripping quotes) for later config and result message
 grafana_public_ip=$(unitAddress grafana)
-grafana_port=$(juju config grafana port | sed -e 's/"//g')
+grafana_port=$(juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" grafana port | sed -e 's/"//g')
 kube_client_pass=$(grep 'password:' ~/.kube/config.$JUJU_MODEL | sed -e 's/ *//g' -e 's/password://')
-kube_ingress_ip=$(juju run --unit kubeapi-load-balancer/0 'network-get website --format yaml --ingress-address' | head -1)
+kube_ingress_ip=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubeapi-load-balancer/0 'network-get website --format yaml --ingress-address' | head -1)
 
 # if we didnt get a password from our kube config, get it from the master
 if [[ -z "${kube_client_pass}" ]]; then
-  kube_client_pass=$(juju run --unit kubernetes-master/0 'cut -d, -f1 /root/cdk/basic_auth.csv')
+  kube_client_pass=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubernetes-master/0 'cut -d, -f1 /root/cdk/basic_auth.csv')
 fi
 # if we didnt get a load balancer ip, fall back to the private address
 # NB: use private ip so we dont waste resources scraping the public address
 if [[ -z "${kube_ingress_ip}" ]]; then
-  kube_ingress_ip=$(juju run --unit kubeapi-load-balancer/0 'unit-get private-address' | head -1)
+  kube_ingress_ip=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubeapi-load-balancer/0 'unit-get private-address' | head -1)
 fi
 
 # configure k8s prometheus scraper
-juju config prometheus scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
+juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" prometheus \
+  scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
 
 # setup grafana dashboards
-juju run-action --wait grafana/0 import-dashboard \
-  dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
-juju run-action --wait grafana/0 import-dashboard \
-  dashboard="$(base64 $(scriptPath)/grafana-k8s.json)"
+juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
+  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
+juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
+  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-k8s.json)"
 
 setResult "The Grafana UI is available at: http://$grafana_public_ip:$grafana_port. \
 Retrieve the admin password with 'juju run-action --wait grafana/0 get-admin-password'."
