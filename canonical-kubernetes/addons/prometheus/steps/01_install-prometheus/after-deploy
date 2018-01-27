@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -eux
+# Dont -x because we sed passwords in this script, which means they would be
+# exposed in the conjure-up logs. Make no mistakes and -x wont be needed.
+set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
