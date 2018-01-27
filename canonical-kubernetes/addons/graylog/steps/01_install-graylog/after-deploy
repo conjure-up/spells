@@ -7,21 +7,8 @@ set -eux
 # gather vars (stripping quotes) for later config and result message
 proxy_public_ip=$(unitAddress apache2)
 es_cluster=$(juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" elasticsearch cluster-name | sed -e 's/"//g')
-graylog_ingress_ip=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit graylog/0 'network-get elasticsearch --format yaml --ingress-address' | head -1)
 
-# if we didnt get a graylog ip, fall back to the private address
-# NB: use private ip to keep filebeat<->graylog traffic in the cluster
-if [[ -z "${graylog_ingress_ip}" ]]; then
-  graylog_ingress_ip=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit graylog/0 'unit-get private-address' | head -1)
-fi
-
-# Filebeat treats graylog as a logstash host.
-# NB: The graylog charm should support a beats relation so we dont have to
-# set this manually. Also 5044 is hard coded in graylog's log_inputs config.
-juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" filebeat \
-  logstash_hosts="$graylog_ingress_ip:5044"
-
-# Graylog needs a rev proxy and ES cluster name.
+# Graylog needs a rev proxy vhost and ES cluster name.
 juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" apache2 \
   vhost_http_template="$(base64 $(scriptPath)/graylog-vhost.tmpl)"
 juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" graylog \
