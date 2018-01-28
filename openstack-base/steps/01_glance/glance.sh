@@ -24,11 +24,11 @@ do
     firmwaretype=${firmwaretypes[$nova_arch]}
     if [ ! -f $HOME/glance-images/xenial-server-cloudimg-${image_arch}-$imagetype ]; then
         debug "Downloading xenial image..."
-        wget --user-agent="conjure-up/openstack-novalxd" -qO ~/glance-images/xenial-server-cloudimg-${image_arch}-$imagetype https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-${image_arch}-$imagetype
+        wget --user-agent="conjure-up/openstack-base" -qO ~/glance-images/xenial-server-cloudimg-${image_arch}-$imagetype https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-${image_arch}-$imagetype
     fi
     if [ ! -f $HOME/glance-images/trusty-server-cloudimg-${image_arch}-$imagetype ]; then
         debug "Downloading trusty image..."
-        wget --user-agent="conjure-up/openstack-novalxd" -qO ~/glance-images/trusty-server-cloudimg-${image_arch}-$imagetype https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-${image_arch}-$imagetype
+        wget --user-agent="conjure-up/openstack-base" -qO ~/glance-images/trusty-server-cloudimg-${image_arch}-$imagetype https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-${image_arch}-$imagetype
     fi
 
     trusty_image=trusty${imagesuffix}-${image_arch}
