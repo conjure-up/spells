@@ -1,7 +1,7 @@
 series: xenial
 services:
   mysql:
-    charm: cs:mysql
+    charm: cs:xenial/mysql
     num_units: 1
     options:
       dataset-size: "80%"
