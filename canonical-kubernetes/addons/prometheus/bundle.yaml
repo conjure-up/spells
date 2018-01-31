@@ -1,6 +1,6 @@
 services:
   grafana:
-    charm: cs:xenial/grafana-4
+    charm: cs:xenial/grafana-5
     num_units: 1
     expose: true
   prometheus:
