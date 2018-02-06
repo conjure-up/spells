@@ -222,21 +222,16 @@ tag_subnets() {
 }
 
 configure_k8s() {
-    role="$1"  # master or worker
-    if [[ "$role" == "master" ]]; then
-        snaps="kube-apiserver kube-controller-manager"
-    else
-        snaps="kubelet"
-    fi
-    for snap in $snaps; do
-        echo "Configuring cloud-provider for $snap"
-        result=$(juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --format=yaml --application "kubernetes-$role" -- \
-                 bash -c "snap set $snap cloud-provider=aws && service snap.$snap.daemon restart" 2>&1)
-        if echo "$result" | grep -q 'ReturnCode: [^0]'; then
-            abort "$result"
-        fi
-        >&2 echo "Configured cloud-provider=aws for $snap"
-    done
+    echo "Configuring cloud-provider for kubernetes-master"
+    juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master \
+        api-extra-args="cloud-provider=aws" \
+        controller-manager-extra-args="cloud-provider=aws"
+    >&2 echo "Configured cloud-provider for kubernetes-master"
+
+    echo "Configuring cloud-provider for kubernetes-worker"
+    juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+        kubelet-extra-args="cloud-provider=aws"
+    >&2 echo "Configured cloud-provider for kubernetes-worker"
 }
 
 enable_cni() {
@@ -271,6 +266,5 @@ enable_cni() {
     tag_subnets worker "$cluster_tag"
 
     # enable the config in the cluster
-    configure_k8s master
-    configure_k8s worker
+    configure_k8s
 }
