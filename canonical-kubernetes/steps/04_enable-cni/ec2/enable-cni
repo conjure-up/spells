@@ -221,16 +221,30 @@ tag_subnets() {
     >&2 echo "Created tag KubernetesCluster=$tag on $subnet_ids"
 }
 
+append_cloud_provider_to_config() {
+    app="$1"
+    config_key="$2"
+    value="$(juju config -m $JUJU_CONTROLLER:$JUJU_MODEL $app $config_key)"
+    if [[ $value == '""' ]]; then
+        echo "cloud-provider=aws"
+    else
+        echo "$value cloud-provider=aws"
+    fi
+}
+
 configure_k8s() {
     echo "Configuring cloud-provider for kubernetes-master"
+    api_extra_args="$(append_cloud_provider_to_config kubernetes-master api-extra-args)"
+    controller_manager_extra_args="$(append_cloud_provider_to_config kubernetes-master controller-manager-extra-args)"
     juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master \
-        api-extra-args="cloud-provider=aws" \
-        controller-manager-extra-args="cloud-provider=aws"
+        api-extra-args="$api_extra_args" \
+        controller-manager-extra-args="$controller_manager_extra_args"
     >&2 echo "Configured cloud-provider for kubernetes-master"
 
     echo "Configuring cloud-provider for kubernetes-worker"
+    kubelet_extra_args="$(append_cloud_provider_to_config kubernetes-worker kubelet-extra-args)"
     juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
-        kubelet-extra-args="cloud-provider=aws"
+        kubelet-extra-args="$kubelet_extra_args"
     >&2 echo "Configured cloud-provider for kubernetes-worker"
 }
 
