@@ -4,6 +4,3 @@ description: |
 
   Helm is the best way to find, share, and use software built for Kubernetes.
 version: 1
-cloud-whitelist:
-  - aws
-  - localhost
