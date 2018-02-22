@@ -6,4 +6,4 @@ additional-input:
   - label: Helm Version
     key: HELM_VERSION
     type: text
-    default: v2.6.0
+    default: v2.8.1
