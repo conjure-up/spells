@@ -5,13 +5,23 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 function install_helm() {
-    if [[ "$(getKey helm.installed)" != "true" ]]; then
-        WORK_DIR="$(mktemp -d)"
+    if [[ $(uname -s) = "Darwin" ]]; then
+        platform="darwin"
+    else
+        platform="linux"
+    fi
+    helm_repo="https://storage.googleapis.com/kubernetes-helm"
+    helm_file="helm-$HELM_VERSION-$platform-amd64.tar.gz"
+
+    if [[ "$(getKey "helm.installed.$CONJURE_UP_SESSION_ID")" != "true" ]]; then
+        work_dir="$(mktemp -d)"
+
+        rm -f "$HOME/bin/helm" "$HOME/bin/.helm"  # clear potentially different version
 
         echo "Installing Helm CLI"
-        curl -fsSL -o "$WORK_DIR/helm-stable.tar.gz" "https://storage.googleapis.com/kubernetes-helm/helm-$HELM_VERSION-linux-amd64.tar.gz"
-        tar -C "$WORK_DIR" -zxvf "$WORK_DIR/helm-stable.tar.gz"
-        mv "$WORK_DIR/linux-amd64/helm" "$HOME/bin/.helm"
+        curl -fsSL -o "$work_dir/$helm_file" "$helm_repo/$helm_file"
+        tar -C "$work_dir" -zxvf "$work_dir/$helm_file"
+        mv "$work_dir/$platform-amd64/helm" "$HOME/bin/.helm"
         chmod +x "$HOME/bin/.helm"
         cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
         chmod +x "$HOME/bin/helm"
@@ -25,9 +35,9 @@ function install_helm() {
             sleep 5
         done
 
-        rm -rf "$WORK_DIR"
+        rm -rf "$work_dir"
 
-        setKey helm.installed true
+        setKey "helm.installed.$CONJURE_UP_SESSION_ID" true
     fi
     # always update the default config to the latest install
     echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
