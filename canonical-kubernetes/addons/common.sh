@@ -5,6 +5,8 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
 function install_helm() {
+    PATH="$PATH:$HOME/bin"
+
     if [[ $(uname -s) = "Darwin" ]]; then
         platform="darwin"
     else
@@ -20,7 +22,7 @@ function install_helm() {
 
         echo "Installing Helm CLI"
         curl -fsSL -o "$work_dir/$helm_file" "$helm_repo/$helm_file"
-        tar -C "$work_dir" -zxvf "$work_dir/$helm_file"
+        tar -C "$work_dir" -zxvf "$work_dir/$helm_file" 1>&2
         mv "$work_dir/$platform-amd64/helm" "$HOME/bin/.helm"
         chmod +x "$HOME/bin/.helm"
         cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
@@ -34,6 +36,17 @@ function install_helm() {
             ((init_count=init_count+1))
             sleep 5
         done
+
+        echo "Waiting for tiller pods"
+        wait_count=0
+        while ! kubectl -n kube-system get po | grep -q 'tiller.*Running'; do
+            if [[ "$wait_count" -gt 5 ]]; then
+                break
+            fi
+            ((wait_count=wait_count+1))
+            sleep 5
+        done
+        echo "Tiller pods running"
 
         rm -rf "$work_dir"
 
