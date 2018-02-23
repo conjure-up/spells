@@ -15,6 +15,10 @@ function install_helm() {
     helm_repo="https://storage.googleapis.com/kubernetes-helm"
     helm_file="helm-$HELM_VERSION-$platform-amd64.tar.gz"
 
+    # always update the default config to the latest install
+    echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
+
+    # only install and init Helm once per deployment
     if [[ "$(getKey "helm.installed.$CONJURE_UP_SESSION_ID")" != "true" ]]; then
         work_dir="$(mktemp -d)"
 
@@ -28,23 +32,28 @@ function install_helm() {
         cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
         chmod +x "$HOME/bin/helm"
 
-        init_count=0
+        echo "Deploying and initializing Helm"
+        init_count=1
         while ! helm init --upgrade; do
             if [[ "$init_count" -gt 5 ]]; then
-                break
+                echo "Helm init failed"
+                exit 1
             fi
+            echo "Deploying and initializing Helm ($init_count/5)"
             ((init_count=init_count+1))
             sleep 5
         done
 
         echo "Waiting for tiller pods"
-        wait_count=0
+        wait_count=1
         while ! kubectl -n kube-system get po | grep -q 'tiller.*Running'; do
-            if [[ "$wait_count" -gt 5 ]]; then
-                break
+            if [[ "$wait_count" -gt 10 ]]; then
+                echo "Tiller pods not ready"
+                exit 1
             fi
+            echo "Waiting for tiller pods ($wait_count/10)"
             ((wait_count=wait_count+1))
-            sleep 5
+            sleep 30
         done
         echo "Tiller pods running"
 
@@ -52,6 +61,4 @@ function install_helm() {
 
         setKey "helm.installed.$CONJURE_UP_SESSION_ID" true
     fi
-    # always update the default config to the latest install
-    echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
 }
