@@ -1,9 +1,0 @@
-friendly-name: Deis Workflow
-description: |
-  Workflow provides the simplest, most flexible way for your developers and ops
-  to deploy and manage apps - wherever you run them.
-version: 1
-cloud-whitelist:
-  - aws
-# Additional charms/configs needed for Deis Workflow
-# bundle-partial:
