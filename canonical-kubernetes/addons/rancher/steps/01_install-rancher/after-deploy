@@ -6,17 +6,14 @@ set -eux
 
 export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
 
-# only install and init rancher once per deployment
-if [[ "$(getKey "rancher.installed.$CONJURE_UP_SESSION_ID")" != "true" ]]; then
-    kubectl apply -f "$(scriptPath)/cdk-rancher-nodeport.yaml"
-    applicationUnits kubernetes-worker | while read unit; do
-	juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit "$unit" "open-port 30443"
-    done
+kubectl apply -f "$(scriptPath)/cdk-rancher-nodeport.yaml"
+applicationUnits kubernetes-worker | while read unit; do
+    juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit "$unit" "open-port 30443"
+done
 
-    setKey "rancher.installed.$CONJURE_UP_SESSION_ID" true
-    worker_0_public_ip=$(unitAddress kubernetes-worker)
-    setResult "Rancher is now installed and accessible from any worker node at port \
-30443 such as https://$worker_0_public_ip:30443."
-fi
+worker_0_public_ip=$(unitAddress kubernetes-worker)
+setResult "Rancher is now installed and accessible from any worker node at port \
+30443 such as https://$worker_0_public_ip:30443. The default username/password is\
+admin/admin."
 
 exit 0
