@@ -1,0 +1,7 @@
+friendly-name: Rancher 2.0
+description: |
+  Deploy Rancher 2.0 to your Kubernetes cluster.
+
+  This addon will install Rancher 2.0 in your cluster with a nodeport
+  open on your workers for access.
+version: 1
