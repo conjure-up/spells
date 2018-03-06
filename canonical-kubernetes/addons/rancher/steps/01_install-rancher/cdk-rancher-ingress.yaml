@@ -46,14 +46,12 @@ spec:
       creationTimestamp: null
       labels:
         app: rancher
-        ima: pod
     spec:
       containers:
       - image: rancher/server:preview
         imagePullPolicy: Always
         name: rancher
         ports:
-        - containerPort: 80
         - containerPort: 443
         livenessProbe:
           httpGet:
@@ -68,29 +66,34 @@ status: {}
 ---
 apiVersion: v1
 kind: Service
-metadata:
+metadata: 
   name: rancher
   labels:
     app: rancher
-spec:
-  ports:
+spec: 
+  ports: 
     - port: 443
-      protocol: TCP
       targetPort: 443
+      protocol: TCP
   selector:
     app: rancher
 ---
-apiVersion: v1
-kind: Service
-metadata: 
-  name: rancher-nodeport
-spec: 
-  type: NodePort
-  selector:
-     app: rancher
-  ports: 
-  - name: rancher-api
-    protocol: TCP
-    nodePort: 30443
-    port: 443
-    targetPort: 443
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: rancher
+ annotations:
+   kubernetes.io/tls-acme: "true"
+   ingress.kubernetes.io/secure-backends: "true"
+spec:
+ tls:
+   - hosts:
+     - rancher.##PUBLIC_IP##.xip.io
+ rules:
+   - host: rancher.##PUBLIC_IP##.xip.io
+     http:
+       paths:
+         - path: /
+           backend: 
+             serviceName: rancher
+             servicePort: 443
