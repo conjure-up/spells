@@ -7,6 +7,7 @@ set -eux
 if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
     sed "s/##MODEL##/$JUJU_MODEL/" "$(scriptPath)/lxd-profile.yaml" | lxc profile edit "juju-$JUJU_MODEL"
+    juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-worker proxy-extra-args="proxy-mode=userspace"
 fi
 
 cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
