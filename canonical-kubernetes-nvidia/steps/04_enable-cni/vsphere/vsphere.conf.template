@@ -1,0 +1,22 @@
+[Global]
+        # properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
+        user = "JUJU_VSPHERE_USER"
+        password = "JUJU_VSPHERE_PASSWORD"
+        port = "JUJU_VSPHERE_PORT"
+        insecure-flag = "1" #set to 1 if the vCenter uses a self-signed cert
+        datacenters = "JUJU_VSPHERE_REGIONS" # I only have one datacenter
+        vm-uuid="__uuid__" # we will set this value automagically
+[VirtualCenter "JUJU_VSPHERE_ENDPOINT"]
+        #Even though it's the same as the Global configuration it should still be there, otherewise the cloud provider will interpret the configuration file as an pre k8s 1.9 style config file.
+[Workspace]
+        # Specify properties which will be used for various vSphere Cloud Provider functionality.
+        # e.g. Dynamic provisioing, Storage Profile Based Volume provisioning etc.
+        server = "10.200.1.2"
+        datacenter = "Datacenter"
+        folder = "k8s-storage" #Make sure this folder exists in your vmware Datacenter
+        default-datastore = "MyStorage" #Datastore to use for provisioning volumes using storage classes/dynamic provisioning
+        resourcepool-path = "" # Used fordummy VM creation. Optional
+[Disk]
+        scsicontrollertype = pvscsi
+[Network]
+        public-network = "My Network"
