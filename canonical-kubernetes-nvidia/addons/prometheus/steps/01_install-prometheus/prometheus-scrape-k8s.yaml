@@ -1,0 +1,70 @@
+- job_name: 'k8s-api-endpoints'
+  kubernetes_sd_configs:
+  - api_server: K8S_API_ENDPOINT
+    role: endpoints
+    tls_config:
+      insecure_skip_verify: true
+    basic_auth:
+      username: admin
+      password: K8S_PASSWORD
+  scrape_interval: 30s
+  scheme: https
+  tls_config:
+    insecure_skip_verify: true
+  basic_auth:
+    username: admin
+    password: K8S_PASSWORD
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+    action: keep
+    regex: default;kubernetes;https
+- job_name: 'kubernetes-nodes'
+  kubernetes_sd_configs:
+  - api_server: K8S_API_ENDPOINT
+    role: node
+    tls_config:
+      insecure_skip_verify: true
+    basic_auth:
+      username: admin
+      password: K8S_PASSWORD
+  scrape_interval: 30s
+  scheme: https
+  tls_config:
+    insecure_skip_verify: true
+  basic_auth:
+    username: admin
+    password: K8S_PASSWORD
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_node_label_(.+)
+  - target_label: __address__
+    replacement: K8S_API_ENDPOINT
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/$1/proxy/metrics
+- job_name: 'kubernetes-cadvisor'
+  kubernetes_sd_configs:
+  - api_server: K8S_API_ENDPOINT
+    role: node
+    tls_config:
+      insecure_skip_verify: true
+    basic_auth:
+      username: admin
+      password: K8S_PASSWORD
+  scrape_interval: 30s
+  scheme: https
+  tls_config:
+    insecure_skip_verify: true
+  basic_auth:
+    username: admin
+    password: K8S_PASSWORD
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_node_label_(.+)
+  - target_label: __address__
+    replacement: K8S_API_ENDPOINT
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor

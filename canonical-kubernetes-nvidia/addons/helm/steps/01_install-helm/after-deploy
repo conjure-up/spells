@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+. "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/common.sh"
+
+export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
+
+install_helm
+
+setResult "Helm installed and ready for use! Be sure to checkout https://helm.sh"
+
+exit 0

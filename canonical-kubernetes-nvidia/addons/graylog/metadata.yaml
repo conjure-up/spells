@@ -1,0 +1,8 @@
+friendly-name: Graylog
+description: |
+  Deploy a Graylog stack to analyze Kubernetes logs.
+
+  This addon includes apache2, elasticsearch, filebeat, graylog, and
+  mongodb applications. By default, these are configured to gather syslogs
+  and container logs from kubernetes nodes.
+version: 1
