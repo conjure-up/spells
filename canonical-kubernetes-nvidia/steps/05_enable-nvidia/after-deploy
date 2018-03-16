@@ -4,6 +4,7 @@ set -eux
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
+# Append our needed config to any existing kubelet-extra-args
 kublet_current_config="$(juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker kubelet-extra-args)"
 kubelet_needed_config="feature-gates=DevicePlugins=true"
 if $(echo "${kublet_current_config}" | grep -q -- "${kubelet_needed_config}"); then
@@ -14,16 +15,12 @@ else
         kubelet-extra-args="${kublet_current_config} ${kubelet_needed_config}"
 fi
 
-docker_current_config="$(juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker docker-opts)"
-docker_needed_config="--default-runtime=auto"
-if $(echo "${docker_current_config}" | grep -q -- "${docker_needed_config}"); then
-    echo "Required docker-opts config is already set"
-else
-    echo "Configuring docker-opts for kubernetes-worker"
-    juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
-        docker-opts="${docker_current_config} ${docker_needed_config}"
-fi
+# Don't bother checking existing docker_runtime; we always want it to be 'auto'
+echo "Configuring docker_runtime for kubernetes-worker"
+juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+    docker_runtime="auto"
 
+# Step 02 should have put kubectl in $HOME/bin; use it or explain what to do.
 echo "Deploying nVidia daemonset"
 if [[ -x $HOME/bin/kubectl ]]; then
     $HOME/bin/kubectl create -f $(scriptPath)/nvidia-device-plugin.yml
