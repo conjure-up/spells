@@ -1,5 +1,0 @@
-services:
-  kubernetes-worker:
-    charm: cs:~containers/kubernetes-worker-106
-    num_units: 3
-    constraints: "instance-type=p2.xlarge"
