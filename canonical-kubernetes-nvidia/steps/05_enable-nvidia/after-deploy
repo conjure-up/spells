@@ -20,6 +20,15 @@ echo "Configuring docker_runtime for kubernetes-worker"
 juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
     docker_runtime="auto"
 
+# Ensure our libcuda symlinks are correct. The existing cuda layer hard codes
+# a versioned symlink, but the latest cuda is a newer version:
+# https://github.com/juju-solutions/layer-nvidia-cuda/blob/master/reactive/cuda.sh#L241
+echo "Updating libnvcuvid symlinks"
+juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --application kubernetes-worker \
+    'ln -sf /usr/lib/nvidia-*/libnvcuvid.so.1 /usr/lib/libnvcuvid.so.1'
+juju run -m $JUJU_CONTROLLER:$JUJU_MODEL --application kubernetes-worker \
+    'ln -sf /usr/lib/nvidia-*/libnvcuvid.so /usr/lib/libnvcuvid.so'
+
 # Step 02 should have put kubectl in $HOME/bin; use it or explain what to do.
 echo "Deploying nVidia daemonset"
 if [[ -x $HOME/bin/kubectl ]]; then
