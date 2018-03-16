@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eux
+
+. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+
+juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+    kubelet-extra-args="feature-gates=DevicePlugins=true"
+juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+    docker-opts="--default-runtime=nvidia"
+
+if [[ -x $HOME/bin/kubectl ]]; then
+    $HOME/bin/kubectl create -f $(scriptPath)/nvidia-device-plugin.yml
+    setResult "Kubernetes workers have been configured and the nVidia daemonset deployed."
+else
+    setResult "Could not find kubectl. You must deploy the nVidia daemonset: \
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.9/nvidia-device-plugin.yml"
+fi
+
+exit 0

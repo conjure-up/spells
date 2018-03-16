@@ -1,0 +1,3 @@
+title: Enable nVidia on Kubernetes workers
+description: Download the kubectl and kubefed client programs to your local host
+viewable: True
