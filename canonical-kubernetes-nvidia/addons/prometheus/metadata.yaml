@@ -1,7 +1,0 @@
-friendly-name: Prometheus
-description: |
-  Deploy a Prometheus stack to analyze Kubernetes metrics.
-
-  This addon includes grafana, prometheus, and telegraf applications. Two
-  grafana dashboards are included to showcase cluster and system metrics.
-version: 1
