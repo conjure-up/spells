@@ -4,11 +4,27 @@ set -eux
 
 . $CONJURE_UP_SPELLSDIR/sdk/common.sh
 
-juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
-    kubelet-extra-args="feature-gates=DevicePlugins=true"
-juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
-    docker-opts="--default-runtime=nvidia"
+kublet_current_config="$(juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker kubelet-extra-args)"
+kubelet_needed_config="feature-gates=DevicePlugins=true"
+if $(echo "${kublet_current_config}" | grep -q -- "${kubelet_needed_config}"); then
+    echo "Required kubelet-extra-args config is already set"
+else
+    echo "Configuring kubelet-extra-args for kubernetes-worker"
+    juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+        kubelet-extra-args="${kublet_current_config} ${kubelet_needed_config}"
+fi
 
+docker_current_config="$(juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker docker-opts)"
+docker_needed_config="--default-runtime=auto"
+if $(echo "${docker_current_config}" | grep -q -- "${docker_needed_config}"); then
+    echo "Required docker-opts config is already set"
+else
+    echo "Configuring docker-opts for kubernetes-worker"
+    juju config -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-worker \
+        docker-opts="${docker_current_config} ${docker_needed_config}"
+fi
+
+echo "Deploying nVidia daemonset"
 if [[ -x $HOME/bin/kubectl ]]; then
     $HOME/bin/kubectl create -f $(scriptPath)/nvidia-device-plugin.yml
     setResult "Kubernetes workers have been configured and the nVidia daemonset deployed."
