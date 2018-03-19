@@ -1,0 +1,9 @@
+title: Install KubeFlow
+description: |
+  Download and installs KubeFlow
+viewable: True
+additional-input:
+  - label: Github Access Token(https://github.com/settings/tokens)
+    key: GITHUB_KEY
+    type: text
+    default: 
