@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
+export GITHUB_TOKEN=$GITHUB_KEY
+
+kubectl create ns kubeflow
+ks init kubeflow
+cd kubeflow
+ks env add cdk
+ks registry add kubeflow github.com/google/kubeflow/tree/master/kubeflow
+ks pkg install kubeflow/core
+ks pkg install kubeflow/tf-serving
+ks pkg install kubeflow/tf-job
+ks generate core kubeflow-core --name=kubeflow-core --namespace=kubeflow
+ks apply cdk -c kubeflow-core
+
+setResult "KubeFlow installed and ready for use!"
+
+exit 0
