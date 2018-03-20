@@ -7,9 +7,12 @@ set -eux
 export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
 export GITHUB_TOKEN=$GITHUB_KEY
 
+mkdir -p $HOME/kubeflow
+cd $HOME/kubeflow
+
 kubectl create ns kubeflow
-ks init kubeflow
-cd kubeflow
+ks init kubeflow.$JUJU_MODEL
+cd kubeflow.$JUJU_MODEL
 ks env add cdk
 ks registry add kubeflow github.com/google/kubeflow/tree/master/kubeflow
 ks pkg install kubeflow/core
@@ -18,6 +21,6 @@ ks pkg install kubeflow/tf-job
 ks generate core kubeflow-core --name=kubeflow-core --namespace=kubeflow
 ks apply cdk -c kubeflow-core
 
-setResult "KubeFlow installed and ready for use!"
+setResult "KubeFlow installed and ready for use! You can find the ksonnet files in $HOME/kubeflow/kubeflow.$JUJU_MODEL"
 
 exit 0
