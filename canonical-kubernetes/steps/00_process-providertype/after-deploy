@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
+    juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-worker proxy-extra-args="proxy-mode=userspace"
+fi
