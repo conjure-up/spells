@@ -17,9 +17,6 @@ fi
 ksonnet_repo="https://github.com/ksonnet/ksonnet/releases/download/v$KS_VERSION"
 ksonnet_file="ks_${KS_VERSION}_${platform}_amd64.tar.gz"
 
-# always update the default config to the latest install
-echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
-
 work_dir="$(mktemp -d)"
 curl -fsSL -o "$work_dir/$ksonnet_file" "$ksonnet_repo/$ksonnet_file"
 tar -C "$work_dir" -zxvf "$work_dir/$ksonnet_file" 1>&2
