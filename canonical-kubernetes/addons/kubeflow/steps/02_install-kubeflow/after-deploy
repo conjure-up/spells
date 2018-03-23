@@ -21,6 +21,6 @@ ks pkg install kubeflow/tf-job
 ks generate core kubeflow-core --name=kubeflow-core --namespace=kubeflow
 ks apply cdk -c kubeflow-core
 
-setResult "KubeFlow installed and ready for use! You can find the ksonnet files in $HOME/kubeflow/kubeflow.$JUJU_MODEL"
+setResult "KubeFlow installed and ready for use! You can find the ksonnet files in $HOME/.local/share/kubeflow/kubeflow.$JUJU_MODEL"
 
 exit 0
