@@ -16,15 +16,10 @@ if [[ $(uname -s) = "Darwin" ]]; then
     curl -sLO $KUBE_REPO/kubectl
     chmod +x kubectl
     mv kubectl $KUBE_DEST/kubectl
-
-    curl -sLO $KUBE_REPO/kubefed
-    chmod +x kubefed
-    mv kubefed $KUBE_DEST/kubefed
 else
     KUBE_DEST="/snap/bin"
 
     sudo snap install kubectl --classic || true
-    sudo snap install kubefed --classic || true
 fi
 
 echo "KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL $KUBE_DEST/kubectl \$@" > $HOME/bin/kubectl
