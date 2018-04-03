@@ -12,7 +12,7 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     if [[ "${version_arr[0]}" -gt "2" ]]; then
         lxc_aa_profile="lxc.apparmor.profile"
     fi
-    cat "$(scriptPath)/lxd-profile.yaml" | sed -e "s/##MODEL##/$JUJU_MODEL/"  | sed -e "s/##AA_PROFILE##/$lxc_aa_profile/" | lxc profile edit "juju-$JUJU_MODEL"
+    cat "$(scriptPath)/lxd-profile.yaml" | sed -e "s/##MODEL##/$JUJU_MODEL/" -e "s/##AA_PROFILE##/$lxc_aa_profile/" | lxc profile edit "juju-$JUJU_MODEL"
 fi
 
 cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
