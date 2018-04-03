@@ -1,6 +1,3 @@
-deis:
-  spell: canonical-kubernetes
-  addons: [deis]
 graylog:
   spell: canonical-kubernetes
   addons: [graylog]
