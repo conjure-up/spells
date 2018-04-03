@@ -6,7 +6,13 @@ set -eux
 
 if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     debug "Running pre-deploy for $CONJURE_UP_SPELL"
-    sed "s/##MODEL##/$JUJU_MODEL/" "$(scriptPath)/lxd-profile.yaml" | lxc profile edit "juju-$JUJU_MODEL"
+    lxc_aa_profile="lxc.aa_profile"
+    version=$(lxc --version)
+    version_arr=(${version//./})
+    if [[ "${version_arr[0]}" -gt "2" ]]; then
+        lxc_aa_profile="lxc.apparmor.profile"
+    fi
+    cat "$(scriptPath)/lxd-profile.yaml" | sed "s/##MODEL##/$JUJU_MODEL/"  | sed "s/##AA_PROFILE##/$lxc_aa_profile/" | lxc profile edit "juju-$JUJU_MODEL"
 fi
 
 cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
