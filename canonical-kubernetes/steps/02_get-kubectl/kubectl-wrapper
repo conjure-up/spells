@@ -14,5 +14,11 @@ if which juju > /dev/null; then
     ln -fs "$model_kubeconfig_name" "$KUBECONFIG"
 fi
 
+if [[ $(uname -s) = "Darwin" ]]; then
+    kube_dest="/usr/local/bin"
+else
+    kube_dest="/snap/bin"
+fi
+
 export KUBECONFIG
-exec /snap/bin/kubectl "$@"
+exec "$kube_dest/kubectl" "$@"
