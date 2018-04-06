@@ -7,8 +7,6 @@ set -eux
 mkdir -p $HOME/.kube
 mkdir -p $HOME/bin
 
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
-
 if [[ $(uname -s) = "Darwin" ]]; then
     KUBE_DEST="/usr/local/bin"
     KUBE_REPO=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64
@@ -22,8 +20,8 @@ else
     sudo snap install kubectl --classic || true
 fi
 
-echo "KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL $KUBE_DEST/kubectl \$@" > $HOME/bin/kubectl
-chmod +x $HOME/bin/kubectl
+cp "$(dirname "$0")/kubectl-wrapper" "$HOME/bin/kubectl"
+chmod +x "$HOME/bin/kubectl"
 
 setResult "The Kubernetes client utility (kubectl) is now available"
 exit 0
