@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+KUBECONFIG="$HOME/.kube/config.juju-current"
+
+if which juju > /dev/null; then
+    # juju is available, so switch to current model
+    model_kubeconfig_name="config.juju-$(juju switch | sed -e 's:.*/::')"
+    model_kubeconfig_file="$HOME/.kube/$model_kubeconfig_name"
+    if [[ -n "$KUBECONFIG_ALWAYS_SYNC" || ! -e "$model_kubeconfig_file" ]]; then
+        juju scp kubernetes-master/0:config "$model_kubeconfig_file"
+    fi
+    ln -fs "$model_kubeconfig_name" "$KUBECONFIG"
+fi
+
+if [[ $(uname -s) = "Darwin" ]]; then
+    kube_dest="/usr/local/bin"
+else
+    kube_dest="/snap/bin"
+fi
+
+export KUBECONFIG
+exec "$kube_dest/kubectl" "$@"
