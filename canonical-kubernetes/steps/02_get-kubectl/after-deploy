@@ -2,28 +2,31 @@
 
 set -eux
 
-. $CONJURE_UP_SPELLSDIR/sdk/common.sh
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-mkdir -p $HOME/.kube
-mkdir -p $HOME/bin
-
-juju scp -m $JUJU_CONTROLLER:$JUJU_MODEL kubernetes-master/0:config ~/.kube/config.$JUJU_MODEL
+mkdir -p "$HOME/.kube"
 
 if [[ $(uname -s) = "Darwin" ]]; then
     KUBE_DEST="/usr/local/bin"
     KUBE_REPO=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64
 
-    curl -sLO $KUBE_REPO/kubectl
+    curl -sLO "$KUBE_REPO/kubectl"
     chmod +x kubectl
-    mv kubectl $KUBE_DEST/kubectl
+    mv kubectl "$KUBE_DEST/kubectl"
 else
     KUBE_DEST="/snap/bin"
 
     sudo snap install kubectl --classic || true
 fi
 
-echo "KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL $KUBE_DEST/kubectl \$@" > $HOME/bin/kubectl
-chmod +x $HOME/bin/kubectl
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$HOME/.kube/config.$JUJU_MODEL"
+sed -i -e "s/juju-\(context\|cluster\)/$JUJU_MODEL/g" "$HOME/.kube/config.$JUJU_MODEL"
+KUBECONFIG="$HOME/.kube/config:$HOME/.kube/config.$JUJU_MODEL" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.new"
+mv "$HOME/.kube/config.new" "$HOME/.kube/config"
+rm "$HOME/.kube/config.$JUJU_MODEL"
+$KUBE_DEST/kubectl config set current-context "$JUJU_MODEL"
 
-setResult "The Kubernetes client utility (kubectl) is now available"
+setResult "The Kubernetes client utility (kubectl) is now available at: $KUBE_DEST/kubectl\
+\
+The current-context has been set to $JUJU_MODEL"
 exit 0
