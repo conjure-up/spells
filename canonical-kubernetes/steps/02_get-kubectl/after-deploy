@@ -20,13 +20,15 @@ else
 fi
 
 # copy down config file from cluster
-juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$HOME/.kube/config.$JUJU_MODEL"
-# change cluster and context name to model name
-sed -i -e "s/juju-\(context\|cluster\)/$JUJU_MODEL/g" "$HOME/.kube/config.$JUJU_MODEL"
-# change user name (but not username) to model name
-sed -i -e "s/^\( *\)\(user:\|- name:\) admin$/\1\2 $JUJU_MODEL/g" "$HOME/.kube/config.$JUJU_MODEL"
-# merge with any existing config and dump to config.new
-KUBECONFIG="$HOME/.kube/config:$HOME/.kube/config.$JUJU_MODEL" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.new"
+juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$HOME/.kube/config.conjure-up.$JUJU_MODEL"
+
+# change cluster, context, and name of user to model name
+"$(dirname "$0")/update_kube_config.py" "$HOME/.kube/config.conjure-up.$JUJU_MODEL" "$JUJU_MODEL"
+
+# merge with any existing config and dump to config.conjure-up.new
+KUBECONFIG="$HOME/.kube/config.conjure-up.$JUJU_MODEL:$HOME/.kube/config" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.conjure-up.new"
+
+# manage backup if existing config
 if [[ -e "$HOME/.kube/config" ]]; then
     # make backup copy of old config
     cp "$HOME/.kube/config" "$HOME/.kube/config.conjure-up.backup.$(date -Iseconds)"
@@ -35,10 +37,13 @@ if [[ -e "$HOME/.kube/config" ]]; then
         rm "$old_backup" || true  # ignore errors
     done
 fi
+
 # replace any existing config with merged, and make default
-mv "$HOME/.kube/config.new" "$HOME/.kube/config"
+mv "$HOME/.kube/config.conjure-up.new" "$HOME/.kube/config"
+
 # clean up the copy of cluster-only config
-rm "$HOME/.kube/config.$JUJU_MODEL"
+rm "$HOME/.kube/config.conjure-up.$JUJU_MODEL"
+
 # set the current context to the new cluster so it's used by default
 $KUBE_DEST/kubectl config set current-context "$JUJU_MODEL"
 
