@@ -25,8 +25,14 @@ juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$HOME/.ku
 # change cluster, context, and name of user to model name
 "$(dirname "$0")/update_kube_config.py" "$HOME/.kube/config.conjure-up.$JUJU_MODEL" "$JUJU_MODEL"
 
+# clean up wrapper from any previously CDK clusters
+if [[ -e "$HOME/bin/kubectl" ]]; then
+    PREVCONFIG="$(grep -o 'KUBECONFIG=[^ ]*' "$HOME/bin/kubectl")"
+    rm "$HOME/bin/kubectl"
+fi
+
 # merge with any existing config and dump to config.conjure-up.new
-KUBECONFIG="$HOME/.kube/config.conjure-up.$JUJU_MODEL:$HOME/.kube/config" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.conjure-up.new"
+KUBECONFIG="$HOME/.kube/config.conjure-up.$JUJU_MODEL:$PREVCONFIG:$HOME/.kube/config" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.conjure-up.new"
 
 # manage backup if existing config
 if [[ -e "$HOME/.kube/config" ]]; then
