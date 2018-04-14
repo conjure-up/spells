@@ -4,6 +4,10 @@ graylog:
 helm:
   spell: canonical-kubernetes
   addons: [helm]
+jfrog:
+    spell: canonical-kubernetes
+    addons: [jfrog]
 prometheus:
   spell: canonical-kubernetes
   addons: [prometheus]
+

@@ -1,0 +1,18 @@
+ingress:
+  ## If true, Artifactory Ingress will be created
+  ##
+  enabled: true
+    ## Artifactory Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+  hosts:
+    - INGRESS_HOSTS
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ## Artifactory Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+  tls:
+    - secretName: TLS_SECRET_NAME
+      hosts:
+        - INGRESS_TLS_HOSTS
