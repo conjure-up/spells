@@ -1,0 +1,58 @@
+title: Install Artifactory via Helm
+description: |
+  Install Artifactory in Kubernetes from Canonical
+  using Helm
+viewable: True
+additional-input:
+  - label: Postgres Database User Name
+    key: DBUSER
+    type: text
+    default: artifactory
+  - label: Postgres Database Password
+    key: DBPASS
+    type: password
+    default: artifact123
+  - label: Force Helm Reinstall
+    key: FORCE_HELM_REINSTALL
+    type: text
+    default: "true"
+  - label: Helm version
+    key: JFROG_HELM_VERSION
+    type: text
+    default: v2.8.1
+  - label: Use Ingress Controller
+    key: USE_INGRESS_CONTROLLER
+    type: text
+    default: "false"
+  - label: Artifactory Service Type(LoadBalancer or NodePort)
+    key: SERVICE_TYPE
+    type: text
+    default: LoadBalancer
+  - label: Artifactory Release Name/Path
+    key: ARTIFACTORY_RELEASE
+    type: text
+    default: stable/artifactory-ha
+  - label: Configure TLS with user cert and key file
+    key: CONFIG_TLS_SECRET
+    type: text
+    default: "false"
+  - label: Full pathname of TLS Cert file
+    key: TLS_CERT
+    type: text
+    default: tls.cert
+  - label: Full pathname of TLS Key file
+    key: TLS_KEY
+    type: text
+    default: tls.key
+  - label: Name of TLS Secret
+    key: TLS_SECRET_NAME
+    type: text
+    default: art-tls
+  - label: Ingress Hosts 
+    key: INGRESS_HOSTS
+    type: text
+    default: artifactory.domain.example
+  - label: Ingress TLS Hosts
+    key: INGRESS_TLS_HOSTS
+    type: text
+    default: artifactory.domain.example

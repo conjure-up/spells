@@ -1,0 +1,70 @@
+# Default values for artifactory.
+# This is a YAML-formatted file.
+
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+
+# For supporting pulling from private registries
+imagePullSecrets:
+
+# Artifactory
+artifactory:
+  persistence:
+    enabled: true
+    size: 500Gi
+    storageClass: jfrogstandard
+    ## artifactory data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+  ## Uncomment the following resources definitions or pass them from command line
+  ## to control the cpu and memory resources allocated by the Kubernetes cluster
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "1"
+    limits:
+      memory: "6Gi"
+      cpu: "3"
+  ## The following Java options are passed to the java process running Artifactory.
+  ## You should set them according to the resources set above
+  javaOpts:
+    xms: "1g"
+    xmx: "6g"
+  #  other: ""
+
+# Nginx
+nginx:
+  persistence:
+    enabled: true
+    storageClass: jfrogstandard
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+  resources: {}
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "250Mi"
+  #    cpu: "500m"
+
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+##
+postgresql:
+  persistence:
+    enabled: true
+    storageClass: jfrogstandard
