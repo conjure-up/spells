@@ -16,7 +16,9 @@ if [[ $(uname -s) = "Darwin" ]]; then
 else
     KUBE_DEST="/snap/bin"
 
-    sudo snap install kubectl --classic || true
+    if [[ ! -e "$KUBE_DEST/kubectl" ]]; then
+        sudo snap install kubectl --classic
+    fi
 fi
 
 # copy down config file from cluster
