@@ -25,14 +25,12 @@ juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" kubernetes-master/0:config "$HOME/.ku
 # change cluster, context, and name of user to model name
 "$(dirname "$0")/update_kube_config.py" "$HOME/.kube/config.conjure-up.$JUJU_MODEL" "$JUJU_MODEL"
 
+PREVCONFIG=""
 # clean up wrapper from any previously CDK clusters
 if [[ -e "$HOME/bin/kubectl" ]]; then
     PREVCONFIG="$(grep -o 'KUBECONFIG=[^ ]*' "$HOME/bin/kubectl")"
     rm "$HOME/bin/kubectl"
 fi
-
-# merge with any existing config and dump to config.conjure-up.new
-KUBECONFIG="$HOME/.kube/config.conjure-up.$JUJU_MODEL:$PREVCONFIG:$HOME/.kube/config" "$KUBE_DEST/kubectl" config view --raw=true > "$HOME/.kube/config.conjure-up.new"
 
 # manage backup if existing config
 if [[ -e "$HOME/.kube/config" ]]; then
@@ -44,8 +42,11 @@ if [[ -e "$HOME/.kube/config" ]]; then
     done
 fi
 
-# replace any existing config with merged, and make default
-mv "$HOME/.kube/config.conjure-up.new" "$HOME/.kube/config"
+# merge with and replace any existing config
+KUBECONFIG="$HOME/.kube/config.conjure-up.$JUJU_MODEL:$PREVCONFIG:$HOME/.kube/config"
+export KUBECONFIG
+NEW_CONFIG="$("$KUBE_DEST/kubectl" config view --raw=true)"
+echo "$NEW_CONFIG" > "$HOME/.kube/config"
 
 # clean up the copy of cluster-only config
 rm "$HOME/.kube/config.conjure-up.$JUJU_MODEL"
