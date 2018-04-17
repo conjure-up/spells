@@ -6,18 +6,20 @@ services:
     options:
       enable_modules: "headers proxy_html proxy_http"
   elasticsearch:
-    charm: cs:xenial/elasticsearch-26
+    charm: cs:xenial/elasticsearch-27
+    constraints: mem=3G root-disk=16G
     num_units: 1
   filebeat:
-    charm: cs:xenial/filebeat-12
+    charm: cs:~filebeat-charmers/filebeat-9
     options:
       logpath: '/var/log/*.log'
       kube_logs: True
   graylog:
-    charm: cs:xenial/graylog-12
+    charm: cs:xenial/graylog-15
+    constraints: mem=3G
     num_units: 1
   mongodb:
-    charm: cs:xenial/mongodb-46
+    charm: cs:xenial/mongodb-47
     num_units: 1
 relations:
   - ["apache2:reverseproxy", "graylog:website"]
