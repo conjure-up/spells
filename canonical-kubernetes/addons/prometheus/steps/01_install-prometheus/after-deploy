@@ -27,8 +27,10 @@ juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" prometheus \
   scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
 
 # setup grafana dashboards
-juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
-  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
+# NB: recent telegraf charm includes a nice dashboard by default; comment out
+# the telegraf dashboard included in this step for now (deprecate/remove later)
+#juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
+#  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
 juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
   import-dashboard dashboard="$(base64 $(scriptPath)/grafana-k8s.json)"
 
