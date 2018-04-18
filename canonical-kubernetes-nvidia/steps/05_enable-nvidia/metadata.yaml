@@ -1,3 +1,0 @@
-title: Enable nVidia on Kubernetes workers
-description: Ensure nVidia config is set and daemonset is deployed on workers
-viewable: True
