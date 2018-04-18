@@ -23,6 +23,7 @@ function install_helm() {
         work_dir="$(mktemp -d)"
 
         rm -f "$HOME/bin/helm" "$HOME/bin/.helm"  # clear potentially different version
+        mkdir -p "$HOME/bin"
 
         echo "Installing Helm CLI"
         curl -fsSL -o "$work_dir/$helm_file" "$helm_repo/$helm_file"
