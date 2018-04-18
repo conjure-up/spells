@@ -4,8 +4,6 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
-
 lb_public_ip=$(unitAddress kubernetes-worker)
 sed -e s/##PUBLIC_IP##/$lb_public_ip/g $(scriptPath)/cdk-rancher-ingress.yaml | kubectl apply -f -
 
