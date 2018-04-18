@@ -4,7 +4,13 @@ set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-INFO="$(~/bin/kubectl cluster-info | perl -pe 's/\x1b\[[0-9;]*m//g')"
+KUBECTL=$(getKey "kubectl.dest.$CONJURE_UP_SESSION_ID")
+
+if [[ -x $KUBECTL ]]; then
+  INFO="$($KUBECTL cluster-info | perl -pe 's/\x1b\[[0-9;]*m//g')"
+else
+  INFO="Could not run $KUBECTL; cluster-info is currently unavailable"
+fi
 
 setResult "$INFO"
 exit 0
