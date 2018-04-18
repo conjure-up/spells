@@ -59,4 +59,6 @@ $KUBE_DEST/kubectl config set current-context "$JUJU_MODEL"
 setResult "The Kubernetes client utility (kubectl) is now available at: $KUBE_DEST/kubectl\
 \
 The current-context has been set to $JUJU_MODEL"
+
+setKey "kubectl.dest" "$KUBE_DEST/kubectl"
 exit 0

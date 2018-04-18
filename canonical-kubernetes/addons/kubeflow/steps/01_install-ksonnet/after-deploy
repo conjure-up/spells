@@ -4,8 +4,6 @@ set -eux
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
-
 PATH="$PATH:$HOME/bin"
 
 if [[ $(uname -s) = "Darwin" ]]; then
