@@ -60,5 +60,5 @@ setResult "The Kubernetes client utility (kubectl) is now available at: $KUBE_DE
 \
 The current-context has been set to $JUJU_MODEL"
 
-setKey "kubectl.dest.$CONJURE_UP_SESSION_ID" "$KUBE_DEST/kubectl"
+setKey "kubectl.dest" "$KUBE_DEST/kubectl"
 exit 0

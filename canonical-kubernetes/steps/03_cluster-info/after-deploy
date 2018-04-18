@@ -4,7 +4,7 @@ set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-KUBECTL=$(getKey "kubectl.dest.$CONJURE_UP_SESSION_ID")
+KUBECTL=$(getKey "kubectl.dest")
 
 if [[ -x $KUBECTL ]]; then
   INFO="$($KUBECTL cluster-info | perl -pe 's/\x1b\[[0-9;]*m//g')"
