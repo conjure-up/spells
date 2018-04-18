@@ -15,9 +15,6 @@ function install_helm() {
     helm_repo="https://storage.googleapis.com/kubernetes-helm"
     helm_file="helm-$HELM_VERSION-$platform-amd64.tar.gz"
 
-    # always update the default config to the latest install
-    echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
-
     # only install and init Helm once per deployment
     if [[ "$(getKey "helm.installed.$CONJURE_UP_SESSION_ID")" != "true" ]]; then
         work_dir="$(mktemp -d)"
@@ -28,10 +25,7 @@ function install_helm() {
         echo "Installing Helm CLI"
         curl -fsSL -o "$work_dir/$helm_file" "$helm_repo/$helm_file"
         tar -C "$work_dir" -zxvf "$work_dir/$helm_file" 1>&2
-        mv "$work_dir/$platform-amd64/helm" "$HOME/bin/.helm"
-        chmod +x "$HOME/bin/.helm"
-        cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
-        chmod +x "$HOME/bin/helm"
+        mv "$work_dir/$platform-amd64/helm" "$HOME/bin/helm"
 
         echo "Deploying and initializing Helm"
         init_count=1
