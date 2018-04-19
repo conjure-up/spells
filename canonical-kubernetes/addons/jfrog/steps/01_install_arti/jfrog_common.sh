@@ -6,48 +6,67 @@ set -eux
 
 function re_install_helm() {
 
-	echo "Forcing reinstall of Helm .."
-	WORK_DIR="$(mktemp -d)"
+    PATH="$PATH:$HOME/bin"
+    KUBECTL=$(getKey "kubectl.dest")
 
-	echo "Force Re-Installing Helm CLI"
-	curl -fsSL -o "$WORK_DIR/helm-stable.tar.gz" "https://storage.googleapis.com/kubernetes-helm/helm-$HELM_VERSION-linux-amd64.tar.gz"
-	tar -C "$WORK_DIR" -zxvf "$WORK_DIR/helm-stable.tar.gz"
-	rm -rf $HOME/bin/.helm
-	rm -f $HOME/bin/helm
-	mv "$WORK_DIR/linux-amd64/helm" "$HOME/bin/.helm"
-	chmod +x "$HOME/bin/.helm"
-	cp "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/helm/helm-wrapper.sh" "$HOME/bin/helm"
-	chmod +x "$HOME/bin/helm"
+    echo "Forcing reinstall of Helm .."
+    if [[ $(uname -s) = "Darwin" ]]; then
+        platform="darwin"
+    else
+        platform="linux"
+    fi
+    helm_repo="https://storage.googleapis.com/kubernetes-helm"
+    helm_file="helm-$HELM_VERSION-$platform-amd64.tar.gz"
 
-	rm -rf "$WORK_DIR"
+    work_dir="$(mktemp -d)"
+    rm -f "$HOME/bin/helm" "$HOME/bin/.helm"  # clear potentially different version
+    mkdir -p "$HOME/bin"
 
-	# --wait is introduced in helm version v2.8.0 
-	#	$HOME/bin/helm init --wait
-	# But helm init --wait gives "context limit exceeded " error
-	# Once the wait problem is fixed (likely in v2.8.2)
-	# The while loop can be replaced with a  helm init --wait followed by
-	# helm init --upgrade
+    echo "Installing Helm CLI"
+    curl -fsSL -o "$work_dir/$helm_file" "$helm_repo/$helm_file"
+    tar -C "$work_dir" -zxvf "$work_dir/$helm_file" 1>&2
+    mv "$work_dir/$platform-amd64/helm" "$HOME/bin/helm"
+    chmod +x "$HOME/bin/helm"
 
+    # --wait is introduced in helm version v2.8.0
+    #    $HOME/bin/helm init --wait
+    # But helm init --wait gives "context limit exceeded " error
+    # THe problem is fixed in in v2.8.2
+    # The while loop can be replaced with a  helm init --wait and the tiller will
+    # also be ready. Till we certify with helm v2.8.2, we will use the current logic
 
-	echo "Waiting for helm to finish initialization ..."
-	sleep 120
-	init_count=1
-	while ! $HOME/bin/helm init --upgrade; do
-		echo "Waiting for tiller pod, init_count=$init_count"
-		if [[ "$init_count" -gt 120 ]]; then
-			echo "Helm is not yet ready...Please check with your system Administrator"
-			break
-		fi
-		((init_count=init_count+1))
-		sleep 10
-	done
+    echo "Waiting for helm to finish initialization ..."
 
+    init_count=1
+    while ! helm init --upgrade; do
+        if [[ "$init_count" -gt 30 ]]; then
+            echo "Helm is not yet ready...Please check with your system Administrator"
+            exit 1
+        fi
+        echo "Still waiting for helm initialization, init_count=$init_count"
+        ((init_count=init_count+1))
+        sleep 30
+    done
 
-	# Successful helm -init --upgrade does not gaurantee that tiller pod
-	# is ready
-        setKey helm.installed true
-        # always update the default config to the latest install
-        echo "$HOME/.kube/config.$JUJU_MODEL" > "$HOME/.kube/config.conjure-up.default"
-        echo "Helm ReInstall Done. "
+    echo "Waiting for tiller pods"
+    wait_count=1
+
+    while ! "$KUBECTL" -n kube-system get po | grep -q 'tiller.*Running'; do
+        if [[ "$wait_count" -gt 120 ]]; then
+            echo "Tiller pods not ready"
+            exit 1
+        fi
+        echo "Waiting for tiller pods ($wait_count/120)"
+        ((wait_count=wait_count+1))
+        sleep 30
+    done
+    echo "Tiller pods running"
+
+    rm -rf "$work_dir"
+
+    # Successful helm -init --upgrade does not guarantee that tiller pod
+    # is ready
+    setKey "helm.installed.$CONJURE_UP_SESSION_ID" true
+    echo "Helm ReInstall Done. "
 
 }

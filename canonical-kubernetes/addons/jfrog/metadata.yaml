@@ -1,4 +1,4 @@
 friendly-name: JFrog Artifactory
 description: |
-  JFrog artifactory provides binary repository 
+  Artifactory is your Kubernetes Registry - the only enterprise-ready universal repository manager supporting secure, clustered, high availability Docker registries, Helm, NPM, and many other repositories
 version: 1

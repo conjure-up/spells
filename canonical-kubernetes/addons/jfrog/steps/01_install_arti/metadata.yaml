@@ -4,11 +4,11 @@ description: |
   using Helm
 viewable: True
 additional-input:
-  - label: Postgres Database User Name
+  - label: Database User Name
     key: DBUSER
     type: text
     default: artifactory
-  - label: Postgres Database Password
+  - label: Database Password
     key: DBPASS
     type: password
     default: artifact123
@@ -20,7 +20,7 @@ additional-input:
     key: JFROG_HELM_VERSION
     type: text
     default: v2.8.1
-  - label: Use Ingress Controller
+  - label: Use Ingress Controller(experimental)
     key: USE_INGRESS_CONTROLLER
     type: text
     default: "false"
