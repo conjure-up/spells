@@ -40,8 +40,9 @@ function install_helm() {
         done
 
         echo "Waiting for tiller pods"
+        kubectl="$(getKey kubectl.dest)"
         wait_count=1
-        while ! kubectl -n kube-system get po | grep -q 'tiller.*Running'; do
+        while ! "$kubectl" -n kube-system get po | grep -q 'tiller.*Running'; do
             if [[ "$wait_count" -gt 10 ]]; then
                 echo "Tiller pods not ready"
                 exit 1
