@@ -5,22 +5,18 @@ set -eux
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 . "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/common.sh"
 
-export KUBECONFIG=$HOME/.kube/config.$JUJU_MODEL
 export HELM_VERSION=$JFROG_HELM_VERSION
-
-# to get kubectl and helm  from $HOME/bin
-
+KUBECTL=$(getKey "kubectl.dest")
 export PATH=$HOME/bin:$PATH
 
 . $(scriptPath)/jfrog_common.sh
 
 if [[ "$JUJU_PROVIDERTYPE" != "ec2" ]]; then
-	echo "Addons from JFrog are not enabled for $JUJU_PROVIDERTYPE .. "
-	setResult "Addons from JFrog are enabled for $JUJU_PROVIDERTYPE .."
-# Does conjure-up expect explicit exit codes ?
-	exit 0
+    echo "Addons from JFrog are not enabled for $JUJU_PROVIDERTYPE .. "
+    setResult "Addons from JFrog are not enabled for $JUJU_PROVIDERTYPE .."
+    exit 0
 else
-	echo "Addons from JFrog are enabled for $JUJU_PROVIDERTYPE .. "
+    echo "Addons from JFrog are enabled for $JUJU_PROVIDERTYPE .. "
 
 fi
 
@@ -29,57 +25,39 @@ fi
 # and move later to common.sh and invoke them here.
 
 if [[ "$FORCE_HELM_REINSTALL" != "true" ]]; then
-	echo "Install Helm if not installed "
+    echo "Install Helm if not installed "
 
 # The install_helm function will get the helm client installed.
 # If it is already installed due to helm option being selected
-# then it will update the script in $HOME/bin to the latest
+# then it will not install again
 # If not, it will install JFROG_HELM_VERSION selected 
 
-	install_helm
+    install_helm
 
-	echo "Helm Install Completed."
+    echo "Helm Installation Completed."
 
-else 
-	re_install_helm
-	echo "Helm ReInstall Completed. Now waiting for tiller to be ready ..."
+else
 
+# Whether already installed or not, we will force a fresh install
+# with the version set to JFROG_HELM_VERSION
+    re_install_helm
+    echo "Helm Re-installation Completed ..."
 fi
 
-
-check_ready_replicas() {
-    local ready_replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.readyReplicas // 0')"
-    local replicas="$(kubectl -n kube-system get deployment tiller-deploy -o json|jq '.status.replicas // 0')"
-    [[ "$ready_replicas" -eq "$replicas" ]]
-}
-
-wait_replica_ready=0
-# TODO: For production use, make this loop count configurable
-while ! check_ready_replicas; do
-    echo "Waiting for tiller pod to become ready (try $wait_replica_ready/120)"
-    if [[ "$wait_replica_ready" -gt 120 ]]; then
-	echo "Wait 2 more minutes before giving up ..."
-	echo "Tiller pod may not deployed or ready "
-	sleep 120
-        break
-    fi
-    ((wait_replica_ready=wait_replica_ready+1))
-    sleep 10
-done
+echo "Ensure Tiller is deployed once more ...."
+$KUBECTL -n kube-system get deployment tiller-deploy -w
 
 
-# TODO: If wait_replica_ready -gt 120, we need to echo proper message and exit here 
-# as it will most likely fail to install
-echo "Helm upgrade and wait done . Now add repo stable "
+echo "Helm upgrade and Tiller deployed. Now add repo stable "
 
 $HOME/bin/helm repo add stable https://kubernetes-charts.storage.googleapis.com
 echo "Helm Repo added. Now to artifactory .."
 
 # Issue in persistence storage class/volume/zone/node
-# Whether the storageclas is created without any zone specification
+# Whether the storage class is created without any zone specification
 # or with a list of available zones, the persistent volumes 
 # created via the PV claim do not get bound and we see the
-# NoVoulmeZoneConflict reflected in the pod description and the pod
+# NoVolumeZoneConflict reflected in the pod description and the pod
 # remain in Pending state forever.
 # 
 # To overcome this issue, we will use a single zone specification in storageclass.
@@ -97,14 +75,14 @@ ZONESLIST=$(juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format=json | jq -r '.
 echo "Got the following list for zones: $ZONESLIST"
 
 if [[ "$KZONEISSUEFIXED" != "true" ]]; then
-	ZONE=$(echo $ZONESLIST | awk '{print $1}') 
-	echo "Picking the zone $ZONE for zone: "
-	sed -e "s/ZONE/$ZONE/" $(scriptPath)/zstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
+    ZONE=$(echo $ZONESLIST | awk '{print $1}') 
+    echo "Picking the zone $ZONE for zone: "
+    sed -e "s/ZONE/$ZONE/" $(scriptPath)/zstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
 else
 # We need comma separated list of zones in the region
-	CSZONESLIST=$(echo $ZONESLIST | sed -e 's/ /, /g')
-	echo "Got the following list for zones: $CSZONESLIST"
-	sed -e "s/CSZONESLIST/$CSZONESLIST/" $(scriptPath)/zlstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
+    CSZONESLIST=$(echo $ZONESLIST | sed -e 's/ /, /g')
+    echo "Got the following list for zones: $CSZONESLIST"
+    sed -e "s/CSZONESLIST/$CSZONESLIST/" $(scriptPath)/zlstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
 fi
 
 echo "Generated storageclass.yaml.."
@@ -113,7 +91,7 @@ cat $(scriptPath)/gen_storageclass.yaml
 
 echo "-----"
 echo "Create Persistent StorageClass from gen_storageclass.yaml.."
-$HOME/bin/kubectl apply -f $(scriptPath)/gen_storageclass.yaml
+$KUBECTL apply -f $(scriptPath)/gen_storageclass.yaml
 echo "Done creating Persistent StorageClass .."
 
 
@@ -125,48 +103,47 @@ echo "Artifactory install log from helm " > $INSTALLER_LOG
 SECRETSET="false"
 
 if [[ "$CONFIG_TLS_SECRET" != "true" ]]; then
-	echo "Using default self-signed certificate .."
+    echo "Using default self-signed certificate .."
 else
-	echo "Creating new secret file with user supplied TLS certificate and key "
-	$HOME/bin/kubectl create secret tls "$TLS_SECRET_NAME" --cert=$TLS_CERT --key=$TLS_KEY
-	echo "Secret file created .."
-	SECRETSET="true"
+    echo "Creating new secret file with user supplied TLS certificate and key "
+    $KUBECTL create secret tls "$TLS_SECRET_NAME" --cert=$TLS_CERT --key=$TLS_KEY
+    echo "Secret file created .."
+    SECRETSET="true"
 fi
 if [[ "$USE_INGRESS_CONTROLLER" != "true" ]]; then
-# TODO: Check how to specify secret with nginx
-	echo "Installing artifactory with nginx enabled .." 
-	if [[ "$SECRETSET" != "true" ]]; then
-		$HOME/bin/helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
-	else
-		$HOME/bin/helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE",nginx.tlsSecretName="$TLS_SECRET_NAME"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
-	fi
+    echo "Installing artifactory with nginx enabled .."
+    if [[ "$SECRETSET" != "true" ]]; then
+        helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+    else
+        helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE",nginx.tlsSecretName="$TLS_SECRET_NAME"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+    fi
 else
 
-	echo "Installing artifactory ingress enabled and nginx disabled "
+    echo "Installing artifactory ingress enabled and nginx disabled "
 
-	if [[ "$SECRETSET" != "true" ]]; then
-		$HOME/bin/helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+    if [[ "$SECRETSET" != "true" ]]; then
+        helm install -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
 
-	else
-		echo "Generating gen_ing_tls_values.yaml from ing_tls_values.yaml ..."
-		sed -e "s/INGRESS_HOSTS/$INGRESS_HOSTS/" -e \
+    else
+        echo "Generating gen_ing_tls_values.yaml from ing_tls_values.yaml ..."
+        sed -e "s/INGRESS_HOSTS/$INGRESS_HOSTS/" -e \
                        "s/TLS_SECRET_NAME/$TLS_SECRET_NAME/" -e \
                        "s/INGRESS_TLS_HOSTS/$INGRESS_TLS_HOSTS/"  \
-			$(scriptPath)/ing_tls_values.yaml > $(scriptPath)/gen_ing_tls_values.yaml
-		echo "Generated gen_ing_tls_values.yaml.."
-		echo "-----"
-		cat $(scriptPath)/gen_ing_tls_values.yaml
-		echo "-----"
+            $(scriptPath)/ing_tls_values.yaml > $(scriptPath)/gen_ing_tls_values.yaml
+        echo "Generated gen_ing_tls_values.yaml.."
+        echo "-----"
+        cat $(scriptPath)/gen_ing_tls_values.yaml
+        echo "-----"
 
-		$HOME/bin/helm install -f $(scriptPath)/values.yaml -f $(scriptPath)/gen_ing_tls_values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
-	fi
+        helm install -f $(scriptPath)/values.yaml -f $(scriptPath)/gen_ing_tls_values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+    fi
 fi
 
 echo "Helm installer for Artifactory Done.... "
 
 
 INFO="$(cat <<EOF
-Artifactory install complete.. 
+Artifactory installation completed.
 
 You can access the Artifactory URL from the external IP 
 or the hostname obtained by using the command kubectl

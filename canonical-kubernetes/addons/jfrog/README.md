@@ -2,19 +2,19 @@
 
 Select this Addon to install Artifactory Enterprise on a Canonical Distribution of Kubernetes (CDK) Cluster in the cloud (currently AWS only) and region you have already selected. After completing this installation JFrog Artifactory will be installed on your Kubernetes cluster. Once you apply the Artifactory licenses you will be able to use Artifactory as a Docker registry, Helm repo, NPM repo and more.
 
-## Prerequistes:
+## Prerequisites:
 
-- AWS:- Amazon AWS Account setup with all priveleges required to create a Kubernetes Cluster, create persistent storage, and run load balancers.
+- AWS:- Amazon AWS Account setup with all privileges required to create a Kubernetes Cluster, create persistent storage, and run load balancers.
 
 - AWS Secret and Key available.
 
 - Installation machine (where you install and run conjure-up)
-  -  sudo privielges
+  -  sudo privileges
   -  OS is certified by JFrog(http://www.jfrog.com) and Canonical(http://wwww.canonical.com)(e.g Ubuntu 16.04 LTS).
-  -  Conjure-up dependenices installed (python, jq, perl)
+  -  Conjure-up dependencies installed (python, jq, perl)
 
 
-- conjure-up installed. Please see http://conjure-up.io for more details on conjure-up. Please note that JFrog has tested using the Locally Hosted Controller option. Juju as A Service (Jaas) option has not been cerfified by JFrog.
+- conjure-up installed. Please see http://conjure-up.io for more details on conjure-up. Please note that JFrog has tested against the self hosted controller option. Juju as A Service (Jaas) option has not been cerfified by JFrog.
 
 - Licenses for Artifactory Enterprise Edition 5.9 or later versions from JFrog. You can obtain Enterprise Edition trial licenses from https://jfrog.com/artifactory/free-trial/#enterprise
 
@@ -22,13 +22,14 @@ Select this Addon to install Artifactory Enterprise on a Canonical Distribution 
 
 1. Run "conjure-up canonical-kubernetes --bundle-add channels.yaml" where channels.yaml has the following text:
 
-```applications:
+```
+applications:
   kubernetes-master:
     options:
-      channel: 1.9/stable
+      channel: 1.9/stable/jfrog
   kubernetes-worker:
     options:
-      channel: 1.9/stable
+      channel: 1.9/stable/jfrog
 ```
 
 Select JFrog Addon.
@@ -37,7 +38,7 @@ Select JFrog Addon.
 ![JFrog_Addon](images/jfrog_addon.png)
 
 
-2. For a defult basic installation, accept all default choices for JFrog menu items and select Next to deploy all.
+2. For a basic installation, accept all default choices for JFrog menu items and select Next to deploy all.
 
 ![ArtifactorySelectionsP1](images/selectionp1.png)
 
@@ -130,8 +131,8 @@ To have a local build and test environment setup it is essential to  1) install 
 2. mkdir conjure-up-base.
 3. cd conjure-up-base; git clone conjure-up-spells; cd ..
 4. mkdir addon-base; git clone JFrogDev/soldev; cd ..
-5. mkdir workingdir; copy canonical-kubernetes from conjure-up-base; copy addon from JFrogDev to addon under canonical-kuberbetes.
-6. cd canonical-kubernetes; conjure-up .
+5. mkdir workingdir; copy canonical-kubernetes from conjure-up-base; copy addon from JFrogDev to addon under canonical-kubernetes.
+6. cd workingdir; create channels.yaml;  conjure-up ./canonical-kubernetes --bundle-add channels.yaml
 7. Follow the prompts. (Later on, will provide updates about unattended install if it is supported by conjure-up for the addons also)
 
 
