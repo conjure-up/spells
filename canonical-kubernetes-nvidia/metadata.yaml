@@ -1,6 +1,8 @@
 friendly-name: Canonical Distribution of Kubernetes with nVidia GPU workers
 version: 1
 bundle-name: ~containers/canonical-kubernetes-nvidia
+cloud-whitelist:
+- ec2
 options-whitelist:
   kubernetes-worker:
     - allow-privileged
