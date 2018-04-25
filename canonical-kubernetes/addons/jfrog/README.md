@@ -46,7 +46,7 @@ Select JFrog Addon.
 
 
 
-3. After you see the "Your big software is deployed", you can see the succesful installation of Artifactory message. If you do not, scroll down and follow the instruction to obtain the Artifactory URL.  This is how the screen looks like:
+3. After you see the "Your big software is deployed", you can see the successful installation of Artifactory message. If you do not, scroll down and follow the instruction to obtain the Artifactory URL.  This is how the screen looks like:
 
 ![PostDeployScreen](images/postdeploy.png)
 
@@ -63,10 +63,9 @@ If the Basic installation is not suitable, then instead of accepting the default
 2. Database password: You change the default password for the database here.
 3. Force Reinstall Helm: You can use this to reinstall a new version
 4. Helm version: If you would like a specific version due to known issues with the latest, you can specify it here.
-5. Use Ingress Controller: Set this to true if you would prefer to use Ingress controller instead of explicit nginx container. Please note that using Ingress Controller is not recommended as this feature is still experimental.
-6. Artifactory Service Type: Recommended to use LoadBalancer. NodePort is preferred if you already have a LoadBalancer.
+5. Artifactory Service Type: Recommended to use LoadBalancer. NodePort is preferred if you already have a LoadBalancer.
 7. Artifactory release name and path. You can specify your own name and release path here. For examnple, --name myartifactory stable/artifactory.
-8. Configure TLS can be set to true and in this case, provide the TLS cert and TLS key file location and the secret file name.
+8. Configure TLS can be set to true and in this case, provide the TLS cert and TLS key file location and the secret file name you would like to use.
 
 
 Additional customizations can be made by including the appropriate values in values.yaml in JFrog Addon. Consult official JFrog documentation for details
@@ -118,27 +117,10 @@ After the installation is complete, it generally takes a while for all pods depl
 Please note that to see the post install message, on conjure-up output you might have to scroll down to see the screen.
 This might be changed in future.
 
-### Ingress Controller Feature
 
-It is not recommended to use Ingress Controller functionality as it is still experimental.
+#### Troubleshooting
 
-
-### Local build and test environment setup
-
-To have a local build and test environment setup it is essential to  1) install conjure-up and 2) locally populate the spell directory canonical-kubernetes and the jfrog addon scripts together in one working directory and then execute conjure-up pointing to the local working directory.
-
-1. Install conjure-up. (sudo snap install conjure-up)
-2. mkdir conjure-up-base.
-3. cd conjure-up-base; git clone conjure-up-spells; cd ..
-4. mkdir addon-base; git clone JFrogDev/soldev; cd ..
-5. mkdir workingdir; copy canonical-kubernetes from conjure-up-base; copy addon from JFrogDev to addon under canonical-kubernetes.
-6. cd workingdir; create channels.yaml;  conjure-up ./canonical-kubernetes --bundle-add channels.yaml
-7. Follow the prompts. (Later on, will provide updates about unattended install if it is supported by conjure-up for the addons also)
-
-
-#### A note about debug messages and logs in debugging conjure-up.
-
-Any debug outputs are echo statements in the addon scripts show up on the conjure-up screen at the lower status bar, but they get replaced by the next one. If these need to be reviewed post install, then navigate to ~/.cache/conjure-up directroy and locate the addon script directory and see files with .out and .err extensions. They include all the standard output and standard error messages of the scripts. The output of helm installer for JFrog artifactory is redirected in the adodn script to a log file jfrog_installer.log and this along the with other .out and .err can be used to debug any issues.
+Any debug messages printed via 'echo' in the addon scripts show up on the conjure-up screen at the lower status bar, but they get replaced by the next one. If these need to be reviewed post install, then navigate to ~/.cache/conjure-up directory and locate the addon script directory and see files with .out and .err extensions. They include all the standard output and standard error messages of the scripts. The output of helm installer for JFrog artifactory is redirected in the adodn script to a log file jfrog_installer.log and this along the with other .out and .err can be used to debug any issues.
 
 ## References
 

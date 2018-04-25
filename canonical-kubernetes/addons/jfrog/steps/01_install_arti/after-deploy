@@ -8,6 +8,9 @@ set -eux
 export HELM_VERSION=$JFROG_HELM_VERSION
 KUBECTL=$(getKey "kubectl.dest")
 export PATH=$HOME/bin:$PATH
+# Ingress Controller functionality is work in progress. After completion, it
+# will be enabled in the menu.
+USE_INGRESS_CONTROLLER="false"
 
 . $(scriptPath)/jfrog_common.sh
 
@@ -44,7 +47,7 @@ else
     echo "Helm Re-installation Completed ..."
 fi
 
-echo "Ensure Tiller is deployed once more ...."
+echo "Ensure Tiller is deployed and available ..."
 $KUBECTL -n kube-system get deployment tiller-deploy -w
 
 

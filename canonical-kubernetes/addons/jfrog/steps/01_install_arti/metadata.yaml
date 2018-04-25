@@ -20,10 +20,6 @@ additional-input:
     key: JFROG_HELM_VERSION
     type: text
     default: v2.8.1
-  - label: Use Ingress Controller(experimental)
-    key: USE_INGRESS_CONTROLLER
-    type: text
-    default: "false"
   - label: Artifactory Service Type(LoadBalancer or NodePort)
     key: SERVICE_TYPE
     type: text
