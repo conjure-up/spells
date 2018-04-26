@@ -65,10 +65,6 @@ relations:
   - glance:ceph
 - - ceph-osd:mon
   - ceph-mon:osd
-- - ntp:juju-info
-  - nova-compute:juju-info
-- - ntp:juju-info
-  - neutron-gateway:juju-info
 - - ceph-radosgw:mon
   - ceph-mon:radosgw
 - - ceph-radosgw:identity-service
@@ -200,12 +196,6 @@ services:
       enable-resize: False
       virt-type: lxd
       openstack-origin: cloud:xenial-queens
-  ntp:
-    annotations:
-      gui-x: '1000'
-      gui-y: '0'
-    charm: cs:ntp-24
-    num_units: 0
   lxd:
     charm: cs:xenial/lxd
     options:
