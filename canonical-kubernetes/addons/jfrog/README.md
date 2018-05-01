@@ -20,7 +20,7 @@ Select this Addon to install Artifactory Enterprise on a Canonical Distribution 
 
 ## Basic installation
 
-1. Run "conjure-up canonical-kubernetes" and select the JFrog Addon.
+1. Run `conjure-up canonical-kubernetes` and select the JFrog Addon.
 
 
 ![JFrog_Addon](images/jfrog_addon.png)
