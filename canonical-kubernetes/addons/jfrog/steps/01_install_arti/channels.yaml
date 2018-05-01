@@ -1,0 +1,7 @@
+applications:
+  kubernetes-master:
+    options:
+      channel: 1.9/stable/jfrog
+  kubernetes-worker:
+    options:
+      channel: 1.9/stable/jfrog
