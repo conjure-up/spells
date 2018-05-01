@@ -1,0 +1,162 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+. "$CONJURE_UP_SPELLSDIR/$CONJURE_UP_SPELL/addons/common.sh"
+
+export HELM_VERSION=$JFROG_HELM_VERSION
+KUBECTL=$(getKey "kubectl.dest")
+export PATH=$HOME/bin:$PATH
+# Ingress Controller functionality is work in progress. After completion, it
+# will be enabled in the menu.
+USE_INGRESS_CONTROLLER="false"
+
+. $(scriptPath)/jfrog_common.sh
+
+if [[ "$JUJU_PROVIDERTYPE" != "ec2" ]]; then
+    echo "Addons from JFrog are not enabled for $JUJU_PROVIDERTYPE .. "
+    setResult "Addons from JFrog are not enabled for $JUJU_PROVIDERTYPE .."
+    exit 0
+else
+    echo "Addons from JFrog are enabled for $JUJU_PROVIDERTYPE .. "
+
+fi
+
+
+# Refine the re-install_helm() and the waiting for tiller code
+# and move later to common.sh and invoke them here.
+
+if [[ "$FORCE_HELM_REINSTALL" != "true" ]]; then
+    echo "Install Helm if not installed "
+
+# The install_helm function will get the helm client installed.
+# If it is already installed due to helm option being selected
+# then it will not install again
+# If not, it will install JFROG_HELM_VERSION selected 
+
+    install_helm
+
+    echo "Helm Installation Completed."
+
+else
+
+# Whether already installed or not, we will force a fresh install
+# with the version set to JFROG_HELM_VERSION
+    re_install_helm
+    echo "Helm Re-installation Completed ..."
+fi
+
+echo "Ensure Tiller is deployed and available ..."
+$KUBECTL -n kube-system get deployment tiller-deploy -w
+
+
+echo "Helm upgrade and Tiller deployed. Now add repo stable "
+
+$HOME/bin/helm repo add stable https://kubernetes-charts.storage.googleapis.com
+echo "Helm Repo added. Now to artifactory .."
+
+# Issue in persistence storage class/volume/zone/node
+# Whether the storage class is created without any zone specification
+# or with a list of available zones, the persistent volumes 
+# created via the PV claim do not get bound and we see the
+# NoVolumeZoneConflict reflected in the pod description and the pod
+# remain in Pending state forever.
+# 
+# To overcome this issue, we will use a single zone specification in storageclass.
+#
+# There is a also a design change discussion in the kubernetes community
+# that might require a change based on the outcome of 
+# the issue: https://github.com/kubernetes/kubernetes/issues/41598
+#
+
+KZONEISSUEFIXED="false"
+
+echo "Getting the list of zones for $JUJU_REGION to create storageclass".
+ZONESLIST=$(juju status -m $JUJU_CONTROLLER:$JUJU_MODEL --format=json | jq -r '.machines[].hardware | split(" ")[] | match("^availability-zone=(.*)").captures[0].string' | sort | uniq )
+
+echo "Got the following list for zones: $ZONESLIST"
+
+if [[ "$KZONEISSUEFIXED" != "true" ]]; then
+    ZONE=$(echo $ZONESLIST | awk '{print $1}') 
+    echo "Picking the zone $ZONE for zone: "
+    sed -e "s/ZONE/$ZONE/" $(scriptPath)/zstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
+else
+# We need comma separated list of zones in the region
+    CSZONESLIST=$(echo $ZONESLIST | sed -e 's/ /, /g')
+    echo "Got the following list for zones: $CSZONESLIST"
+    sed -e "s/CSZONESLIST/$CSZONESLIST/" $(scriptPath)/zlstorageclass.yaml > $(scriptPath)/gen_storageclass.yaml
+fi
+
+echo "Generated storageclass.yaml.."
+echo "-----"
+cat $(scriptPath)/gen_storageclass.yaml
+
+echo "-----"
+echo "Create Persistent StorageClass from gen_storageclass.yaml.."
+$KUBECTL apply -f $(scriptPath)/gen_storageclass.yaml
+echo "Done creating Persistent StorageClass .."
+
+
+INSTALLER_LOG=$(scriptPath)/jfrog_installer.log
+
+echo "Artifactory install log from helm " > $INSTALLER_LOG
+# I am redirecting to jfrog_installer.log to capture helm messages
+
+SECRETSET="false"
+
+if [[ "$CONFIG_TLS_SECRET" != "true" ]]; then
+    echo "Using default self-signed certificate .."
+else
+    echo "Creating new secret file with user supplied TLS certificate and key "
+    $KUBECTL create secret tls "$TLS_SECRET_NAME" --cert=$TLS_CERT --key=$TLS_KEY
+    echo "Secret file created .."
+    SECRETSET="true"
+fi
+if [[ "$USE_INGRESS_CONTROLLER" != "true" ]]; then
+    echo "Installing artifactory with nginx enabled .."
+    if [[ "$SECRETSET" != "true" ]]; then
+        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+    else
+        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE",nginx.tlsSecretName="$TLS_SECRET_NAME"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+    fi
+else
+
+    echo "Installing artifactory ingress enabled and nginx disabled "
+
+    if [[ "$SECRETSET" != "true" ]]; then
+        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+
+    else
+        echo "Generating gen_ing_tls_values.yaml from ing_tls_values.yaml ..."
+        sed -e "s/INGRESS_HOSTS/$INGRESS_HOSTS/" -e \
+                       "s/TLS_SECRET_NAME/$TLS_SECRET_NAME/" -e \
+                       "s/INGRESS_TLS_HOSTS/$INGRESS_TLS_HOSTS/"  \
+            $(scriptPath)/ing_tls_values.yaml > $(scriptPath)/gen_ing_tls_values.yaml
+        echo "Generated gen_ing_tls_values.yaml.."
+        echo "-----"
+        cat $(scriptPath)/gen_ing_tls_values.yaml
+        echo "-----"
+
+        helm install --name art-ha-preview -f $(scriptPath)/values.yaml -f $(scriptPath)/gen_ing_tls_values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+    fi
+fi
+
+echo "Helm installer for Artifactory Done.... "
+
+
+INFO="$(cat <<EOF
+Artifactory installation completed.
+
+You can access the Artifactory URL from the external IP 
+or the hostname obtained by using the command kubectl
+
+kubectl get svc -o wide 
+
+Please examine $INSTALLER_LOG for more details. 
+
+EOF
+)"
+setResult "$INFO"
+
+exit 0
