@@ -10,7 +10,7 @@ Select this Addon to install Artifactory Enterprise on a Canonical Distribution 
 
 - Installation machine (where you install and run conjure-up)
   -  sudo privileges
-  -  OS is certified by JFrog(http://www.jfrog.com) and Canonical(http://wwww.canonical.com)(e.g Ubuntu 16.04 LTS).
+  -  OS is certified by JFrog(<http://www.jfrog.com>) and Canonical(<http://wwww.canonical.com>) (e.g Ubuntu 16.04 LTS).
   -  Conjure-up dependencies installed (python, jq, perl)
 
 
