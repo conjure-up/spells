@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+setStepKey "bundle-add" "channels.yaml"
