@@ -4,6 +4,10 @@ description: |
   using Helm
 viewable: True
 additional-input:
+  - label: Artifactory Release Name (Maximum 14 characters)
+    key: ARTIFACTORY_NAME
+    type: text
+    default: art-ha-preview
   - label: Database User Name
     key: DBUSER
     type: text
@@ -24,7 +28,7 @@ additional-input:
     key: SERVICE_TYPE
     type: text
     default: LoadBalancer
-  - label: Artifactory Release Name/Path
+  - label: Artifactory Release Path
     key: ARTIFACTORY_RELEASE
     type: text
     default: stable/artifactory-ha

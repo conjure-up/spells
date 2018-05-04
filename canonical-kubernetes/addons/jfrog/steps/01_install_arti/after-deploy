@@ -23,7 +23,6 @@ else
 
 fi
 
-
 # Refine the re-install_helm() and the waiting for tiller code
 # and move later to common.sh and invoke them here.
 
@@ -116,16 +115,16 @@ fi
 if [[ "$USE_INGRESS_CONTROLLER" != "true" ]]; then
     echo "Installing artifactory with nginx enabled .."
     if [[ "$SECRETSET" != "true" ]]; then
-        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+        helm install --name $ARTIFACTORY_NAME -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
     else
-        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE",nginx.tlsSecretName="$TLS_SECRET_NAME"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
+        helm install --name $ARTIFACTORY_NAME -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",nginx.service.type="$SERVICE_TYPE",nginx.tlsSecretName="$TLS_SECRET_NAME"  "$ARTIFACTORY_RELEASE" >> $INSTALLER_LOG 2>&1
     fi
 else
 
     echo "Installing artifactory ingress enabled and nginx disabled "
 
     if [[ "$SECRETSET" != "true" ]]; then
-        helm install --name art-ha-preview -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+        helm install --name $ARTIFACTORY_NAME -f $(scriptPath)/values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
 
     else
         echo "Generating gen_ing_tls_values.yaml from ing_tls_values.yaml ..."
@@ -138,7 +137,7 @@ else
         cat $(scriptPath)/gen_ing_tls_values.yaml
         echo "-----"
 
-        helm install --name art-ha-preview -f $(scriptPath)/values.yaml -f $(scriptPath)/gen_ing_tls_values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
+        helm install --name $ARTIFACTORY_NAME -f $(scriptPath)/values.yaml -f $(scriptPath)/gen_ing_tls_values.yaml --set postgresql.postgresUser="$DBUSER",postgresql.postgresPassword="$DBPASS",ingress.enabled=true,nginx.enabled=false,artifactory.service.type="$SERVICE_TYPE" "$ARTIFACTORY_RELEASE"  >> $INSTALLER_LOG 2>&1
     fi
 fi
 
