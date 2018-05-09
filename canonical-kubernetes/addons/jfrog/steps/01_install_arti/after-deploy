@@ -11,6 +11,8 @@ export PATH=$HOME/bin:$PATH
 # Ingress Controller functionality is work in progress. After completion, it
 # will be enabled in the menu.
 USE_INGRESS_CONTROLLER="false"
+INGRESS_HOSTS="artifactory.domain.example"
+INGRESS_TLS_HOSTS="artifactory.domain.example"
 
 . $(scriptPath)/jfrog_common.sh
 
