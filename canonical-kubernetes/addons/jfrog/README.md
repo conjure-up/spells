@@ -30,16 +30,13 @@ Select this Addon to install Artifactory Enterprise on a Canonical Distribution 
 
 ![ArtifactorySelectionsP1](images/selectionp1.png)
 
-![ArtifactorySelectionP2](images/selectionp2.png)
-
-
 
 3. After you see the "Your big software is deployed", you can see the successful installation of Artifactory message. If you do not, scroll down and follow the instruction to obtain the Artifactory URL.  This is how the screen looks like:
 
 ![PostDeployScreen](images/postdeploy.png)
 
 
-The main command to use here is "kubectl get svc -o wide". On AWS, the external hostname of the LoadBalancer for nginx is the one that needs to be used as the artifactory URL. Opening up the Artifactory URL will them ask you provide the Licenses and the Artifactory documentation can then be followed to configure Artifactory.
+The main command to use here is "kubectl get svc -o wide". On AWS, the external hostname of the LoadBalancer for nginx is the one that needs to be used as the artifactory URL. Opening up the Artifactory URL will prompt you to input the Licenses and the Artifactory documentation can then be followed to configure Artifactory.
 
 For detailed explanation of how to find the URL of artifactory, please review the documentation available on official Kubernetes charts maintained on Github at https://github.com/kubernetes/charts/tree/master/stable/artifactory-ha
 
@@ -47,12 +44,13 @@ For detailed explanation of how to find the URL of artifactory, please review th
 
 If the Basic installation is not suitable, then instead of accepting the defaults, the selections can be changed. Here is a brief description of the choices provided.
 
-1. Database User: Artifactory by default creates a PostgresQL database user with the id artifactory. You can change the database user here.
-2. Database password: You change the default password for the database here.
-3. Force Reinstall Helm: You can use this to reinstall a new version
-4. Helm version: If you would like a specific version due to known issues with the latest, you can specify it here.
-5. Artifactory Service Type: Recommended to use LoadBalancer. NodePort is preferred if you already have a LoadBalancer.
-7. Artifactory release name and path. You can specify your own name and release path here. For examnple, --name myartifactory stable/artifactory.
+1. Artifactory release name: Use a name for artifactory not exceeding 14 characters. For example, my-art-ha
+2. Database User: Artifactory by default creates a PostgresQL database user with the id artifactory. You can change the database user here.
+3. Database password: You change the default password for the database here.
+4. Force Reinstall Helm: You can use this to reinstall a new version of Helm.
+5. Helm version: If you would like a specific version due to known issues with the latest, you can specify it here.
+6. Artifactory Service Type: Recommended to use LoadBalancer. NodePort is preferred if you already have a LoadBalancer.
+7. Artifactory release path: You can specify release path here. For example, stable/artifactory-ha
 8. Configure TLS can be set to true and in this case, provide the TLS cert and TLS key file location and the secret file name you would like to use.
 
 
@@ -106,9 +104,9 @@ Please note that to see the post install message, on conjure-up output you might
 This might be changed in future.
 
 
-#### Troubleshooting
+### Troubleshooting
 
-Any debug messages printed via 'echo' in the addon scripts show up on the conjure-up screen at the lower status bar, but they get replaced by the next one. If these need to be reviewed post install, then navigate to ~/.cache/conjure-up directory and locate the addon script directory and see files with .out and .err extensions. They include all the standard output and standard error messages of the scripts. The output of helm installer for JFrog artifactory is redirected in the adodn script to a log file jfrog_installer.log and this along the with other .out and .err can be used to debug any issues.
+Any debug messages printed via 'echo' in the addon scripts show up on the conjure-up screen at the lower status bar, but they get replaced by the next one. If these need to be reviewed post install, then navigate to ~/.cache/conjure-up directory and locate the addon script directory and see files with .out and .err extensions. They include all the standard output and standard error messages of the scripts. The output of helm installer for JFrog artifactory is redirected in the addon script to a log file jfrog_installer.log and this along the with other .out and .err can be used to debug any issues.
 
 ## References
 

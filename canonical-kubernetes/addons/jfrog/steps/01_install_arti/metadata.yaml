@@ -48,11 +48,3 @@ additional-input:
     key: TLS_SECRET_NAME
     type: text
     default: art-tls
-  - label: Ingress Hosts 
-    key: INGRESS_HOSTS
-    type: text
-    default: artifactory.domain.example
-  - label: Ingress TLS Hosts
-    key: INGRESS_TLS_HOSTS
-    type: text
-    default: artifactory.domain.example
