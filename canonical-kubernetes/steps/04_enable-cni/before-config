@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+cni_overlay="$JUJU_PROVIDERTYPE/overlay.yaml"
+if [[ -f "$(dirname "$0")/$cni_overlay" ]]; then
+    setStepKey "bundle-add" "$cni_overlay"
+fi
+exit 0

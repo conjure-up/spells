@@ -1,0 +1,7 @@
+applications:
+  gcp:
+    charm: cs:~containers/gcp
+    num_units: 1
+relations:
+  - ['gcp', 'kubernetes-master']
+  - ['gcp', 'kubernetes-worker']

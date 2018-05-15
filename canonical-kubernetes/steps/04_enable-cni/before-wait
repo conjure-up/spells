@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eu
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+cni_implementation="$(dirname "$0")/$JUJU_PROVIDERTYPE/enable-cni"
+if [[ -f "$cni_implementation" ]]; then
+    . "$cni_implementation"
+    enable_cni
+    setStepKey "cni-enabled" "true"
+else
+    setStepKey "cni-enabled" "unavailable"
+fi
+exit 0

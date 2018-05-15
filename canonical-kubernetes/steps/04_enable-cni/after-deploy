@@ -4,12 +4,14 @@ set -eu
 
 . "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
 
-cni_implementation="$(dirname "$0")/$JUJU_PROVIDERTYPE/enable-cni"
-if [[ -f "$cni_implementation" ]]; then
-    . "$cni_implementation"
-    enable_cni
-    setResult "Cloud native integration enabled"
-else
-    setResult "Cloud native integration not available"
-fi
-exit 0
+case "$(getStepKey "cni-enabled")" in
+    true)
+        setResult "Cloud native integration enabled"
+        ;;
+    false)
+        setResult "Unable to enable native integration (see logs for details)"
+        ;;
+    *)
+        setResult "Cloud native integration not available"
+        ;;
+esac
