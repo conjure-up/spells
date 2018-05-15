@@ -1,0 +1,7 @@
+applications:
+  aws:
+    charm: cs:~containers/aws
+    num_units: 1
+relations:
+  - ['aws', 'kubernetes-master']
+  - ['aws', 'kubernetes-worker']
