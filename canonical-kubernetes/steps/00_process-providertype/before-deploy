@@ -15,8 +15,5 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     cat "$(scriptPath)/lxd-profile.yaml" | sed -e "s/##MODEL##/$JUJU_MODEL/" -e "s/##AA_PROFILE##/$lxc_aa_profile/" | lxc profile edit "juju-$JUJU_MODEL"
 fi
 
-cluster_tag="$JUJU_MODEL-$(pwgen -0AB 4 1)"
-juju model-config -m "$JUJU_CONTROLLER:$JUJU_MODEL" resource-tags="KubernetesCluster=$cluster_tag" cdk-tag="$cluster_tag"
-
 setResult "Successful pre-deploy."
 exit 0
