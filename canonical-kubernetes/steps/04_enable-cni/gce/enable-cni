@@ -8,7 +8,7 @@ get_creds() {
 }
 
 enable_cni() {
-    if ! juju trust gcp; then
-        juju config gcp credentials="$(get_creds)"
+    if ! juju trust -m "$JUJU_CONTROLLER:$JUJU_MODEL" gcp; then
+        juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" gcp credentials="$(get_creds)"
     fi
 }

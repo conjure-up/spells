@@ -7,7 +7,7 @@ get_creds() {
 }
 
 enable_cni() {
-    if ! juju trust aws; then
-        juju config aws credentials="$(get_creds)"
+    if ! juju trust -m "$JUJU_CONTROLLER:$JUJU_MODEL" aws; then
+        juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" aws credentials="$(get_creds)"
     fi
 }
