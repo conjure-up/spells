@@ -50,11 +50,28 @@ If the Basic installation is not suitable, then instead of accepting the default
 4. Force Reinstall Helm: You can use this to reinstall a new version of Helm.
 5. Helm version: If you would like a specific version due to known issues with the latest, you can specify it here.
 6. Artifactory Service Type: Recommended to use LoadBalancer. NodePort is preferred if you already have a LoadBalancer.
-7. Artifactory release path: You can specify release path here. For example, stable/artifactory-ha
+7. Artifactory release path: You can specify release path here using the format `<repo>/<release>`. For example, `stable/artifactory-ha`
 8. Configure TLS can be set to true and in this case, provide the TLS cert and TLS key file location and the secret file name you would like to use.
 
 
 Additional customizations can be made by including the appropriate values in values.yaml in JFrog Addon. Consult official JFrog documentation for details
+
+## Upgrading JFrog Artifactory.
+
+Upgrading Artifactroy after it has already been installed via conjure-up is accomplished by running helm with the upgrade option.
+
+1. Run `helm get values <release-name> --all` to review the current settings and make a list of paramerters that need to be overwritten with the new values.
+
+2. Run the helm upgrade command and specify the old values.yaml file and new values.yaml and override any thing that needs to be changed.
+
+For ex, if the release name is art-ha-preview, the following command can be used to upgrade:
+
+```
+helm get values art-ha-preview --all > values-pre.yaml && helm upgrade art-ha-preview stable/artifacgtory-ha -f values-pre.yaml -f values-upg.yaml --set newp1=newv1,oldp2=newv2
+```
+
+Confirm from `helm status` command that artifactory has been upgraded.
+
 
 
 ## Developer Notes on Various Issues
