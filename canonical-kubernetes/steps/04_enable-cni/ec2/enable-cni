@@ -3,7 +3,7 @@
 set -eu
 
 get_creds() {
-    juju credentials aws --show-secrets --format=json | jq -r '.["local-credentials"]["aws"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"] | "aws_access_key_id = \(.["access-key"])\naws_secret_access_key = \(.["secret-key"])"' | base64
+    juju credentials aws --show-secrets --format=json | jq -r 'if .["local-credentials"] then .["local-credentials"] else .["credentials"] end | .["aws"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"] | "aws_access_key_id = \(.["access-key"])\naws_secret_access_key = \(.["secret-key"])"' | base64
 }
 
 enable_cni() {

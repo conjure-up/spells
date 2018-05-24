@@ -3,7 +3,7 @@
 set -eu
 
 get_creds() {
-    creds_file="$(juju credentials google --format=json | jq -r '.["local-credentials"]["google"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"]["file"]')"
+    creds_file="$(juju credentials google --format=json | jq -r 'if .["local-credentials"] then .["local-credentials"] else .["credentials"] end | .["google"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"]["file"]')"
     base64 "$creds_file"
 }
 
