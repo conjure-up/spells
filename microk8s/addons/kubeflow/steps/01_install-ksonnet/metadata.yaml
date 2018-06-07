@@ -1,9 +1,0 @@
-title: Install Ksonnet
-description: |
-  Download and installs Ksonnet
-viewable: True
-additional-input:
-  - label: Ksonnet Version
-    key: KS_VERSION
-    type: text
-    default: 0.9.1
