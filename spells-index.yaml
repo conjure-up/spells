@@ -31,6 +31,10 @@ kubernetes:
       name: Kubernetes Core
       description: |
         Kubernetes is an open-source platform for deploying, scaling, and operations of application containers across a cluster of hosts. This is a minimal Kubernetes cluster with intended usage for small deployments for testing and development.
+    - key: microk8s
+      name: microk8s
+      description: |
+        A kubernetes cluster in a snap
 bigdata:
   spells:
     - key: hadoop-processing

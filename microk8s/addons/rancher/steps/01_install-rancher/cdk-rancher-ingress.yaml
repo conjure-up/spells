@@ -1,0 +1,99 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+   kind: ClusterRole
+   name: cluster-admin
+   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-admin
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rancher
+  name: rancher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rancher
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rancher
+    spec:
+      containers:
+      - image: rancher/server:preview
+        imagePullPolicy: Always
+        name: rancher
+        ports:
+        - containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 30
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: rancher
+  labels:
+    app: rancher
+spec: 
+  ports: 
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+  selector:
+    app: rancher
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: rancher
+ annotations:
+   kubernetes.io/tls-acme: "true"
+   ingress.kubernetes.io/secure-backends: "true"
+spec:
+ tls:
+   - hosts:
+     - rancher.##PUBLIC_IP##.xip.io
+ rules:
+   - host: rancher.##PUBLIC_IP##.xip.io
+     http:
+       paths:
+         - path: /
+           backend: 
+             serviceName: rancher
+             servicePort: 443

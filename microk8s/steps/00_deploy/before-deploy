@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Installation script for microk8s
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+sudo snap install microk8s --classic --beta
+
+exit 0

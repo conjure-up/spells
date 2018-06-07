@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Installation script for microk8s
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+setResult "microk8s is installed and can be reached at 'microk8s.kubectl'"
+exit 0

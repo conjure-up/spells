@@ -1,0 +1,7 @@
+friendly-name: Rancher 2.0 (beta)
+description: |
+  Deploy Rancher 2.0 to your Kubernetes cluster.
+
+  This addon will install Rancher 2.0 (beta) in your cluster with ingress
+  access.
+version: 1.1
