@@ -1,0 +1,6 @@
+friendly-name: KubeFlow
+description: |
+  TensorFlow for Kubernetes
+
+  KubeFlow is a great way to run machine learning jobs inside Kubernetes.
+version: 1

@@ -1,4 +1,10 @@
 #!/bin/bash
+
+: "${CLOUD:=nocloud}"
+: "${JUJU_CONTROLLER:=nocloud}"
+: "${JUJU_MODEL:=nocloud}"
+: "${JUJU_PROVIDERTYPE:=nocloud}"
+
 # loggers
 #
 # Arguments:

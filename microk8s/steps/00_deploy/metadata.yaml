@@ -1,0 +1,5 @@
+title: Installed microk8s
+description: Runs the installation script for microk8s
+viewable: True
+sudo: True
+
