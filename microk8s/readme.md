@@ -1,9 +1,11 @@
-# kubernetes core spell
+# microk8s
+
+https://microk8s.io
 
 ## usage
 
 ```
-conjure-up kubernetes
+conjure-up microk8s
 ```
 
 ## testing
