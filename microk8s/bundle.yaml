@@ -1,0 +1,6 @@
+applications:
+  microk8s:
+    snap: microk8s
+    channel: beta
+    confinement: classic
+    options: {}
