@@ -30,11 +30,11 @@ kubernetes:
     - key: microk8s
       name: microk8s
       description: |
-        A small, fast, local Kubernetes cluster, ideal for testing and development.
+        A small, fast, single-node Kubernetes cluster, ideal for testing and development.
     - key: kubernetes-core
       name: Kubernetes Core
       description: |
-        Kubernetes is an open-source platform for deploying, scaling, and operations of application containers across a cluster of hosts. This is a minimal Kubernetes cluster with intended usage for small deployments for testing and development.
+        A minimal-by-default Kubernetes cluster with scalable components. Deploys locally with LXD, or to any cloud.
 bigdata:
   spells:
     - key: hadoop-processing
