@@ -30,7 +30,7 @@ kubernetes:
     - key: microk8s
       name: microk8s
       description: |
-        This is a minimal Kubernetes cluster with intended usage being small, local deployments for testing and development.
+        A small, fast, local Kubernetes cluster, ideal for testing and development.
     - key: kubernetes-core
       name: Kubernetes Core
       description: |
