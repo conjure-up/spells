@@ -27,14 +27,14 @@ kubernetes:
       name: Canonical Distribution of Kubernetes with nVidia GPU workers
       description: |
         Provides the same functionality as the CDK spell, with Kubernetes workers placed on nVidia GPU-enabled hardware.
+    - key: microk8s
+      name: microk8s
+      description: |
+        This is a minimal Kubernetes cluster with intended usage being small, local deployments for testing and development.
     - key: kubernetes-core
       name: Kubernetes Core
       description: |
         Kubernetes is an open-source platform for deploying, scaling, and operations of application containers across a cluster of hosts. This is a minimal Kubernetes cluster with intended usage for small deployments for testing and development.
-    - key: microk8s
-      name: microk8s
-      description: |
-        A kubernetes cluster in a snap
 bigdata:
   spells:
     - key: hadoop-processing
