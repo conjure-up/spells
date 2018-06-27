@@ -7,7 +7,7 @@ additional-input:
   - label: Artifactory Release Name (Maximum 14 characters)
     key: ARTIFACTORY_NAME
     type: text
-    default: art-ha-preview
+    default: art-ha
   - label: Database User Name
     key: DBUSER
     type: text
