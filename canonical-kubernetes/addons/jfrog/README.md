@@ -125,14 +125,28 @@ This might be changed in future.
 
 Any debug messages printed via 'echo' in the addon scripts show up on the conjure-up screen at the lower status bar, but they get replaced by the next one. If these need to be reviewed post install, then navigate to ~/.cache/conjure-up directory and locate the addon script directory and see files with .out and .err extensions. They include all the standard output and standard error messages of the scripts. The output of helm installer for JFrog artifactory is redirected in the addon script to a log file jfrog_installer.log and this along the with other .out and .err can be used to debug any issues.
 
+
+### Known Issues
+
+**1.** When a node in Kubernetes cluster is deleted, the node does not get restarted. If the storage 
+class is also created in the same zone as this node, then essentially all the services in other nodes
+become dependent on this node which results in a loss of HA functionality until this node is manually restarted
+using the juju commands. 
+
+A typical example to restart all nodes in the cluster is to execute the following command
+
+juju run --application kubernetes-worker service snap.kubelet.daemon restart
+
+Please refer to the following issues: https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/592 and
+https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/594 
+
+
 ## References
 
-Conjure-up documentation - https://conjure-up.io/
+Conjure-up documentation: https://conjure-up.io/
 
-Artifactory documentation - http://wwww.jfrog.com
+Artifactory documentation: http://wwww.jfrog.com
 
-JFrog addon to spell Canonical-Kubernetes documentation - https://github.com/JFrogDev/soldev/blob/master/canonical/integration/canonical-kubernetes/addons/jfrog/README.md
+Conjure-up on Github: https://github.com/conjure-up
 
-Conjure-up on Github - https://github.com/conjure-up
-
-JFrogDev on Github  -  https://github.com/JFrogDev/soldev
+JFrog Addon Documentation: https://github.com/conjure-up/spells/blob/master/canonical-kubernetes/addons/jfrog/README.md
