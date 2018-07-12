@@ -11,6 +11,11 @@ if [[ $(uname -s) = "Darwin" ]]; then
     KUBE_REPO=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64
 
     curl -sLO "$KUBE_REPO/kubectl"
+    if ! file kubectl 2>&1 | grep -qi 'executable'; then
+        echo "Failed to download a valid kubectl binary from $KUBE_REPO/kubectl"
+        setResult "kubectl is not a valid binary"
+        exit 1
+    fi
     chmod +x kubectl
     mv kubectl "$KUBE_DEST/kubectl"
 else
