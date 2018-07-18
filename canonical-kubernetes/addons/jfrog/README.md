@@ -60,17 +60,31 @@ Additional customizations can be made by including the appropriate values in val
 
 Upgrading Artifactroy after it has already been installed via conjure-up is accomplished by running helm with the upgrade option.
 
-1. Run `helm get values <release-name> --all` to review the current settings and make a list of paramerters that need to be overwritten with the new values.
+1. Run `helm get values <release-name> --all > values-pre.yaml` to review the current settings and make a list of parameters that need to be overwritten with the new values.
 
-2. Run the helm upgrade command and specify the old values.yaml file and new values.yaml and override any thing that needs to be changed.
+2. If the list of parameters and values to be changed is too long, prepare a new values-upg.yaml, otherwise  they can be specified using "--set <param=value>" options to the upgrade command.
 
-For ex, if the release name is art-ha-preview, the following command can be used to upgrade:
+3. Run the helm upgrade command and specify the old values-pre.yaml file and new values-upg.yaml and override any thing that needs to be changed.
+
+Typical upgrade commands for the release name "art-ha": 
 
 ```
-helm get values art-ha-preview --all > values-pre.yaml && helm upgrade art-ha-preview stable/artifacgtory-ha -f values-pre.yaml -f values-upg.yaml --set newp1=newv1,oldp2=newv2
+An example to upgrade with the new values-upg.yaml and also override a parameter
+
+
+helm get values art-ha --all > values-pre.yaml; 
+helm upgrade art-ha stable/artifactory-ha -f values-pre.yaml -f values-upg.yaml --set artifactory.livenessProbe.failureThreshold=15
 ```
 
-Confirm from `helm status` command that artifactory has been upgraded.
+```
+An example to upgrade with two overriding parameters (update artifactory and nginx docker images to  version 6.1.0) 
+
+
+helm get values art-ha --all > values-pre.yaml; 
+helm upgrade art-ha stable/artifactory-ha -f values-pre.yaml --set artifactory.image.version=6.1.0 --set nginx.image.version=6.1.0
+```
+
+Confirm  from `helm status art-ha` command that all the pods are in "Running" status and ready again.
 
 
 
@@ -139,6 +153,12 @@ juju run --application kubernetes-worker service snap.kubelet.daemon restart
 
 Please refer to the following issues: https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/592 and
 https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/594 
+
+**2.** On some rare occasions, the state of the pods become "Unknown"
+or "Pending" and remains in that state for hours.
+Deleting the pods will keep the pods stuck in "Terminating" state and the new pods remaining in init state. 
+Please refer to the following issue https://github.com/juju-solutions/bundle-canonical-kubernetes/issues/609
+Recovery of the cluster will require the assistance of kubernetes administrator.
 
 
 ## References
