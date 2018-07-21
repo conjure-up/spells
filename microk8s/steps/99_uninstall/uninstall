@@ -1,0 +1,12 @@
+#!/bin/bash
+# Uninstall script
+
+set -eux
+
+. "$CONJURE_UP_SPELLSDIR/sdk/common.sh"
+
+sudo snap remove microk8s
+
+# NB: Need to add the recommended microk8s.reset?
+
+setResult "microk8s is now removed"

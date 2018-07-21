@@ -1,0 +1,4 @@
+title: Uninstall microk8s
+description: Runs the uninstallation script for microk8s
+viewable: True
+sudo: True
