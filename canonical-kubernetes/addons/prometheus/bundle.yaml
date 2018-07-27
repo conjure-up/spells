@@ -1,15 +1,15 @@
 services:
   grafana:
-    charm: cs:xenial/grafana-11
+    charm: cs:bionic/grafana-17
     constraints: mem=3G
     num_units: 1
     expose: true
   prometheus:
-    charm: cs:xenial/prometheus-6
+    charm: cs:xenial/prometheus-7
     constraints: mem=3G root-disk=16G
     num_units: 1
   telegraf:
-    charm: cs:xenial/telegraf-13
+    charm: cs:xenial/telegraf-16
 relations:
   - ["prometheus:grafana-source", "grafana:grafana-source"]
   - ["telegraf:prometheus-client", "prometheus:target"]
