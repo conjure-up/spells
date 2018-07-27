@@ -27,12 +27,14 @@ juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" prometheus \
   scrape-jobs="$(sed -e s/K8S_PASSWORD/$kube_client_pass/g -e s/K8S_API_ENDPOINT/$kube_ingress_ip/g $(scriptPath)/prometheus-scrape-k8s.yaml)"
 
 # setup grafana dashboards
-# NB: recent telegraf charm includes a nice dashboard by default; comment out
-# the telegraf dashboard included in this step for now (deprecate/remove later)
-#juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
-#  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
 juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
   import-dashboard dashboard="$(base64 $(scriptPath)/grafana-k8s.json)"
+# NB: recent grafana charm includes a nice telegraf dashboard by default;
+# however, if not all metrics are available, the dashboard will not load:
+#   Skipping Dashboard Template: Telegraf.json.j2 no metric net_link_mtu
+# Import a known good dashboard so users at least have something to build on.
+juju run-action -m "$JUJU_CONTROLLER:$JUJU_MODEL" --wait grafana/0 \
+  import-dashboard dashboard="$(base64 $(scriptPath)/grafana-telegraf.json)"
 
 setResult "The Grafana UI is available at: http://$grafana_public_ip:$grafana_port. \
 Retrieve the admin password with 'juju run-action --wait grafana/0 get-admin-password'."
