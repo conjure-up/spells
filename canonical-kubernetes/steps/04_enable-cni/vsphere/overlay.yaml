@@ -1,0 +1,7 @@
+applications:
+  vsphere-integrator:
+    charm: cs:~containers/vsphere-integrator
+    num_units: 1
+relations:
+  - ['vsphere-integrator', 'kubernetes-master']
+  - ['vsphere-integrator', 'kubernetes-worker']
