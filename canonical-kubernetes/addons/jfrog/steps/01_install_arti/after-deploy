@@ -52,9 +52,9 @@ echo "Ensure Tiller is deployed and available ..."
 $KUBECTL -n kube-system get deployment tiller-deploy -w
 
 
-echo "Helm upgrade and Tiller deployed. Now add repo stable "
+echo "Helm upgrade and Tiller deployed. Now add repo jfrog "
 
-$HOME/bin/helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$HOME/bin/helm repo add jfrog https://charts.jfrog.io/
 echo "Helm Repo added. Now to artifactory .."
 
 # Issue in persistence storage class/volume/zone/node
