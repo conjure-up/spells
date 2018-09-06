@@ -4,7 +4,8 @@ config:
   linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
   raw.lxc: |
     ##AA_PROFILE##=unconfined
-    lxc.mount.auto=proc:rw sys:rw
+    lxc.mount.auto=proc:rw sys:rw cgroup:rw
+    lxc.cgroup.devices.allow=a
     lxc.cap.drop=
   security.nesting: "true"
   security.privileged: "true"
