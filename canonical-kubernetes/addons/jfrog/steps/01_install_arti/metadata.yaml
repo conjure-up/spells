@@ -31,7 +31,7 @@ additional-input:
   - label: Artifactory Release Path
     key: ARTIFACTORY_RELEASE
     type: text
-    default: stable/artifactory-ha
+    default: jfrog/artifactory-ha
   - label: Configure TLS with user cert and key file
     key: CONFIG_TLS_SECRET
     type: text
