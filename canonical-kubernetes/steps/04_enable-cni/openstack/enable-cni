@@ -4,9 +4,8 @@ set -eu
 
 get_creds() {
     endpoint="$(juju clouds --format=json | jq -r '.["'"$JUJU_CLOUD"'"].endpoint')"
-    region="$(juju clouds --format=json | jq -r '.["'"$JUJU_CLOUD"'"].regions | keys[0]')"
     juju credentials "$JUJU_CLOUD" --show-secrets --format=json | \
-      jq 'if .["local-credentials"] then .["local-credentials"] else .["credentials"] end | .["'"$JUJU_CLOUD"'"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"] | {"auth-url": "'"$endpoint"'", "region": "'"$region"'", "username", "password", "project-name": .["tenant-name"], "user-domain-name", "project-domain-name"}' | base64
+      jq 'if .["local-credentials"] then .["local-credentials"] else .["credentials"] end | .["'"$JUJU_CLOUD"'"]["cloud-credentials"]["'"$JUJU_CREDENTIAL"'"]["details"] | {"auth-url": "'"$endpoint"'", "region": "'"$JUJU_REGION"'", "username", "password", "project-name": .["tenant-name"], "user-domain-name", "project-domain-name"}' | base64
 }
 
 enable_cni() {
