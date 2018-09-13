@@ -9,13 +9,9 @@ set -eu
 # gather vars (stripping quotes) for later config and result message
 grafana_public_ip=$(unitAddress grafana)
 grafana_port=$(juju config -m "$JUJU_CONTROLLER:$JUJU_MODEL" grafana port | sed -e 's/"//g')
-kube_client_pass=$(grep 'password:' ~/.kube/config.$JUJU_MODEL | sed -e 's/ *//g' -e 's/password://')
+kube_client_pass=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubernetes-master/0 'cut -d, -f1 /root/cdk/basic_auth.csv')
 kube_ingress_ip=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubeapi-load-balancer/0 'network-get website --format yaml --ingress-address' | head -1)
 
-# if we didnt get a password from our kube config, get it from the master
-if [[ -z "${kube_client_pass}" ]]; then
-  kube_client_pass=$(juju run -m "$JUJU_CONTROLLER:$JUJU_MODEL" --unit kubernetes-master/0 'cut -d, -f1 /root/cdk/basic_auth.csv')
-fi
 # if we didnt get a load balancer ip, fall back to the private address
 # NB: use private ip so we dont waste resources scraping the public address
 if [[ -z "${kube_ingress_ip}" ]]; then
