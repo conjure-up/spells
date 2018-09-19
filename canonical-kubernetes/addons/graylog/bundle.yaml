@@ -6,8 +6,8 @@ services:
     options:
       enable_modules: "headers proxy_html proxy_http"
   elasticsearch:
-    charm: cs:bionic/elasticsearch-29
-    constraints: mem=3G root-disk=16G
+    charm: cs:bionic/elasticsearch-31
+    constraints: mem=4G root-disk=16G
     num_units: 1
   filebeat:
     charm: cs:xenial/filebeat-19
@@ -16,7 +16,7 @@ services:
       kube_logs: True
   graylog:
     charm: cs:bionic/graylog-19
-    constraints: mem=3G
+    constraints: mem=4G
     num_units: 1
   mongodb:
     charm: cs:bionic/mongodb-49
