@@ -1,13 +1,7 @@
 #!/usr/bin/env python
-#  While this works with python3, other requirements in the
-#  venv aren't quite py3-ready.
-
-try:
-    from quantumclient.v2_0 import client
-except ImportError:
-    from neutronclient.v2_0 import client
-
-from keystoneclient.v2_0 import client as ks_client
+from keystoneclient.auth import identity
+from keystoneclient import session, v3
+from neutronclient.v2_0 import client
 import optparse
 import os
 import sys
@@ -17,7 +11,7 @@ usage = """Usage: %prog [options] name cidr
 
 For example:
 
-  %prog -t admin -r provider-router admin_net 10.5.5.0/24
+  %prog -p admin -r provider-router admin_net 10.5.5.0/24
 
 will create a new network for the admin tenant called 'admin_net' with a
 default gateway of 10.5.5.1 and a dhcp allocation range of
@@ -26,9 +20,9 @@ default gateway of 10.5.5.1 and a dhcp allocation range of
 
 if __name__ == '__main__':
     parser = optparse.OptionParser(usage)
-    parser.add_option('-t', '--tenant',
-                      help='Tenant name to create network for',
-                      dest='tenant', action='store',
+    parser.add_option('-p', '--project',
+                      help='Project name to create network for',
+                      dest='project', action='store',
                       default=None)
     parser.add_option('-s', '--shared',
                       help='Create a shared rather than private network',
@@ -63,25 +57,27 @@ if __name__ == '__main__':
     subnet_name = "{}_subnet".format(net_name)
     cidr = args[1]
 
-    keystone = ks_client.Client(username=os.environ['OS_USERNAME'],
-                                password=os.environ['OS_PASSWORD'],
-                                tenant_name=os.environ['OS_TENANT_NAME'],
-                                auth_url=os.environ['OS_AUTH_URL'],
-                                region_name=os.environ['OS_REGION_NAME'])
-    quantum = client.Client(username=os.environ['OS_USERNAME'],
-                            password=os.environ['OS_PASSWORD'],
-                            tenant_name=os.environ['OS_TENANT_NAME'],
-                            auth_url=os.environ['OS_AUTH_URL'],
-                            region_name=os.environ['OS_REGION_NAME'])
+    auth = identity.v3.Password(
+        user_domain_name=os.environ['OS_USER_DOMAIN_NAME'],
+        username=os.environ['OS_USERNAME'],
+        password=os.environ['OS_PASSWORD'],
+        project_domain_name=os.environ['OS_PROJECT_DOMAIN_NAME'],
+        project_name=os.environ['OS_PROJECT_NAME'],
+        auth_url=os.environ['OS_AUTH_URL'])
+    sess = session.Session(auth=auth)
+
+    # Clients support sessions
+    keystone = v3.Client(session=sess)
+    quantum = client.Client(session=sess)
 
     # Resolve tenant id
-    tenant_id = None
-    for tenant in [t._info for t in keystone.tenants.list()]:
-        if (tenant['name'] == (opts.tenant or os.environ['OS_TENANT_NAME'])):
-            tenant_id = tenant['id']
+    project_id = None
+    for proj in [t._info for t in keystone.projects.list()]:
+        if (proj['name'] == (opts.project or os.environ['OS_PROJECT_NAME'])):
+            project_id = proj['id']
             break  # Tenant ID found - stop looking
-    if not tenant_id:
-        logging.error("Unable to locate tenant id for %s.", opts.tenant)
+    if not project_id:
+        logging.error("Unable to locate project id for %s.", opts.tenant)
         sys.exit(1)
 
     # Create network
@@ -92,7 +88,7 @@ if __name__ == '__main__':
             'network': {
                 'name': net_name,
                 'shared': opts.shared,
-                'tenant_id': tenant_id,
+                'tenant_id': project_id,
                 'provider:network_type': opts.network_type,
             }
         }
@@ -122,7 +118,7 @@ if __name__ == '__main__':
                 'enable_dhcp': opts.dhcp,
                 'cidr': cidr,
                 'ip_version': 4,
-                'tenant_id': tenant_id
+                'tenant_id': project_id
             }
         }
         subnet = quantum.create_subnet(subnet_msg)['subnet']
@@ -152,12 +148,7 @@ if __name__ == '__main__':
             # Check to see if subnet already plugged into router
             ports = quantum.list_ports(device_owner='network:router_interface',
                                        network_id=network['id'])
-
-            ha_ports = quantum.list_ports(
-                device_owner='network:ha_router_replicated_interface',
-                network_id=network['id'])
-
-            if len(ports['ports'] + ha_ports['ports']) == 0:
+            if len(ports['ports']) == 0:
                 logging.info('Adding interface from %s to %s',
                              opts.router, subnet_name)
                 router = routers['routers'][0]

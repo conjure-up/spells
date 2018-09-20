@@ -1,16 +1,7 @@
 #!/usr/bin/env python
-#  While this works with python3, other requirements in the
-#  venv aren't quite py3-ready.
-
-try:
-    from quantumclient.v2_0 import client
-except ImportError:
-    from neutronclient.v2_0 import client
-
-from keystoneauth1.identity import v2
-from keystoneauth1 import session
-from keystoneclient.v2_0 import client as ks_client
-import keystoneclient
+from keystoneclient.auth import identity
+from keystoneclient import session, v3
+from neutronclient.v2_0 import client
 import optparse
 import os
 import sys
@@ -27,9 +18,9 @@ For example:
 
 if __name__ == '__main__':
     parser = optparse.OptionParser(usage)
-    parser.add_option('-t', '--tenant',
-                      help='Tenant name to create network for',
-                      dest='tenant', action='store',
+    parser.add_option('-p', '--project',
+                      help='Project name to create network for',
+                      dest='project', action='store',
                       default=None)
     parser.add_option("-d", "--debug",
                       help="Enable debug logging",
@@ -66,33 +57,27 @@ if __name__ == '__main__':
         start_floating_ip = None
         end_floating_ip = None
 
-    if keystoneclient.__version__ >= "3.10.0":
-        auth = v2.Password(username=os.environ['OS_USERNAME'],
-                           password=os.environ['OS_PASSWORD'],
-                           tenant_name=os.environ['OS_TENANT_NAME'],
-                           auth_url=os.environ['OS_AUTH_URL'])
-        sess = session.Session(auth=auth)
-        keystone = ks_client.Client(session=sess)
-    else:
-        keystone = ks_client.Client(username=os.environ['OS_USERNAME'],
-                                    password=os.environ['OS_PASSWORD'],
-                                    tenant_name=os.environ['OS_TENANT_NAME'],
-                                    auth_url=os.environ['OS_AUTH_URL'],
-                                    region_name=os.environ['OS_REGION_NAME'])
-    quantum = client.Client(username=os.environ['OS_USERNAME'],
-                            password=os.environ['OS_PASSWORD'],
-                            tenant_name=os.environ['OS_TENANT_NAME'],
-                            auth_url=os.environ['OS_AUTH_URL'],
-                            region_name=os.environ['OS_REGION_NAME'])
+    auth = identity.v3.Password(
+        user_domain_name=os.environ['OS_USER_DOMAIN_NAME'],
+        username=os.environ['OS_USERNAME'],
+        password=os.environ['OS_PASSWORD'],
+        project_domain_name=os.environ['OS_PROJECT_DOMAIN_NAME'],
+        project_name=os.environ['OS_PROJECT_NAME'],
+        auth_url=os.environ['OS_AUTH_URL'])
+    sess = session.Session(auth=auth)
+
+    # Clients support sessions
+    keystone = v3.Client(session=sess)
+    quantum = client.Client(session=sess)
 
     # Resolve tenant id
-    tenant_id = None
-    for tenant in [t._info for t in keystone.tenants.list()]:
-        if (tenant['name'] == (opts.tenant or os.environ['OS_TENANT_NAME'])):
-            tenant_id = tenant['id']
+    project_id = None
+    for proj in [t._info for t in keystone.projects.list()]:
+        if (proj['name'] == (opts.project or os.environ['OS_PROJECT_NAME'])):
+            project_id = proj['id']
             break  # Tenant ID found - stop looking
-    if not tenant_id:
-        logging.error("Unable to locate tenant id for %s.", opts.tenant)
+    if not project_id:
+        logging.error("Unable to locate project id for %s.", opts.tenant)
         sys.exit(1)
 
     networks = quantum.list_networks(name=net_name)
@@ -102,7 +87,7 @@ if __name__ == '__main__':
             'network': {
                 'name': net_name,
                 'router:external': True,
-                'tenant_id': tenant_id,
+                'tenant_id': project_id,
                 'provider:network_type': opts.network_type,
             }
         }
@@ -131,7 +116,7 @@ if __name__ == '__main__':
             'network_id': network['id'],
             'enable_dhcp': False,
             'ip_version': 4,
-            'tenant_id': tenant_id
+            'tenant_id': project_id
         }
 
         if opts.default_gateway:
@@ -155,7 +140,7 @@ if __name__ == '__main__':
     if len(routers['routers']) == 0:
         logging.info('Creating provider router for external network access')
         router = quantum.create_router(
-            {'router': {'name': 'provider-router', 'tenant_id': tenant_id}}
+            {'router': {'name': 'provider-router', 'tenant_id': project_id}}
         )['router']
         logging.info('New router created: %s', (router['id']))
     else:
