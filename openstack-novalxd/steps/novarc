@@ -7,4 +7,4 @@ echo "export OS_AUTH_URL=${OS_AUTH_PROTOCOL:-http}://`juju run --unit  keystone/
 echo "export OS_IDENTITY_API_VERSION=3"
 echo "export OS_USER_DOMAIN_NAME=admin_domain"
 echo "export OS_PROJECT_DOMAIN_NAME=admin_domain"
-
+echo "export OS_PROJECT_NAME=admin"
