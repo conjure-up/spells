@@ -19,7 +19,9 @@ if [[ "$JUJU_PROVIDERTYPE" == "localhost" ]]; then
     lxc network create conjureup0 \
         ipv6.address=none \
         ipv6.nat=false \
+        ipv6.dhcp=false \
         ipv4.address=10.101.0.1/24 \
+        ipv4.dhcp=false \
         ipv4.nat=true || printf "conjureup0 network already exists" && true
 
     cat <<EOF> "$tmpfile"

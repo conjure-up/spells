@@ -169,6 +169,7 @@ services:
       data-port: br-ex:eth1
       openstack-origin: cloud:xenial-queens
       worker-multiplier: 0.25
+      dns-servers: 10.101.0.1
   neutron-openvswitch:
     annotations:
       gui-x: '250'

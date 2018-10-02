@@ -13,7 +13,7 @@ debug "Creating External Network"
 
 debug "Creating Internal Network"
 ./neutron-tenant-net -p admin -r provider-router \
-                     -N "$(get_host_ns)" internal 10.5.5.0/24 >> $NEUTRON_LOG 2>&1
+                     internal 10.5.5.0/24 >> $NEUTRON_LOG 2>&1
 
 debug "Setting security roles"
 

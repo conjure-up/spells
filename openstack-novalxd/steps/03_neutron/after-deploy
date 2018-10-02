@@ -6,7 +6,7 @@ tmpfile=$(mktemp)
 
 cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" > "$tmpfile"
 
-cat "$(scriptPath)/../novarc" >> "$tmpfile"
+"$(scriptPath)/../novarc" >> "$tmpfile"
 
 cat "$(scriptPath)/neutron.sh" >> "$tmpfile"
 
