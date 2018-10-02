@@ -8,7 +8,7 @@ NEUTRON_LOG="neutron.log"
 debug "Creating External Network"
 ./neutron-ext-net --network-type flat \
                   -g 10.101.0.1 \
-                  -c 10.101.0.0/21 \
+                  -c 10.101.0.0/24 \
                   -f 10.101.0.10:10.101.0.254 ext_net >> $NEUTRON_LOG 2>&1
 
 debug "Creating Internal Network"
