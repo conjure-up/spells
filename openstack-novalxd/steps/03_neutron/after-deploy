@@ -4,9 +4,10 @@
 
 tmpfile=$(mktemp)
 
+cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" >> "$tmpfile"
+
 "$(scriptPath)/../novarc" > "$tmpfile"
 
-cat "$CONJURE_UP_SPELLSDIR/sdk/common.sh" >> "$tmpfile"
 cat "$(scriptPath)/neutron.sh" >> "$tmpfile"
 
 juju scp -m "$JUJU_CONTROLLER:$JUJU_MODEL" "$(scriptPath)/neutron-ext-net" nova-cloud-controller/0:.
