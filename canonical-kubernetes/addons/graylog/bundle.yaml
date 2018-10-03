@@ -15,7 +15,7 @@ services:
       logpath: '/var/log/*.log'
       kube_logs: True
   graylog:
-    charm: cs:bionic/graylog-19
+    charm: cs:xenial/graylog-19
     constraints: mem=4G
     num_units: 1
   mongodb:
