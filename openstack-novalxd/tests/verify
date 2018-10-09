@@ -5,9 +5,9 @@ set -eu
 
 TEST_LOG="openstack-verify.log"
 
-testLog "Verifying trusty images are imported"
+testLog "Verifying bionic images are imported"
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL \
-     nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"trusty-lxd\" | grep -q \"trusty-lxd\"" > $TEST_LOG 2>&1
+     nova-cloud-controller/0 "source novarc && glance image-list --property-filter name=\"bionic-lxd\" | grep -q \"bionic-lxd\"" > $TEST_LOG 2>&1
 
 testLog "Verifying xenial images are imported"
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL \
