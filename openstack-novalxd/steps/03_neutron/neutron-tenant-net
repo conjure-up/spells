@@ -71,11 +71,7 @@ if __name__ == '__main__':
     quantum = client.Client(session=sess)
 
     # Resolve tenant id
-    project_id = None
-    for proj in [t._info for t in keystone.projects.list()]:
-        if (proj['name'] == (opts.project or os.environ['OS_PROJECT_NAME'])):
-            project_id = proj['id']
-            break  # Tenant ID found - stop looking
+    project_id = auth.get_project_id(sess)
     if not project_id:
         logging.error("Unable to locate project id for %s.", opts.tenant)
         sys.exit(1)
