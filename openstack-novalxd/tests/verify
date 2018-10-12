@@ -19,7 +19,7 @@ juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL \
 
 testLog "Verify creating a compute node"
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL \
-     nova-cloud-controller/0 "source novarc && nova boot --image xenial --flavor m1.small --key-name ubuntu-keypair --nic net-id=$(neutron net-list | grep internal | awk '{ print $2 }') xenial-test" >> $TEST_LOG 2>&1
+     nova-cloud-controller/0 "source novarc && nova boot --image xenial --flavor m1.tiny --key-name ubuntu-keypair --nic net-id=$(neutron net-list | grep internal | awk '{ print $2 }') xenial-test" >> $TEST_LOG 2>&1
 
 testLog "Verify access to the node"
 juju ssh -m $JUJU_CONTROLLER:$JUJU_MODEL \

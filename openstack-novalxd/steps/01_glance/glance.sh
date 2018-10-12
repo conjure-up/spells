@@ -31,6 +31,6 @@ if ! glance image-list --property-filter name="xenial$imagesuffix" | grep -q "xe
            --visibility=public --file="$HOME/glance-images/xenial-server-cloudimg-amd64-$imagetype" >> /dev/null 2>&1
 fi
 
-openstack flavor create --id 1 --ram 2048 --disk 20 --vcpus 1 m1.small >> $GLANCE_LOG 2>&1
+openstack flavor create --id 1 --ram 2048 --disk 8 --vcpus 1 m1.tiny >> $GLANCE_LOG 2>&1
 
 printf "Glance images for Bionic (18.04) and Xenial (16.04) are imported and accessible via Horizon dashboard."
