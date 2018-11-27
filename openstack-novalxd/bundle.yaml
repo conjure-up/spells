@@ -210,6 +210,7 @@ services:
     num_units: 1
     options:
       openstack-origin: cloud:xenial-queens
+      default-create-volume: False
   rabbitmq-server:
     annotations:
       gui-x: '500'
