@@ -5,7 +5,7 @@
 tmpfile=$(mktemp)
 
 cat <<EOF > $tmpfile
-sudo apt-add-repository cloud-archive:pike -y > /dev/null 2>&1
+sudo apt-add-repository cloud-archive:queens -y > /dev/null 2>&1
 sudo apt update > /dev/null 2>&1
 sudo apt -qyf install python-novaclient python-keystoneclient python-glanceclient python-neutronclient python-openstackclient > /dev/null 2>&1
 EOF
