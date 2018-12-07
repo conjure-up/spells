@@ -12,3 +12,4 @@ options-whitelist:
   - ext-port
   nova-compute:
   - virt-type
+bundle-name: openstack-lxd
