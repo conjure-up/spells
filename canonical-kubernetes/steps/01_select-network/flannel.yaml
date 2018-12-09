@@ -1,9 +1,5 @@
 services:
-  flannel:
-    annotations:
-      gui-x: '450'
-      gui-y: '750'
-    charm: cs:~containers/flannel
+  flannel: all
 relations:
 - - flannel:etcd
   - etcd:db
