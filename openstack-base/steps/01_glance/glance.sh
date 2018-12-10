@@ -53,5 +53,7 @@ do
     fi
 done
 
+openstack flavor create --id 1 --ram 2048 --disk 8 --vcpus 1 m1.tiny >> $GLANCE_LOG 2>&1
+
 printf "Glance images for Trusty (14.04) and Xenial (16.04) are imported and accessible via Horizon dashboard."
 exit 0
