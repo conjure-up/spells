@@ -6,20 +6,20 @@ services:
     options:
       enable_modules: "headers proxy_html proxy_http"
   elasticsearch:
-    charm: cs:bionic/elasticsearch-31
+    charm: cs:bionic/elasticsearch-32
     constraints: mem=4G root-disk=16G
     num_units: 1
   filebeat:
-    charm: cs:bionic/filebeat-19
+    charm: cs:bionic/filebeat-20
     options:
-      logpath: '/var/log/*.log'
+      logpath: '/var/log/*.log /root/cdk/audit/*.log'
       kube_logs: True
   graylog:
-    charm: cs:xenial/graylog-19
+    charm: cs:bionic/graylog-23
     constraints: mem=4G
     num_units: 1
   mongodb:
-    charm: cs:bionic/mongodb-49
+    charm: cs:bionic/mongodb-52
     num_units: 1
     options:
       extra_daemon_options: "--bind_ip_all"
