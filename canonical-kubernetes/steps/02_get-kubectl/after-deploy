@@ -17,7 +17,7 @@ if [[ $(uname -s) = "Darwin" ]]; then
         exit 1
     fi
     chmod +x kubectl
-    mv kubectl "$KUBE_DEST/kubectl"
+    mv -f kubectl "$KUBE_DEST/kubectl"
 else
     KUBE_DEST="/snap/bin"
 
