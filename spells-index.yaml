@@ -19,12 +19,12 @@ openstack:
         This can be deployed on a Single machine for quick Proof-of-Concepts and local development of OpenStack components and services.
 kubernetes:
   spells:
-    - key: canonical-kubernetes
-      name: Canonical Distribution of Kubernetes
+    - key: charmed-kubernetes
+      name: Charmed Distribution of Kubernetes
       description: |
         Kubernetes is an open-source platform for deploying, scaling, and operations of application containers across a cluster of hosts. Kubernetes is portable in that it works with public, private, and hybrid clouds. Extensible through a pluggable infrastructure. Self healing in that it will automatically restart and place containers on healthy nodes if a node ever goes away.
-    - key: canonical-kubernetes-nvidia
-      name: Canonical Distribution of Kubernetes with nVidia GPU workers
+    - key: charmed-kubernetes-nvidia
+      name: Charmed Distribution of Kubernetes with nVidia GPU workers
       description: |
         Provides the same functionality as the CDK spell, with Kubernetes workers placed on nVidia GPU-enabled hardware.
     - key: microk8s
