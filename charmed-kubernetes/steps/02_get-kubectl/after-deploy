@@ -7,9 +7,11 @@ set -e
 mkdir -p "$HOME/.kube"
 
 if [[ $(uname -s) = "Darwin" ]]; then
+    TMP_DIR="$(mktemp -d)"
     KUBE_DEST="/usr/local/bin"
     KUBE_REPO=https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64
 
+    cd $TMP_DIR
     curl -sLO "$KUBE_REPO/kubectl"
     if ! file kubectl 2>&1 | grep -qi 'executable'; then
         echo "Failed to download a valid kubectl binary from $KUBE_REPO/kubectl"
@@ -18,6 +20,8 @@ if [[ $(uname -s) = "Darwin" ]]; then
     fi
     chmod +x kubectl
     mv -f kubectl "$KUBE_DEST/kubectl"
+    cd -
+    rm -rf $TMP_DIR
 else
     KUBE_DEST="/snap/bin"
 
