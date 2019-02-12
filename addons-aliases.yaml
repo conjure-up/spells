@@ -1,13 +1,13 @@
 graylog:
-  spell: canonical-kubernetes
+  spell: charmed-kubernetes
   addons: [graylog]
 helm:
-  spell: canonical-kubernetes
+  spell: charmed-kubernetes
   addons: [helm]
 jfrog:
-    spell: canonical-kubernetes
+    spell: charmed-kubernetes
     addons: [jfrog]
 prometheus:
-  spell: canonical-kubernetes
+  spell: charmed-kubernetes
   addons: [prometheus]
 
