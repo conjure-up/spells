@@ -1,6 +1,6 @@
-# JFrog Artifactory Enterprise Addon to Canonical-Kubernetes Spell
+# JFrog Artifactory Enterprise Addon to Charmed-Kubernetes Spell
 
-Select this Addon to install Artifactory Enterprise on a Canonical Distribution of Kubernetes (CDK) Cluster in the cloud (currently AWS only) and region you have already selected. After completing this installation JFrog Artifactory will be installed on your Kubernetes cluster. Once you apply the Artifactory licenses you will be able to use Artifactory as a Docker registry, Helm repo, NPM repo and more.
+Select this Addon to install Artifactory Enterprise on a Charmed Distribution of Kubernetes (CDK) Cluster in the cloud (currently AWS only) and region you have already selected. After completing this installation JFrog Artifactory will be installed on your Kubernetes cluster. Once you apply the Artifactory licenses you will be able to use Artifactory as a Docker registry, Helm repo, NPM repo and more.
 
 ## Prerequisites:
 
@@ -20,7 +20,7 @@ Select this Addon to install Artifactory Enterprise on a Canonical Distribution 
 
 ## Basic installation
 
-1. Run `conjure-up canonical-kubernetes` and select the JFrog Addon.
+1. Run `conjure-up charmed-kubernetes` and select the JFrog Addon.
 
 
 ![JFrog_Addon](images/jfrog_addon.png)
