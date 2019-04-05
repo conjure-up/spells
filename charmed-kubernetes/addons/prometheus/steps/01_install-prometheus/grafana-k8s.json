@@ -1,4 +1,5 @@
 {
+"dashboard": {
   "annotations": {
     "list": [
       {
@@ -16,7 +17,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": null,
   "iteration": 1554419177157,
   "links": [],
   "panels": [
@@ -2009,6 +2010,7 @@
   },
   "timezone": "browser",
   "title": "Kubernetes Metrics (via Prometheus)",
-  "uid": "KjQIZqqmk",
   "version": 35
+},
+"overwrite": false
 }
