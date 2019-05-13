@@ -12,9 +12,8 @@ services:
     options:
       apt-repository: "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
   filebeat:
-    charm: cs:bionic/filebeat-23
+    charm: cs:bionic/filebeat-24
     options:
-      logpath: '/var/log/*.log /var/log/*/*.log /root/cdk/audit/*.log'
       kube_logs: True
   graylog:
     charm: cs:~kwmonroe/graylog-4
