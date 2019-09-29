@@ -17,7 +17,7 @@ services:
       install_sources: "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
       kube_logs: True
   graylog:
-    charm: cs:bionic/graylog-36
+    charm: cs:bionic/graylog-37
     constraints: mem=7G root-disk=16G
     num_units: 1
     options:
