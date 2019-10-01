@@ -1,6 +1,6 @@
 # JFrog Artifactory Enterprise Addon to Charmed-Kubernetes Spell
 
-Select this Addon to install Artifactory Enterprise on a Charmed Distribution of Kubernetes (CDK) Cluster in the cloud (currently AWS only) and region you have already selected. After completing this installation JFrog Artifactory will be installed on your Kubernetes cluster. Once you apply the Artifactory licenses you will be able to use Artifactory as a Docker registry, Helm repo, NPM repo and more.
+Select this Addon to install Artifactory Enterprise on a Charmed Kubernetes cluster in the cloud (currently AWS only) and region you have already selected. After completing this installation JFrog Artifactory will be installed on your Kubernetes cluster. Once you apply the Artifactory licenses you will be able to use Artifactory as a Docker registry, Helm repo, NPM repo and more.
 
 ## Prerequisites:
 
